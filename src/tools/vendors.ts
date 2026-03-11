@@ -44,18 +44,29 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     }
   );
 
-  // Get single vendor with Zod schema
-  (server as any).tool(
+  // Get single vendor - matching netsuite_get_vendor_bill signature exactly
+  server.registerTool(
     "netsuite_get_vendor",
-    "Get a single NetSuite vendor by internal ID",
-    z.object({
-      id: z.string().describe("NetSuite internal vendor ID"),
-    }),
-    async ({ id }: { id: string }) => {
+    {
+      description: "Get a single NetSuite vendor by internal ID. Requires parameter: id (string, NetSuite internal vendor ID)",
+    },
+    async ({ id }: any) => {
       try {
+        if (!id || typeof id !== "string") {
+          console.error(`[netsuite_get_vendor] ERROR: 'id' parameter is required. Received id:`, id);
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: 'id' parameter is required. Received id: ${id}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+        
         console.error(`[netsuite_get_vendor] Calling NetSuite with ID: ${id}`);
         
-        // Try without expandSubResources first (it may require extra permissions)
         const result = await client.get<unknown>(`/vendor/${id}`);
         return {
           content: [
