@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { z } from "zod";
 
 export function registerVendorTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
@@ -43,29 +44,15 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     }
   );
 
-  server.registerTool(
+  // Get single vendor with Zod schema
+  (server as any).tool(
     "netsuite_get_vendor",
-    {
-      description: "Get a single NetSuite vendor by internal ID. Pass the vendor ID as 'id' parameter.",
-    },
-    async (args: any) => {
+    "Get a single NetSuite vendor by internal ID",
+    z.object({
+      id: z.string().describe("NetSuite internal vendor ID"),
+    }),
+    async ({ id }: { id: string }) => {
       try {
-        console.error(`[netsuite_get_vendor] Args received:`, JSON.stringify(args, null, 2));
-        
-        const id = args?.id;
-        
-        if (!id) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: 'id' parameter is required. Received args: ${JSON.stringify(args)}`,
-              },
-            ],
-            isError: true,
-          };
-        }
-        
         console.error(`[netsuite_get_vendor] Calling NetSuite with ID: ${id}`);
         
         const result = await client.get<unknown>(`/vendor/${id}`, {
