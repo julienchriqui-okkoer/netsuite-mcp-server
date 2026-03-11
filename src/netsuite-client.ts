@@ -141,6 +141,7 @@ export class NetSuiteClient {
     return this.request<T>("POST", "", {
       body,
       base: "suiteql",
+      preferTransient: true,
     });
   }
 }
