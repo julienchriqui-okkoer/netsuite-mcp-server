@@ -55,8 +55,13 @@ console.error(`Starting NetSuite MCP HTTP server on ${HOST}:${PORT}`);
 console.error(`Health check: http://${HOST}:${PORT}/`);
 console.error(`MCP endpoint: http://${HOST}:${PORT}/mcp`);
 
-serve({
-  fetch: app.fetch,
-  port: PORT,
-  hostname: HOST,
-});
+serve(
+  {
+    fetch: app.fetch,
+    port: PORT,
+    hostname: HOST,
+  },
+  (info) => {
+    console.error(`✓ Server is listening on ${info.address}:${info.port}`);
+  }
+);
