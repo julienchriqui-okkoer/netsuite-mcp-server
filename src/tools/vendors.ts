@@ -44,21 +44,26 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     }
   );
 
-  // Get single vendor - matching netsuite_get_vendor_bill signature exactly
+  // Get single vendor - using args object instead of destructuring
   server.registerTool(
     "netsuite_get_vendor",
     {
       description: "Get a single NetSuite vendor by internal ID. Requires parameter: id (string, NetSuite internal vendor ID)",
     },
-    async ({ id }: any) => {
+    async (args: any) => {
       try {
+        const id = args?.id;
+        
+        console.error(`[netsuite_get_vendor] Received args:`, JSON.stringify(args));
+        console.error(`[netsuite_get_vendor] Extracted id:`, id);
+        
         if (!id || typeof id !== "string") {
-          console.error(`[netsuite_get_vendor] ERROR: 'id' parameter is required. Received id:`, id);
+          console.error(`[netsuite_get_vendor] ERROR: 'id' parameter is required.`);
           return {
             content: [
               {
                 type: "text",
-                text: `Error: 'id' parameter is required. Received id: ${id}`,
+                text: `Error: 'id' parameter is required. Received args: ${JSON.stringify(args)}`,
               },
             ],
             isError: true,
