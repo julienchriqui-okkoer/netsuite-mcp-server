@@ -81,45 +81,41 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   server.registerTool(
     "netsuite_get_latest_vendors",
     {
-      description: "Get the 5 most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID).",
+      description: "Get the 5 most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID). Uses REST API (no SuiteQL required).",
     },
     async ({ limit }: any) => {
       try {
         const limitValue = limit || 5;
         
-        const query = `
-          SELECT
-            id,
-            companyName,
-            email,
-            phone,
-            defaultAddress,
-            vatRegNumber,
-            legalName,
-            currency,
-            subsidiary,
-            isInactive,
-            dateCreated,
-            lastModifiedDate,
-            externalId
-          FROM vendor
-          ORDER BY dateCreated DESC
-          LIMIT ${limitValue}
-        `;
-
-        const result: any = await client.suiteql<any>(query);
+        // Use REST API instead of SuiteQL (no special permissions required)
+        // Get a larger batch and sort client-side
+        const pagination = buildPaginationQuery({ limit: 100, offset: 0 });
+        const result: any = await client.get<any>("/vendor", pagination);
+        
+        // Extract vendors from result
+        const items = result.items || [];
+        
+        // Sort by dateCreated DESC and take the requested limit
+        const sortedVendors = items
+          .filter((item: any) => item.dateCreated) // Only vendors with dateCreated
+          .sort((a: any, b: any) => {
+            const dateA = new Date(a.dateCreated).getTime();
+            const dateB = new Date(b.dateCreated).getTime();
+            return dateB - dateA; // DESC order
+          })
+          .slice(0, limitValue);
 
         // Transform NetSuite format to Spendesk-compatible format
-        const vendors = (result.items || []).map((item: any) => ({
+        const vendors = sortedVendors.map((item: any) => ({
           id: item.id,
-          name: item.companyName,
+          name: item.companyName || item.entityId || "N/A",
           email: item.email || null,
           phone: item.phone || null,
           address: item.defaultAddress || null,
           vatNumber: item.vatRegNumber || null,
-          legalName: item.legalName || item.companyName,
-          currency: item.currency || null,
-          subsidiary: item.subsidiary || null,
+          legalName: item.legalName || item.companyName || null,
+          currency: item.currency?.refName || item.currency || null,
+          subsidiary: item.subsidiary?.refName || item.subsidiary || null,
           isActive: !item.isInactive,
           createdAt: item.dateCreated,
           updatedAt: item.lastModifiedDate,
@@ -130,7 +126,11 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           content: [
             {
               type: "text",
-              text: JSON.stringify({ vendors, count: vendors.length }, null, 2),
+              text: JSON.stringify({ 
+                vendors, 
+                count: vendors.length,
+                note: "Using REST API (no SuiteQL permissions required). Sorted client-side."
+              }, null, 2),
             },
           ],
         };
