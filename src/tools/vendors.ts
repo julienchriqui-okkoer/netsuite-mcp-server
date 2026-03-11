@@ -55,9 +55,8 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       try {
         console.error(`[netsuite_get_vendor] Calling NetSuite with ID: ${id}`);
         
-        const result = await client.get<unknown>(`/vendor/${id}`, {
-          expandSubResources: "true",
-        });
+        // Try without expandSubResources first (it may require extra permissions)
+        const result = await client.get<unknown>(`/vendor/${id}`);
         return {
           content: [
             {
