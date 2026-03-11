@@ -1,6 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
-import { z } from "zod";
 
 const FORBIDDEN_KEYWORDS = [
   "INSERT",
@@ -20,12 +19,6 @@ function isSafeQuery(query: string): boolean {
 }
 
 export function registerSuiteQLTools(server: McpServer, client: NetSuiteClient): void {
-  const suiteqlSchema = z.object({
-    query: z.string().describe("The SuiteQL SELECT query to execute"),
-    limit: z.number().optional().describe("Maximum number of results to return"),
-    offset: z.number().optional().describe("Offset for pagination"),
-  });
-
   server.registerTool(
     "netsuite_execute_suiteql",
     {
@@ -35,7 +28,6 @@ Examples:
 - SELECT id, companyName, email FROM vendor WHERE externalId = 'spk_supplier_xxx'
 - SELECT id, tranId, entity, amount, status FROM transaction WHERE type = 'VendBill' AND status = 'VendBill:B'
 - SELECT id, acctNumber, acctName, type FROM account WHERE acctNumber LIKE '6%'`,
-      inputSchema: suiteqlSchema,
     },
     async (args: any) => {
       try {
@@ -47,7 +39,7 @@ Examples:
           return {
             content: [
               {
-                type: "text" as const,
+                type: "text",
                 text: `Error: 'query' parameter is required and must be a string.`,
               },
             ],
@@ -59,7 +51,7 @@ Examples:
           return {
             content: [
               {
-                type: "text" as const,
+                type: "text",
                 text: `Error: Query contains forbidden keywords (INSERT, UPDATE, DELETE, DROP, CREATE, ALTER). Only SELECT queries are allowed.`,
               },
             ],
@@ -71,7 +63,7 @@ Examples:
         return {
           content: [
             {
-              type: "text" as const,
+              type: "text",
               text: JSON.stringify(result, null, 2),
             },
           ],
@@ -82,7 +74,7 @@ Examples:
         return {
           content: [
             {
-              type: "text" as const,
+              type: "text",
               text: `Error executing SuiteQL: ${message}`,
             },
           ],
