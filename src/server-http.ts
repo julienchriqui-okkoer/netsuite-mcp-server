@@ -49,9 +49,10 @@ app.all("/mcp", async (c) => {
 });
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = "0.0.0.0"; // Railway needs 0.0.0.0
 
 console.error(`Starting NetSuite MCP HTTP server on ${HOST}:${PORT}`);
+console.error(`PORT env var: ${process.env.PORT || "not set (using default 3001)"}`);
 console.error(`Health check: http://${HOST}:${PORT}/`);
 console.error(`MCP endpoint: http://${HOST}:${PORT}/mcp`);
 
@@ -63,5 +64,6 @@ serve(
   },
   (info) => {
     console.error(`✓ Server is listening on ${info.address}:${info.port}`);
+    console.error(`✓ Ready to accept connections`);
   }
 );
