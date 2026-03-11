@@ -15,7 +15,13 @@ import { registerFileCabinetTools } from "./file-cabinet.js";
 
 dotenv.config();
 
+let clientInstance: NetSuiteClient | null = null;
+
 export function createNetSuiteClient(): NetSuiteClient {
+  if (clientInstance) {
+    return clientInstance;
+  }
+
   const accountId = process.env.NETSUITE_ACCOUNT_ID;
   const consumerKey = process.env.NETSUITE_CONSUMER_KEY;
   const consumerSecret = process.env.NETSUITE_CONSUMER_SECRET;
@@ -37,28 +43,39 @@ export function createNetSuiteClient(): NetSuiteClient {
 
   console.error("✓ NetSuite credentials loaded successfully");
 
-  return new NetSuiteClient({
+  clientInstance = new NetSuiteClient({
     accountId,
     consumerKey,
     consumerSecret,
     tokenId,
     tokenSecret,
   });
+
+  return clientInstance;
 }
 
 export function registerAllTools(server: McpServer): void {
-  const client = createNetSuiteClient();
+  console.error("Registering NetSuite MCP tools...");
 
-  registerVendorTools(server, client);
-  registerReferenceTools(server, client);
-  registerVendorBillTools(server, client);
-  registerJournalEntryTools(server, client);
-  registerSuiteQLTools(server, client);
-  registerEmployeeTools(server, client);
-  registerExpenseReportTools(server, client);
-  registerPaymentTools(server, client);
-  registerVendorCreditTools(server, client);
-  registerAnalyticsTools(server, client);
-  registerFileCabinetTools(server, client);
+  try {
+    const client = createNetSuiteClient();
+    
+    registerVendorTools(server, client);
+    registerReferenceTools(server, client);
+    registerVendorBillTools(server, client);
+    registerJournalEntryTools(server, client);
+    registerSuiteQLTools(server, client);
+    registerEmployeeTools(server, client);
+    registerExpenseReportTools(server, client);
+    registerPaymentTools(server, client);
+    registerVendorCreditTools(server, client);
+    registerAnalyticsTools(server, client);
+    registerFileCabinetTools(server, client);
+
+    console.error("✓ NetSuite MCP tools registered successfully");
+  } catch (error) {
+    console.error("✗ Failed to register NetSuite tools:", error);
+    console.error("Server will start but tools will not be available until credentials are configured.");
+  }
 }
 
