@@ -28,10 +28,27 @@ Examples:
 - SELECT id, companyName, email FROM vendor WHERE externalId = 'spk_supplier_xxx'
 - SELECT id, tranId, entity, amount, status FROM transaction WHERE type = 'VendBill' AND status = 'VendBill:B'
 - SELECT id, acctNumber, acctName, type FROM account WHERE acctNumber LIKE '6%'`,
+      inputSchema: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "The SuiteQL SELECT query to execute",
+          },
+          limit: {
+            type: "number",
+            description: "Maximum number of results to return",
+          },
+          offset: {
+            type: "number",
+            description: "Offset for pagination",
+          },
+        },
+        required: ["query"],
+      } as any,
     },
     async (args: any) => {
       try {
-        console.error(`[SuiteQL DEBUG] args received:`, JSON.stringify(args, null, 2));
         const query = args?.query;
         const limit = args?.limit;
         const offset = args?.offset;
@@ -40,7 +57,7 @@ Examples:
           return {
             content: [
               {
-                type: "text",
+                type: "text" as const,
                 text: `Error: 'query' parameter is required and must be a string.`,
               },
             ],
@@ -52,7 +69,7 @@ Examples:
           return {
             content: [
               {
-                type: "text",
+                type: "text" as const,
                 text: `Error: Query contains forbidden keywords (INSERT, UPDATE, DELETE, DROP, CREATE, ALTER). Only SELECT queries are allowed.`,
               },
             ],
@@ -64,7 +81,7 @@ Examples:
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: JSON.stringify(result, null, 2),
             },
           ],
@@ -75,7 +92,7 @@ Examples:
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: `Error executing SuiteQL: ${message}`,
             },
           ],

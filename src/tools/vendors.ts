@@ -7,6 +7,23 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     "netsuite_get_vendors",
     {
       description: "List NetSuite vendors (suppliers) with optional search and pagination.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          limit: {
+            type: "number",
+            description: "Maximum number of vendors to return",
+          },
+          offset: {
+            type: "number",
+            description: "Offset for pagination",
+          },
+          q: {
+            type: "string",
+            description: "Search query",
+          },
+        },
+      } as any,
     },
     async ({ limit, offset, q }: any) => {
       try {
@@ -22,7 +39,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: JSON.stringify(result, null, 2),
             },
           ],
@@ -33,7 +50,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: `Error calling NetSuite vendors: ${message}`,
             },
           ],
@@ -47,6 +64,16 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     "netsuite_get_vendor",
     {
       description: "Get a single NetSuite vendor by internal ID.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "NetSuite vendor internal ID",
+          },
+        },
+        required: ["id"],
+      } as any,
     },
     async ({ id }: any) => {
       try {
@@ -56,7 +83,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: JSON.stringify(result, null, 2),
             },
           ],
@@ -67,8 +94,90 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         return {
           content: [
             {
-              type: "text",
+              type: "text" as const,
               text: `Error calling NetSuite vendor: ${message}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // NEW TOOL: Get latest vendors with Spendesk-compatible format
+  server.registerTool(
+    "netsuite_get_latest_vendors",
+    {
+      description: "Get the 5 most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID).",
+      inputSchema: {
+        type: "object",
+        properties: {
+          limit: {
+            type: "number",
+            description: "Number of vendors to return (default: 5)",
+          },
+        },
+      } as any,
+    },
+    async ({ limit }: any) => {
+      try {
+        const limitValue = limit || 5;
+        
+        const query = `
+          SELECT
+            id,
+            companyName,
+            email,
+            phone,
+            defaultAddress,
+            vatRegNumber,
+            legalName,
+            currency,
+            subsidiary,
+            isInactive,
+            dateCreated,
+            lastModifiedDate,
+            externalId
+          FROM vendor
+          ORDER BY dateCreated DESC
+          LIMIT ${limitValue}
+        `;
+
+        const result: any = await client.suiteql<any>(query);
+
+        // Transform NetSuite format to Spendesk-compatible format
+        const vendors = (result.items || []).map((item: any) => ({
+          id: item.id,
+          name: item.companyName,
+          email: item.email || null,
+          phone: item.phone || null,
+          address: item.defaultAddress || null,
+          vatNumber: item.vatRegNumber || null,
+          legalName: item.legalName || item.companyName,
+          currency: item.currency || null,
+          subsidiary: item.subsidiary || null,
+          isActive: !item.isInactive,
+          createdAt: item.dateCreated,
+          updatedAt: item.lastModifiedDate,
+          externalId: item.externalId || null,
+        }));
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify({ vendors, count: vendors.length }, null, 2),
+            },
+          ],
+        };
+      } catch (error: any) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error getting latest vendors.";
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `Error calling NetSuite latest vendors: ${message}`,
             },
           ],
           isError: true,
