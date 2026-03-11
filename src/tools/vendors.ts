@@ -44,35 +44,19 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     }
   );
 
-  // Get single vendor - using args object instead of destructuring
+  // Get single vendor by ID - FIXED with destructuring
   server.registerTool(
-    "netsuite_get_vendor",
+    "netsuite_get_vendor_by_id",
     {
       description: "Get a single NetSuite vendor by internal ID. Requires parameter: id (string, NetSuite internal vendor ID)",
     },
-    async (args: any) => {
+    async ({ id }: any) => {
       try {
-        const id = args?.id;
+        console.error(`[netsuite_get_vendor_by_id] Calling NetSuite with ID: ${id}`);
         
-        console.error(`[netsuite_get_vendor] Received args:`, JSON.stringify(args));
-        console.error(`[netsuite_get_vendor] Extracted id:`, id);
-        
-        if (!id || typeof id !== "string") {
-          console.error(`[netsuite_get_vendor] ERROR: 'id' parameter is required.`);
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: 'id' parameter is required. Received args: ${JSON.stringify(args)}`,
-              },
-            ],
-            isError: true,
-          };
-        }
-        
-        console.error(`[netsuite_get_vendor] Calling NetSuite with ID: ${id}`);
-        
-        const result = await client.get<unknown>(`/vendor/${id}`);
+        const result = await client.get<unknown>(`/vendor/${id}`, {
+          expandSubResources: "true",
+        });
         return {
           content: [
             {
