@@ -67,7 +67,14 @@ export class NetSuiteClient {
       });
     }
 
-    const authHeader = this.buildAuthHeader(method, url.toString().split("?")[0], options.queryParams);
+    const finalUrl = url.toString();
+    const urlForSignature = finalUrl.split("?")[0];
+    
+    console.error(`[NetSuiteClient] ${method} ${finalUrl}`);
+    console.error(`[NetSuiteClient] URL for signature: ${urlForSignature}`);
+    console.error(`[NetSuiteClient] Query params:`, options.queryParams);
+
+    const authHeader = this.buildAuthHeader(method, urlForSignature, options.queryParams);
 
     const headers: Record<string, string> = {
       Authorization: authHeader,
@@ -78,7 +85,7 @@ export class NetSuiteClient {
       headers["Prefer"] = "transient";
     }
 
-    const response = await fetch(url.toString(), {
+    const response = await fetch(finalUrl, {
       method,
       headers,
       body: method === "GET" ? undefined : JSON.stringify(options.body ?? {}),
