@@ -46,10 +46,28 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   server.registerTool(
     "netsuite_get_vendor",
     {
-      description: "Get a single NetSuite vendor by internal ID.",
+      description: "Get a single NetSuite vendor by internal ID. Pass the vendor ID as 'id' parameter.",
     },
-    async ({ id }: any) => {
+    async (args: any) => {
       try {
+        console.error(`[netsuite_get_vendor] Args received:`, JSON.stringify(args, null, 2));
+        
+        const id = args?.id;
+        
+        if (!id) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: 'id' parameter is required. Received args: ${JSON.stringify(args)}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+        
+        console.error(`[netsuite_get_vendor] Calling NetSuite with ID: ${id}`);
+        
         const result = await client.get<unknown>(`/vendor/${id}`, {
           expandSubResources: "true",
         });
@@ -83,44 +101,65 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     {
       description: "Get the 5 most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID). Uses REST API (no SuiteQL required).",
     },
-    async ({ limit }: any) => {
+    async (args: any) => {
       try {
-        const limitValue = limit || 5;
+        const limitValue = args?.limit || 5;
         
-        // Use REST API instead of SuiteQL (no special permissions required)
-        // Get a larger batch and sort client-side
-        const pagination = buildPaginationQuery({ limit: 100, offset: 0 });
-        const result: any = await client.get<any>("/vendor", pagination);
+        console.error(`[netsuite_get_latest_vendors] Fetching latest ${limitValue} vendors`);
+        
+        // Step 1: Get vendor list (lighter call without full details)
+        const pagination = buildPaginationQuery({ limit: 50, offset: 0 });
+        const listResult: any = await client.get<any>("/vendor", pagination);
         
         // Extract vendors from result
-        const items = result.items || [];
+        const items = listResult.items || [];
         
-        // Sort by dateCreated DESC and take the requested limit
-        const sortedVendors = items
-          .filter((item: any) => item.dateCreated) // Only vendors with dateCreated
+        console.error(`[netsuite_get_latest_vendors] Retrieved ${items.length} vendors from list`);
+        
+        // Step 2: Sort by ID DESC (higher ID = more recent) and take top N
+        const sortedVendorIds = items
+          .map((item: any) => ({ id: item.id, links: item.links }))
           .sort((a: any, b: any) => {
-            const dateA = new Date(a.dateCreated).getTime();
-            const dateB = new Date(b.dateCreated).getTime();
-            return dateB - dateA; // DESC order
+            const idA = parseInt(a.id) || 0;
+            const idB = parseInt(b.id) || 0;
+            return idB - idA; // DESC order
           })
           .slice(0, limitValue);
+        
+        console.error(`[netsuite_get_latest_vendors] Selected top ${sortedVendorIds.length} vendor IDs:`, 
+          sortedVendorIds.map((v: any) => v.id).join(', '));
+        
+        // Step 3: Fetch full details for each vendor
+        const vendors = [];
+        for (const vendorRef of sortedVendorIds) {
+          try {
+            const vendorDetail: any = await client.get<any>(`/vendor/${vendorRef.id}`, {
+              expandSubResources: "true",
+            });
+            
+            // Step 4: Transform to Spendesk-compatible format
+            vendors.push({
+              id: vendorDetail.id,
+              name: vendorDetail.companyName || vendorDetail.entityId || "N/A",
+              email: vendorDetail.email || null,
+              phone: vendorDetail.phone || null,
+              address: vendorDetail.defaultAddress || null,
+              vatNumber: vendorDetail.vatRegNumber || null,
+              legalName: vendorDetail.legalName || vendorDetail.companyName || null,
+              currency: vendorDetail.currency?.refName || vendorDetail.currency || null,
+              subsidiary: vendorDetail.subsidiary?.refName || vendorDetail.subsidiary || null,
+              isActive: !vendorDetail.isInactive,
+              createdAt: vendorDetail.dateCreated,
+              updatedAt: vendorDetail.lastModifiedDate,
+              externalId: vendorDetail.externalId || null,
+            });
+          } catch (detailError: any) {
+            console.error(`[netsuite_get_latest_vendors] Error fetching vendor ${vendorRef.id}:`, detailError.message);
+            // Continue with next vendor
+          }
+        }
 
-        // Transform NetSuite format to Spendesk-compatible format
-        const vendors = sortedVendors.map((item: any) => ({
-          id: item.id,
-          name: item.companyName || item.entityId || "N/A",
-          email: item.email || null,
-          phone: item.phone || null,
-          address: item.defaultAddress || null,
-          vatNumber: item.vatRegNumber || null,
-          legalName: item.legalName || item.companyName || null,
-          currency: item.currency?.refName || item.currency || null,
-          subsidiary: item.subsidiary?.refName || item.subsidiary || null,
-          isActive: !item.isInactive,
-          createdAt: item.dateCreated,
-          updatedAt: item.lastModifiedDate,
-          externalId: item.externalId || null,
-        }));
+        console.error(`[netsuite_get_latest_vendors] Successfully retrieved ${vendors.length} vendor details`);
 
         return {
           content: [
@@ -129,7 +168,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
               text: JSON.stringify({ 
                 vendors, 
                 count: vendors.length,
-                note: "Using REST API (no SuiteQL permissions required). Sorted client-side."
+                note: "Using REST API (no SuiteQL permissions required). Sorted by ID DESC (higher ID = more recent)."
               }, null, 2),
             },
           ],
