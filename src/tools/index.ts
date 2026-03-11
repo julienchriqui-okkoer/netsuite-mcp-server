@@ -23,10 +23,19 @@ export function createNetSuiteClient(): NetSuiteClient {
   const tokenSecret = process.env.NETSUITE_TOKEN_SECRET;
 
   if (!accountId || !consumerKey || !consumerSecret || !tokenId || !tokenSecret) {
+    console.error("❌ Missing NetSuite credentials!");
+    console.error("Required environment variables:");
+    console.error("  - NETSUITE_ACCOUNT_ID:", accountId ? "✓" : "✗ MISSING");
+    console.error("  - NETSUITE_CONSUMER_KEY:", consumerKey ? "✓" : "✗ MISSING");
+    console.error("  - NETSUITE_CONSUMER_SECRET:", consumerSecret ? "✓" : "✗ MISSING");
+    console.error("  - NETSUITE_TOKEN_ID:", tokenId ? "✓" : "✗ MISSING");
+    console.error("  - NETSUITE_TOKEN_SECRET:", tokenSecret ? "✓" : "✗ MISSING");
     throw new Error(
-      "Missing NetSuite credentials. Please set NETSUITE_ACCOUNT_ID, NETSUITE_CONSUMER_KEY, NETSUITE_CONSUMER_SECRET, NETSUITE_TOKEN_ID, NETSUITE_TOKEN_SECRET."
+      "Missing NetSuite credentials. Please configure environment variables in Railway."
     );
   }
+
+  console.error("✓ NetSuite credentials loaded successfully");
 
   return new NetSuiteClient({
     accountId,
