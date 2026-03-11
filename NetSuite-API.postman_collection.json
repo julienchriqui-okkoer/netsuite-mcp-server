@@ -1,0 +1,223 @@
+{
+  "info": {
+    "name": "NetSuite REST API — Vendors, Bills, Payments",
+    "description": "Collection pour l'API REST NetSuite : Vendor, Vendor Bill, Vendor Payment.\n\n**Auth** : OAuth 1.0 (Token-Based). Renseigner les variables de collection.\n\n**Champ Spendesk** : Adapter `spendesk_id_field` si votre custom field a un autre script ID (ex. custbody_spendesk_id, custentity_spendesk_id).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "oauth1",
+    "oauth1": [
+      {"key": "consumerKey", "value": "{{consumer_key}}"},
+      {"key": "consumerSecret", "value": "{{consumer_secret}}"},
+      {"key": "token", "value": "{{token_id}}"},
+      {"key": "tokenSecret", "value": "{{token_secret}}"},
+      {"key": "signatureMethod", "value": "HMAC-SHA256"},
+      {"key": "addParamsToHeader", "value": true},
+      {"key": "realm", "value": "{{account_realm}}"}
+    ]
+  },
+  "variable": [
+    {"key": "base_url", "value": "https://5762887-sb1.suitetalk.api.netsuite.com"},
+    {"key": "account_realm", "value": "5762887_SB1"},
+    {"key": "consumer_key", "value": ""},
+    {"key": "consumer_secret", "value": ""},
+    {"key": "token_id", "value": ""},
+    {"key": "token_secret", "value": ""},
+    {"key": "spendesk_id_field", "value": "custbody_spendesk_id"},
+    {"key": "vendor_id", "value": ""},
+    {"key": "vendor_bill_id", "value": ""},
+    {"key": "vendor_payment_id", "value": ""},
+    {"key": "spendesk_id", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "Vendor",
+      "item": [
+        {
+          "name": "Create Vendor",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Prefer", "value": "return=representation"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entityId\": \"SUPPLIER-001\",\n  \"companyName\": \"Fournisseur Test\",\n  \"email\": \"contact@fournisseur.fr\",\n  \"custentity_spendesk_id\": \"{{spendesk_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendor",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendor"]
+            }
+          }
+        },
+        {
+          "name": "List Vendors",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendor?limit=50&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendor"],
+              "query": [
+                {"key": "limit", "value": "50"},
+                {"key": "offset", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vendor by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendor/{{vendor_id}}?expandSubResources=true",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendor", "{{vendor_id}}"],
+              "query": [{"key": "expandSubResources", "value": "true"}]
+            }
+          }
+        },
+        {
+          "name": "List Vendors by Spendesk ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendor?q=custentity_spendesk_id IS \"{{spendesk_id}}\"",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendor"],
+              "query": [{"key": "q", "value": "custentity_spendesk_id IS \"{{spendesk_id}}\""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor Bill",
+      "item": [
+        {
+          "name": "Create Vendor Bill",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Prefer", "value": "return=representation"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customform\": {\"id\": \"-112\"},\n  \"entity\": {\"id\": \"{{vendor_id}}\"},\n  \"currency\": {\"id\": \"1\"},\n  \"duedate\": \"2025-03-15\",\n  \"trandate\": \"2025-02-12\",\n  \"custbody_spendesk_id\": \"{{spendesk_id}}\",\n  \"item\": [\n    {\n      \"item\": {\"id\": \"-5\"},\n      \"amount\": 1000.00,\n      \"description\": \"Description ligne facture\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorBill",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorBill"]
+            }
+          }
+        },
+        {
+          "name": "List Vendor Bills",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorBill?limit=50&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorBill"],
+              "query": [
+                {"key": "limit", "value": "50"},
+                {"key": "offset", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vendor Bill by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorBill/{{vendor_bill_id}}?expandSubResources=true",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorBill", "{{vendor_bill_id}}"],
+              "query": [{"key": "expandSubResources", "value": "true"}]
+            }
+          }
+        },
+        {
+          "name": "List Vendor Bills by Spendesk ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorBill?q=custbody_spendesk_id IS \"{{spendesk_id}}\"",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorBill"],
+              "query": [{"key": "q", "value": "custbody_spendesk_id IS \"{{spendesk_id}}\""}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor Payment",
+      "item": [
+        {
+          "name": "Create Vendor Payment (link to Vendor Bill)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Prefer", "value": "return=representation"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customform\": {\"id\": \"-112\"},\n  \"entity\": {\"id\": \"{{vendor_id}}\"},\n  \"account\": {\"id\": \"YOUR_BANK_ACCOUNT_ID\"},\n  \"currency\": {\"id\": \"1\"},\n  \"exchangerate\": 1.0,\n  \"tranDate\": \"2025-02-12\",\n  \"custbody_spendesk_id\": \"{{spendesk_id}}\",\n  \"apply\": [\n    {\n      \"doc\": {\"id\": \"{{vendor_bill_id}}\"},\n      \"apply\": true,\n      \"amount\": 1000.00\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorPayment",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorPayment"]
+            }
+          }
+        },
+        {
+          "name": "List Vendor Payments",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorPayment?limit=50&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorPayment"],
+              "query": [
+                {"key": "limit", "value": "50"},
+                {"key": "offset", "value": "0"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vendor Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorPayment/{{vendor_payment_id}}?expandSubResources=true",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorPayment", "{{vendor_payment_id}}"],
+              "query": [{"key": "expandSubResources", "value": "true"}]
+            }
+          }
+        },
+        {
+          "name": "List Vendor Payments by Spendesk ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/services/rest/record/v1/vendorPayment?q=custbody_spendesk_id IS \"{{spendesk_id}}\"",
+              "host": ["{{base_url}}"],
+              "path": ["services", "rest", "record", "v1", "vendorPayment"],
+              "query": [{"key": "q", "value": "custbody_spendesk_id IS \"{{spendesk_id}}\""}]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

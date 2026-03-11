@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.env
+.env.local
+.git
+.gitignore
+README.md
+DEPLOY.md
+SUMMARY.md
+.DS_Store
+*.md
+dist
+coverage
+.vscode
+.idea
+scripts/*.mjs
+NetSuite-API.postman_collection.json
