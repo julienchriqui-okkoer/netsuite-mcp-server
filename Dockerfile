@@ -1,14 +1,3 @@
-# Déploiement NetSuite MCP Server
-
-Guide complet pour déployer sur GitHub, Railway et configurer Dust.
-
----
-
-## Étape 1 : Préparer le projet pour GitHub
-
-### 1.1 Créer le Dockerfile
-
-```dockerfile
 FROM node:20-alpine
 
 WORKDIR /app
