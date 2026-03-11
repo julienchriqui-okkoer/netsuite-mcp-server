@@ -73,7 +73,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
   registerSimpleListTool(
     "netsuite_get_tax_codes",
     "List NetSuite tax codes.",
-    "/taxitem"
+    "/taxItem"
   );
 
   registerSimpleListTool(

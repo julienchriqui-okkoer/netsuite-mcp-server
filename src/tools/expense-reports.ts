@@ -21,7 +21,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           params.status = status;
         }
 
-        const result = await client.get<unknown>("/expensereport", params);
+        const result = await client.get<unknown>("/expenseReport", params);
         return {
           content: [
             {
@@ -83,7 +83,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           };
         }
 
-        const result = await client.post<unknown>("/expensereport", body);
+        const result = await client.post<unknown>("/expenseReport", body);
         return {
           content: [
             {

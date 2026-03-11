@@ -18,7 +18,7 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           params.q = q;
         }
 
-        const result = await client.get<unknown>("/vendorcredit", params);
+        const result = await client.get<unknown>("/vendorCredit", params);
         return {
           content: [
             {
@@ -84,7 +84,7 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           };
         }
 
-        const result = await client.post<unknown>("/vendorcredit", body);
+        const result = await client.post<unknown>("/vendorCredit", body);
         return {
           content: [
             {
