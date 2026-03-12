@@ -59,20 +59,20 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
   server.registerTool(
     "netsuite_create_bill_payment",
     {
-      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: subsidiary (string, defaults to '1'), currency (string, defaults to '1' for EUR), externalId (for idempotence), memo, exchangeRate (default 1), applyList (object with apply array containing doc, apply=true, amount). NOTE: Without applyList, creates an unapplied payment.",
+      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: currency (string, defaults to '1' for EUR), customForm (string, defaults to '-112'), externalId (for idempotence), memo, exchangeRate (default 1), apply (array of {doc: billId, apply: true, amount: number}). NOTE: Without apply array, creates an unapplied payment.",
       inputSchema: {
         entity: z.string(),
         account: z.string(),
         tranDate: z.string(),
-        subsidiary: z.string().optional(),
         currency: z.string().optional(),
+        customForm: z.string().optional(),
         externalId: z.string().optional(),
         memo: z.string().optional(),
         exchangeRate: z.number().optional(),
-        applyList: z.any().optional(),
+        apply: z.array(z.any()).optional(),
       } as any,
     },
-    async ({ entity, account, tranDate, subsidiary, currency, externalId, memo, exchangeRate, applyList }: any) => {
+    async ({ entity, account, tranDate, currency, customForm, externalId, memo, exchangeRate, apply }: any) => {
       try {
         // Validate required parameters
         if (!entity || typeof entity !== "string") {
@@ -86,25 +86,24 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
         }
 
         const body: any = {
+          customform: { id: customForm || "-112" }, // Custom form (default: -112, same as n8n)
           entity: { id: entity },
           account: { id: account },
           tranDate,
-          subsidiary: { id: subsidiary || "1" }, // Default to subsidiary 1
           currency: { id: currency || "1" }, // Default to EUR
-          exchangeRate: exchangeRate || 1, // Default exchange rate
+          exchangerate: exchangeRate || 1.0, // IMPORTANT: lowercase 'r' like n8n
         };
 
-        if (externalId) body.externalId = externalId;
+        if (externalId) body.custbody_spendesk_id = externalId; // Use NetSuite custom field
         if (memo) body.memo = memo;
 
-        if (applyList?.apply && Array.isArray(applyList.apply)) {
-          body.apply = {
-            items: applyList.apply.map((item: any) => ({
-              doc: { id: String(item.doc) }, // Document ID (bill ID)
-              apply: item.apply !== false, // Default to true
-              amount: item.amount,
-            })),
-          };
+        // IMPORTANT: apply is a direct array, not nested in items
+        if (apply && Array.isArray(apply) && apply.length > 0) {
+          body.apply = apply.map((item: any) => ({
+            doc: { id: String(item.doc) }, // Document ID (bill ID)
+            apply: item.apply !== false, // Default to true
+            amount: item.amount,
+          }));
         }
 
         const result = await client.post<unknown>("/vendorpayment", body);

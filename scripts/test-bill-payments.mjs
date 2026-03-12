@@ -140,8 +140,9 @@ async function runTests() {
   const testPaymentData = {
     entity: "136288", // Vendor ID (use a valid vendor from your instance)
     account: "308", // Bank account ID (from existing payment: "512413 Banque Unicredit DE")
-    tranDate: "2026-03-12",
-    memo: "Test payment from MCP script",
+    tranDate: "2025-01-15", // Use a date in an open accounting period
+    customForm: "-112", // Same as n8n workflow
+    memo: "Test payment from MCP script (unapplied)",
     externalId: uniqueExternalId,
     // Uncomment to test applying to a specific bill:
     // applyList: {
