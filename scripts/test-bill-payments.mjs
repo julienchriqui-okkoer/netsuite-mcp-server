@@ -139,7 +139,7 @@ async function runTests() {
   // Test data - ADJUST THESE IDs TO MATCH YOUR NETSUITE INSTANCE
   const testPaymentData = {
     entity: "136288", // Vendor ID (use a valid vendor from your instance)
-    account: "1210", // Bank account ID (using actual account from NetSuite)
+    account: "308", // Bank account ID (from existing payment: "512413 Banque Unicredit DE")
     tranDate: "2026-03-12",
     memo: "Test payment from MCP script",
     externalId: uniqueExternalId,
