@@ -126,23 +126,34 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   );
   }
 
-  // Create vendor (supplier) - WITH INPUT SCHEMA
+  // Create vendor (supplier) - COMPLETE WITH ADDRESS SUPPORT
   if (isToolEnabled("vendors", "netsuite_create_vendor")) {
     server.registerTool(
       "netsuite_create_vendor",
       {
-        description: "Create a new NetSuite vendor (supplier). Required: companyName (string), subsidiary (string). Optional: email, externalId",
+        description: "Create a new NetSuite vendor (supplier). Required: companyName (string), subsidiary (string). Optional: email, phone, externalId, isPerson (boolean), currency, vatRegNumber, legalName, addr1, city, zip, country (for address)",
         inputSchema: {
           companyName: z.string(),
           subsidiary: z.string(),
           email: z.string().optional(),
+          phone: z.string().optional(),
           externalId: z.string().optional(),
-        } as any,  // ← Type cast to avoid TS deep instantiation
+          isPerson: z.boolean().optional(),
+          currency: z.string().optional(),
+          vatRegNumber: z.string().optional(),
+          legalName: z.string().optional(),
+          addr1: z.string().optional(),
+          city: z.string().optional(),
+          zip: z.string().optional(),
+          country: z.string().optional(),
+        } as any,
       },
-      async ({ companyName, subsidiary, email, externalId }: any) => {
+      async ({ 
+        companyName, subsidiary, email, phone, externalId,
+        isPerson, currency, vatRegNumber, legalName,
+        addr1, city, zip, country 
+      }: any) => {
         try {
-          console.log("🔍 [create_vendor] Received params:", { companyName, subsidiary, email, externalId });
-          
           // Validate required parameters
           if (!companyName || typeof companyName !== "string") {
             return errorResponse("Missing required parameter: companyName (string)");
@@ -151,18 +162,40 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             return errorResponse("Missing required parameter: subsidiary (string)");
           }
 
-          const body: any = {
+          const body: Record<string, unknown> = {
             companyName,
-            subsidiary: { id: subsidiary },
+            isPerson: isPerson ?? false,
           };
 
+          // References → objects { id }
+          body.subsidiary = { id: subsidiary };
+          if (currency) body.currency = { id: currency };
+
+          // Simple fields
           if (email) body.email = email;
+          if (phone) body.phone = phone;
           if (externalId) body.externalId = externalId;
+          if (vatRegNumber) body.vatRegNumber = vatRegNumber;
+          if (legalName) body.legalName = legalName;
+
+          // Address → nested addressbook.items[] structure
+          if (addr1 || city || zip || country) {
+            body.addressbook = {
+              items: [{
+                defaultBilling: true,
+                addressbookAddress: {
+                  ...(addr1 && { addr1 }),
+                  ...(city && { city }),
+                  ...(zip && { zip }),
+                  ...(country && { country: { id: country } }),
+                },
+              }],
+            };
+          }
 
           const result = await client.post<unknown>("/vendor", body);
           return successResponse(result);
         } catch (error: any) {
-          // Enhanced error message with more context
           const errorMsg = error.message || String(error);
           console.error("❌ [create_vendor] Error:", errorMsg);
           return errorResponse(`Error creating vendor: ${errorMsg}`);
