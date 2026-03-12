@@ -102,6 +102,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           entity: { id: entity },
           subsidiary: { id: subsidiary },
           tranDate,
+          approvalStatus: { id: "2" }, // Pending Approval by default
         };
 
         if (dueDate) body.dueDate = dueDate;
@@ -111,19 +112,22 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         if (exchangeRate) body.exchangeRate = exchangeRate;
         if (externalId) body.externalId = externalId;
 
-        if (expense && Array.isArray(expense)) {
-          body.expense = expense.map((line: any) => {
-            const expenseLine: any = {
-              account: { id: line.account },
-              amount: line.amount,
-            };
-            if (line.department) expenseLine.department = { id: line.department };
-            if (line.location) expenseLine.location = { id: line.location };
-            if (line.class) expenseLine.class = { id: line.class };
-            if (line.memo) expenseLine.memo = line.memo;
-            if (line.taxCode) expenseLine.taxCode = { id: line.taxCode };
-            return expenseLine;
-          });
+        // NetSuite expects: expense: { items: [...] }
+        if (expense && Array.isArray(expense) && expense.length > 0) {
+          body.expense = {
+            items: expense.map((line: any) => {
+              const expenseLine: any = {
+                account: { id: line.account },
+                amount: line.amount,
+              };
+              if (line.department) expenseLine.department = { id: line.department };
+              if (line.location) expenseLine.location = { id: line.location };
+              if (line.class) expenseLine.class = { id: line.class };
+              if (line.memo) expenseLine.memo = line.memo;
+              if (line.taxCode) expenseLine.taxCode = { id: line.taxCode };
+              return expenseLine;
+            })
+          };
         }
 
         const result = await client.post<unknown>("/vendorBill", body);
