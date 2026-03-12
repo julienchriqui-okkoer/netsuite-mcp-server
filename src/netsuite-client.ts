@@ -85,6 +85,11 @@ export class NetSuiteClient {
       headers["Prefer"] = "transient";
     }
 
+    // Log request body for debugging
+    if (method !== "GET" && options.body) {
+      console.error(`[NetSuiteClient] Request body:`, JSON.stringify(options.body, null, 2));
+    }
+
     const response = await fetch(finalUrl, {
       method,
       headers,
