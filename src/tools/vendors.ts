@@ -124,5 +124,171 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     }
   );
   }
+
+  // Create vendor (supplier)
+  if (isToolEnabled("vendors", "netsuite_create_vendor")) {
+    server.registerTool(
+      "netsuite_create_vendor",
+      {
+        description: "Create a new NetSuite vendor (supplier) from Spendesk data. Required parameters: companyName (string), subsidiary (string). Optional: entityId (string, vendor ID/code), legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson (boolean), department, location, class, externalId (for idempotence, use Spendesk supplier ID), terms (payment terms ID), category (vendor category ID), memo, accountNumber (supplier account number), isInactive (boolean)",
+      },
+      async ({
+        companyName,
+        subsidiary,
+        entityId,
+        legalName,
+        email,
+        phone,
+        currency,
+        vatRegNumber,
+        defaultAddress,
+        isPerson,
+        department,
+        location,
+        class: vendorClass,
+        externalId,
+        terms,
+        category,
+        memo,
+        accountNumber,
+        isInactive,
+      }: any) => {
+        try {
+          // Validate required parameters
+          if (!companyName || typeof companyName !== "string") {
+            return errorResponse("Missing required parameter: companyName (string)");
+          }
+          if (!subsidiary || typeof subsidiary !== "string") {
+            return errorResponse("Missing required parameter: subsidiary (string)");
+          }
+
+          const body: any = {
+            companyName,
+            subsidiary: { id: subsidiary },
+          };
+
+          // Identification
+          if (entityId) body.entityId = entityId;
+          if (legalName) body.legalName = legalName;
+          if (externalId) body.externalId = externalId; // Spendesk supplier ID
+
+          // Contact info
+          if (email) body.email = email;
+          if (phone) body.phone = phone;
+
+          // Financial
+          if (currency) body.currency = { id: currency };
+          if (vatRegNumber) body.vatRegNumber = vatRegNumber;
+          if (terms) body.terms = { id: terms };
+          if (accountNumber) body.accountNumber = accountNumber;
+
+          // Address (string or object)
+          if (defaultAddress) {
+            if (typeof defaultAddress === "string") {
+              body.defaultAddress = defaultAddress;
+            } else if (typeof defaultAddress === "object") {
+              // Structured address
+              body.defaultAddress = defaultAddress;
+            }
+          }
+
+          // Classification & Analytics
+          if (category) body.category = { id: category };
+          if (department) body.department = { id: department };
+          if (location) body.location = { id: location };
+          if (vendorClass) body.class = { id: vendorClass };
+
+          // Type & Status
+          if (typeof isPerson === "boolean") body.isPerson = isPerson;
+          if (typeof isInactive === "boolean") body.isInactive = isInactive;
+          if (memo) body.memo = memo;
+
+          const result = await client.post<unknown>("/vendor", body);
+          return successResponse(result);
+        } catch (error: any) {
+          return errorResponse(`Error creating vendor: ${error.message}`);
+        }
+      }
+    );
+  }
+
+  // Update vendor (supplier)
+  if (isToolEnabled("vendors", "netsuite_update_vendor")) {
+    server.registerTool(
+      "netsuite_update_vendor",
+      {
+        description: "Update an existing NetSuite vendor (supplier). Required parameter: id (string, NetSuite internal vendor ID). Optional: companyName, entityId, legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson, department, location, class, terms, category, memo, accountNumber, isInactive",
+      },
+      async ({
+        id,
+        companyName,
+        entityId,
+        legalName,
+        email,
+        phone,
+        currency,
+        vatRegNumber,
+        defaultAddress,
+        isPerson,
+        department,
+        location,
+        class: vendorClass,
+        terms,
+        category,
+        memo,
+        accountNumber,
+        isInactive,
+      }: any) => {
+        try {
+          // Validate required parameter
+          if (!id || typeof id !== "string") {
+            return errorResponse("Missing required parameter: id (string)");
+          }
+
+          const body: any = {};
+
+          // Identification
+          if (companyName) body.companyName = companyName;
+          if (entityId) body.entityId = entityId;
+          if (legalName) body.legalName = legalName;
+
+          // Contact info
+          if (email) body.email = email;
+          if (phone) body.phone = phone;
+
+          // Financial
+          if (currency) body.currency = { id: currency };
+          if (vatRegNumber) body.vatRegNumber = vatRegNumber;
+          if (terms) body.terms = { id: terms };
+          if (accountNumber) body.accountNumber = accountNumber;
+
+          // Address
+          if (defaultAddress) {
+            if (typeof defaultAddress === "string") {
+              body.defaultAddress = defaultAddress;
+            } else if (typeof defaultAddress === "object") {
+              body.defaultAddress = defaultAddress;
+            }
+          }
+
+          // Classification & Analytics
+          if (category) body.category = { id: category };
+          if (department) body.department = { id: department };
+          if (location) body.location = { id: location };
+          if (vendorClass) body.class = { id: vendorClass };
+
+          // Type & Status
+          if (typeof isPerson === "boolean") body.isPerson = isPerson;
+          if (typeof isInactive === "boolean") body.isInactive = isInactive;
+          if (memo) body.memo = memo;
+
+          const result = await client.patch<unknown>(`/vendor/${id}`, body);
+          return successResponse(result);
+        } catch (error: any) {
+          return errorResponse(`Error updating vendor: ${error.message}`);
+        }
+      }
+    );
+  }
 }
 

@@ -11,6 +11,8 @@ export const TOOLS_CONFIG = {
     netsuite_get_vendors: true,
     netsuite_get_vendor_by_id: false, // ❌ DISABLED - Parameter transmission issue
     netsuite_get_latest_vendors: true,
+    netsuite_create_vendor: true,
+    netsuite_update_vendor: true,
   },
   
   vendorBills: {
