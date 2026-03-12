@@ -163,10 +163,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           );
 
           return successResponse({ 
-            forms: uniqueForms,
-            count: uniqueForms.length,
+            forms,
+            count: forms.length,
             note: "These are custom form IDs currently used by existing vendors. Use the 'id' field as the customForm parameter when creating vendors. To get the form name, inspect a vendor using that form with netsuite_get_vendor_by_id.",
-            example: "If you see formId='297', use { customForm: '297' } when creating a vendor."
+            example: "If you see id='297', use { customForm: '297' } when creating a vendor."
           });
         } catch (error: any) {
           return errorResponse(`Error getting vendor forms: ${error.message}. Fallback: Use netsuite_get_vendor_by_id on an existing vendor to inspect its customForm field.`);
