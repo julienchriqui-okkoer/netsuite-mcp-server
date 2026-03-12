@@ -131,6 +131,10 @@ async function runTests() {
     subsidiary: "1",
     email: "test.noform@example.com",
     externalId: `TEST-VENDOR-NOFORM-${timestamp}`,
+    addr1: "123 Test Street", // Address required
+    city: "Paris",
+    zip: "75001",
+    country: "FR",
   };
 
   const resultNoForm = await callTool("netsuite_create_vendor", vendorDataNoForm);
@@ -155,6 +159,10 @@ async function runTests() {
       email: "test.withform@example.com",
       customForm: firstFormId,
       externalId: `TEST-VENDOR-FORM-${timestamp}`,
+      addr1: "456 Form Street", // Address required
+      city: "Paris",
+      zip: "75002",
+      country: "FR",
     };
 
     console.log(`   Using custom form ID: ${firstFormId}`);
@@ -179,6 +187,10 @@ async function runTests() {
     subsidiary: "1",
     email: "test.idempotent@example.com",
     externalId: idempotentExternalId,
+    addr1: "789 Idempotent Ave",
+    city: "Lyon",
+    zip: "69001",
+    country: "FR",
     ...(firstFormId && { customForm: firstFormId }),
   };
 
@@ -210,6 +222,10 @@ async function runTests() {
     subsidiary: "1",
     email: "test.customfields@example.com",
     externalId: `TEST-VENDOR-CUSTOM-${timestamp}`,
+    addr1: "321 Custom Blvd",
+    city: "Marseille",
+    zip: "13001",
+    country: "FR",
     ...(firstFormId && { customForm: firstFormId }),
     customFields: {
       // Example custom fields (adjust to your NetSuite instance)
