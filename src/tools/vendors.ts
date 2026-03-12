@@ -125,34 +125,14 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   );
   }
 
-  // Create vendor (supplier)
+  // Create vendor (supplier) - SIMPLIFIED VERSION
   if (isToolEnabled("vendors", "netsuite_create_vendor")) {
     server.registerTool(
       "netsuite_create_vendor",
       {
-        description: "Create a new NetSuite vendor (supplier) from Spendesk data. Required parameters: companyName (string), subsidiary (string). Optional: entityId, legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson, department, location, class, externalId (for idempotence), terms, category, memo, accountNumber, isInactive",
+        description: "Create a new NetSuite vendor (supplier). Required: companyName (string), subsidiary (string). Optional: email, externalId",
       },
-      async ({
-        companyName,
-        subsidiary,
-        entityId,
-        legalName,
-        email,
-        phone,
-        currency,
-        vatRegNumber,
-        defaultAddress,
-        isPerson,
-        department,
-        location,
-        class: vendorClass,
-        externalId,
-        terms,
-        category,
-        memo,
-        accountNumber,
-        isInactive,
-      }: any) => {
+      async ({ companyName, subsidiary, email, externalId }: any) => {
         try {
           // Validate required parameters
           if (!companyName || typeof companyName !== "string") {
@@ -167,23 +147,8 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             subsidiary: { id: subsidiary },
           };
 
-          if (entityId) body.entityId = entityId;
-          if (legalName) body.legalName = legalName;
-          if (externalId) body.externalId = externalId;
           if (email) body.email = email;
-          if (phone) body.phone = phone;
-          if (currency) body.currency = { id: currency };
-          if (vatRegNumber) body.vatRegNumber = vatRegNumber;
-          if (terms) body.terms = { id: terms };
-          if (accountNumber) body.accountNumber = accountNumber;
-          if (defaultAddress) body.defaultAddress = defaultAddress;
-          if (category) body.category = { id: category };
-          if (department) body.department = { id: department };
-          if (location) body.location = { id: location };
-          if (vendorClass) body.class = { id: vendorClass };
-          if (typeof isPerson === "boolean") body.isPerson = isPerson;
-          if (typeof isInactive === "boolean") body.isInactive = isInactive;
-          if (memo) body.memo = memo;
+          if (externalId) body.externalId = externalId;
 
           const result = await client.post<unknown>("/vendor", body);
           return successResponse(result);
@@ -194,33 +159,14 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     );
   }
 
-  // Update vendor (supplier)
+  // Update vendor (supplier) - SIMPLIFIED VERSION
   if (isToolEnabled("vendors", "netsuite_update_vendor")) {
     server.registerTool(
       "netsuite_update_vendor",
       {
-        description: "Update an existing NetSuite vendor (supplier). Required parameter: id (string). Optional: companyName, entityId, legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson, department, location, class, terms, category, memo, accountNumber, isInactive",
+        description: "Update an existing NetSuite vendor. Required: id (string). Optional: companyName, email, externalId",
       },
-      async ({
-        id,
-        companyName,
-        entityId,
-        legalName,
-        email,
-        phone,
-        currency,
-        vatRegNumber,
-        defaultAddress,
-        isPerson,
-        department,
-        location,
-        class: vendorClass,
-        terms,
-        category,
-        memo,
-        accountNumber,
-        isInactive,
-      }: any) => {
+      async ({ id, companyName, email, externalId }: any) => {
         try {
           // Validate required parameter
           if (!id || typeof id !== "string") {
@@ -230,22 +176,8 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           const body: any = {};
 
           if (companyName) body.companyName = companyName;
-          if (entityId) body.entityId = entityId;
-          if (legalName) body.legalName = legalName;
           if (email) body.email = email;
-          if (phone) body.phone = phone;
-          if (currency) body.currency = { id: currency };
-          if (vatRegNumber) body.vatRegNumber = vatRegNumber;
-          if (terms) body.terms = { id: terms };
-          if (accountNumber) body.accountNumber = accountNumber;
-          if (defaultAddress) body.defaultAddress = defaultAddress;
-          if (category) body.category = { id: category };
-          if (department) body.department = { id: department };
-          if (location) body.location = { id: location };
-          if (vendorClass) body.class = { id: vendorClass };
-          if (typeof isPerson === "boolean") body.isPerson = isPerson;
-          if (typeof isInactive === "boolean") body.isInactive = isInactive;
-          if (memo) body.memo = memo;
+          if (externalId) body.externalId = externalId;
 
           const result = await client.patch<unknown>(`/vendor/${id}`, body);
           return successResponse(result);
