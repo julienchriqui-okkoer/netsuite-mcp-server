@@ -273,9 +273,9 @@ const API_TESTS = [
   },
   {
     category: "Reference - Tax Codes",
-    name: "List Tax Items",
+    name: "List Sales Tax Items",
     method: "GET",
-    path: "/record/v1/taxItem",
+    path: "/record/v1/salestaxitem",
     queryParams: { limit: 10 },
   },
   {
@@ -301,25 +301,25 @@ const API_TESTS = [
   },
   
   // ============================================
-  // SUITEQL
+  // SUITEQL (with corrected syntax)
   // ============================================
   {
     category: "SuiteQL",
-    name: "Execute SuiteQL Query",
+    name: "Execute SuiteQL Query (FETCH FIRST syntax)",
     method: "POST",
     path: "/query/v1/suiteql",
     headers: { "Prefer": "transient" },
-    body: { q: "SELECT id, companyName FROM vendor WHERE id < 100 LIMIT 5" },
+    body: { q: "SELECT id, companyName FROM vendor WHERE id < 100 FETCH FIRST 5 ROWS ONLY" },
   },
   
   // ============================================
-  // FILE CABINET
+  // FILE CABINET (corrected)
   // ============================================
   {
     category: "File Cabinet",
-    name: "List Files in Folder",
+    name: "List Files",
     method: "GET",
-    path: "/record/v1/folder",
+    path: "/record/v1/file",
     queryParams: { limit: 5 },
   },
 ];

@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-03-12T08:50:15.398Z",
+  "timestamp": "2026-03-12T08:57:43.811Z",
   "account": "5762887_SB1",
   "summary": {
     "total": 22,
-    "success": 15,
-    "failed": 7,
-    "successRate": "68.18%"
+    "success": 18,
+    "failed": 4,
+    "successRate": "81.82%"
   },
   "categories": {
     "Vendors": {
@@ -60,8 +60,8 @@
     },
     "Reference - Tax Codes": {
       "total": 1,
-      "success": 0,
-      "failed": 1
+      "success": 1,
+      "failed": 0
     },
     "Reference - Currencies": {
       "total": 1,
@@ -70,8 +70,8 @@
     },
     "Reference - Locations": {
       "total": 1,
-      "success": 0,
-      "failed": 1
+      "success": 1,
+      "failed": 0
     },
     "Reference - Classifications": {
       "total": 1,
@@ -80,8 +80,8 @@
     },
     "SuiteQL": {
       "total": 1,
-      "success": 0,
-      "failed": 1
+      "success": 1,
+      "failed": 0
     },
     "File Cabinet": {
       "total": 1,
@@ -98,28 +98,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 2271,
+      "elapsed": 704,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304694\", oauth_nonce=\"bd87d9c39b12a559bb769ea87b63e495\", oauth_version=\"1.0\", oauth_signature=\"XTfbMBylZWOz5vo32rqPdaOGkIotUBSGk4yaWlSbv%2F8%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305828\", oauth_nonce=\"578cb2feb617b56b6b823de66e028aae\", oauth_version=\"1.0\", oauth_signature=\"BxCixIJUr0gUG494BMqR50r%2Fd5vXb8kjb37H0ClDgGE%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304694.42732aee",
+          "akamai-grn": "0.13ecc017.1773305828.42920ce5",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "277",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:16 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:09 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "fabd66ad-66d5-4720-8a97-3176dd73e968",
-          "x-netsuite-jobid": "0fadcf1c-f745-4aeb-bf6f-b0646d35ccb1"
+          "x-n-operationid": "9ac7dc0f-93d9-4c77-bcb3-2b6f4e3bbf91",
+          "x-netsuite-jobid": "614294fa-e1cc-48a3-b5c0-b52e3d7963b5"
         }
       },
       "response": {
@@ -204,28 +204,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 1082,
+      "elapsed": 204,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304696\", oauth_nonce=\"eb2dad05ed48e90c936906e41240c656\", oauth_version=\"1.0\", oauth_signature=\"l7TApciXIYPi9h0Y%2BZiTggpYnbZoTqXJJmQ%2B8Dqw4eQ%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305829\", oauth_nonce=\"8e5ea002b6a6ab18c3a16ff0d1ee87f5\", oauth_version=\"1.0\", oauth_signature=\"u7NSIPhTutavzPC0y2lmS%2F5zVbRlk%2Bd4n5vc3fmRhCY%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304696.427339ba",
+          "akamai-grn": "0.13ecc017.1773305829.429211b7",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "298",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:17 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:09 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "9e1bf39e-cb64-48f2-8330-ff90a821ca54",
-          "x-netsuite-jobid": "938cff5f-cc02-46f3-a2fb-e119bee1c7d8"
+          "x-n-operationid": "8c11b11c-1dd8-4cfe-bbd8-629c0e463efd",
+          "x-netsuite-jobid": "5544834b-a2b2-40cd-b3c5-669c8bbaa798"
         }
       },
       "response": {
@@ -318,28 +318,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 899,
+      "elapsed": 689,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304698\", oauth_nonce=\"3dea28bc35abce28f95e3ef02385fe98\", oauth_version=\"1.0\", oauth_signature=\"JAvB1nk6D58oepAol2YWHgK%2Bar%2B8mQSQcUMUZ6TujDs%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305830\", oauth_nonce=\"5ee548e9ce10035dfc43f3f26eaf3615\", oauth_version=\"1.0\", oauth_signature=\"DqXWb0EqOaf7RZ6TVyTZgwC403odGILnvHjIPIwZJ1U%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304698.42734356",
+          "akamai-grn": "0.13ecc017.1773305830.42921887",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "621",
           "content-type": "application/vnd.oracle.resource+json; type=singular; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:19 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:10 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "f382fbdf-38a1-4c2d-b1ea-30ee833160fe",
-          "x-netsuite-jobid": "518aa7d8-4553-4498-994a-788e47f61336"
+          "x-n-operationid": "55e71015-fb27-44b9-801f-7286c2d3158d",
+          "x-netsuite-jobid": "9020c4f7-f791-4a58-b99d-8775e97534e4"
         }
       },
       "response": {
@@ -450,28 +450,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 815,
+      "elapsed": 404,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304699\", oauth_nonce=\"2af4e420e6d69088b6b59ceebc063b22\", oauth_version=\"1.0\", oauth_signature=\"zNQ4vVg4oZFSJTdxKtmZH%2BgQ2BRKUUkfbll2WttersE%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305831\", oauth_nonce=\"2026a2f4ab7a982218ceb3e58c94dbc2\", oauth_version=\"1.0\", oauth_signature=\"otXcPKOiuqZ1rH7PaBLExefYT2SwBbY75RQPHvqW51M%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304699.42734bd6",
+          "akamai-grn": "0.13ecc017.1773305831.429221f7",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "844",
           "content-type": "application/vnd.oracle.resource+json; type=singular; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:20 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:11 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "a0cd5339-7236-4753-8a6f-21ece675e958",
-          "x-netsuite-jobid": "5404e518-a50d-4c2e-bb60-37b4e3d91b3e"
+          "x-n-operationid": "717ad16b-1d6f-436b-a28a-150078115c3a",
+          "x-netsuite-jobid": "7ea8e9a1-b960-4026-a6f1-142e13c1edee"
         }
       },
       "response": {
@@ -694,28 +694,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 1356,
+      "elapsed": 1009,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304701\", oauth_nonce=\"7adad810177953db54a9e5a98c1c2fa5\", oauth_version=\"1.0\", oauth_signature=\"VlLQdWk%2BlY11eNmQuDfaPNxuD3feTb%2Fxg1QU9DuY4iU%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305832\", oauth_nonce=\"11231a0b42865cddb5ff264d82319248\", oauth_version=\"1.0\", oauth_signature=\"1DrHvusVpg%2BFAfRzTd%2FAF2QkZ02Wvwg7ouRB%2F3B8%2FrU%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304701.42735314",
+          "akamai-grn": "0.13ecc017.1773305832.42922955",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "292",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:22 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:13 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "971d09c8-aa99-4dd0-81fc-a9ca6ae0e79c",
-          "x-netsuite-jobid": "af82952f-ca20-477c-9cfc-7e9e5ef67865"
+          "x-n-operationid": "55d353b9-554e-4119-aeb1-6bda81f07f78",
+          "x-netsuite-jobid": "cd9c9fea-7d67-4eb3-aec9-ab57b216d50c"
         }
       },
       "response": {
@@ -800,27 +800,27 @@
       "status": 400,
       "statusText": "Bad Request",
       "success": false,
-      "elapsed": 172,
+      "elapsed": 156,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304703\", oauth_nonce=\"10afd8953f61bffaf134776cb41956fd\", oauth_version=\"1.0\", oauth_signature=\"fnYoc2FRLC1%2FfNZZrphQrztpiUAQt2I8LzwMmChql8E%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305833\", oauth_nonce=\"de4b957a575fca30f19c9d76cd6b9012\", oauth_version=\"1.0\", oauth_signature=\"1vvm60dhoeqlwEBb76zilwhzXfbIat4%2Fnkw3rTxKFPQ%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304703.42735e12",
+          "akamai-grn": "0.13ecc017.1773305833.429234e0",
           "cache-control": "No-Cache",
           "connection": "close",
           "content-encoding": "gzip",
           "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:23 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:14 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "bdad0319-7b71-4c2e-93e9-8b8d804e3f26",
-          "x-netsuite-jobid": "9550df1c-c3c3-43c2-a91d-3ac741ffab6c"
+          "x-n-operationid": "2b898cc6-16cd-4c14-a557-539c5393154a",
+          "x-netsuite-jobid": "b607b137-b213-409e-8abe-6253fd044239"
         }
       },
       "response": {
@@ -843,28 +843,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 382,
+      "elapsed": 433,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304703\", oauth_nonce=\"19b9b0fecbe05c2dd663615beeff2832\", oauth_version=\"1.0\", oauth_signature=\"eJQEKpDoH%2FIEt%2Fy3OEkshS%2BH4IsDxDiss4a6DatavjA%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305834\", oauth_nonce=\"816f57e91ac7cc9fff6b8244c2e688bc\", oauth_version=\"1.0\", oauth_signature=\"hN1E2z48HSu64%2F9smRHiWtu%2F%2FqMPde1E33tNA7fWjGw%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304703.4273654c",
+          "akamai-grn": "0.1cecc017.1773305834.39c7c28f",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "262",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:24 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:15 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "36514ab9-6c4d-4dbc-8ccb-2bed0eabbe66",
-          "x-netsuite-jobid": "ee3e9ebd-9fb3-4cca-8d5b-d9c641cfb258"
+          "x-n-operationid": "9ddb4383-a4be-427e-bf9d-e0daf3e39004",
+          "x-netsuite-jobid": "40275e14-9080-4593-bb35-0fab54b4eb38"
         }
       },
       "response": {
@@ -949,28 +949,28 @@
       "status": 404,
       "statusText": "Not Found",
       "success": false,
-      "elapsed": 425,
+      "elapsed": 139,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304704\", oauth_nonce=\"6c296ca426a3bd2ff6382f780c912de7\", oauth_version=\"1.0\", oauth_signature=\"mPH4zAZz%2BA2qzrnbazvqbI%2F5nzfFQVwUHnGWeQkqwp0%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305835\", oauth_nonce=\"58f01d97550d41023ad17725d5f1247b\", oauth_version=\"1.0\", oauth_signature=\"YgnudXod2C2yt6O9bC3K1AvKW5xEIxAJr6b07MfB66I%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304704.4273672a",
+          "akamai-grn": "0.1cecc017.1773305835.39c7c5e7",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "201",
           "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:24 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:15 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "2bd8c4ae-5dcf-4c43-b34c-04f8efdbfc62",
-          "x-netsuite-jobid": "92221bd0-3b67-4b7f-bc9b-fb995fe6e2e3"
+          "x-n-operationid": "3459c6f5-b657-4a25-ad0d-34cb38b4313e",
+          "x-netsuite-jobid": "bf383716-7971-44af-aa22-2bab73d62798"
         }
       },
       "response": {
@@ -993,28 +993,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 613,
+      "elapsed": 683,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304705\", oauth_nonce=\"ecbc761e54dc1332f739ff83ea12d01b\", oauth_version=\"1.0\", oauth_signature=\"DaOlY7J%2FVAoSjIAeNQ3Y79oWvxsV0%2Bo6Ty9ZWFwyw0w%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305836\", oauth_nonce=\"ac177da14fa198570ac2707d49ecd5ae\", oauth_version=\"1.0\", oauth_signature=\"QhskfI7oEgoflBZiwi2SThHpylvy%2FzvLkscPe8vc79c%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304705.42736c73",
+          "akamai-grn": "0.1cecc017.1773305836.39c7cb2e",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "281",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:26 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:16 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "eead9c5a-9dea-48c9-97c2-b5643e944b47",
-          "x-netsuite-jobid": "fbbe35bf-ec5a-43a4-81d3-ee250cd42cb0"
+          "x-n-operationid": "5f463a37-1262-4f86-af68-2c6e2a4eab84",
+          "x-netsuite-jobid": "7df94080-ea92-463d-87fe-57efe025053a"
         }
       },
       "response": {
@@ -1099,27 +1099,27 @@
       "status": 400,
       "statusText": "Bad Request",
       "success": false,
-      "elapsed": 264,
+      "elapsed": 162,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304706\", oauth_nonce=\"4dfaffa313bd63d9daebf19cbba6030f\", oauth_version=\"1.0\", oauth_signature=\"4tap%2FB52SPw4VBo3QUoDg58TZEWudqNOnucw9Q3hycU%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305837\", oauth_nonce=\"30d64336f0d8e66ce9f2484b315e43a0\", oauth_version=\"1.0\", oauth_signature=\"SgKJ2Wuz5Lq2RxM4y0Gu%2FDX1AYaC1WoVOlR8YXQn6NE%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304706.4273730a",
+          "akamai-grn": "0.1cecc017.1773305837.39c7d47e",
           "cache-control": "No-Cache",
           "connection": "close",
           "content-encoding": "gzip",
           "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:26 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:17 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "cb4ca631-afa4-46d3-bb3a-c4783bfe3c91",
-          "x-netsuite-jobid": "dceabb7a-f95f-4aa6-bc67-e443cf6bbcef"
+          "x-n-operationid": "ddc53c7e-c461-47f7-984d-c7c3a70f74db",
+          "x-netsuite-jobid": "de9dbe1f-6169-42a5-a5c9-d51c330a103d"
         }
       },
       "response": {
@@ -1142,28 +1142,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 815,
+      "elapsed": 591,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304707\", oauth_nonce=\"080ebc55f9b4746e34afc1b95fcae9e1\", oauth_version=\"1.0\", oauth_signature=\"I61rmRIH9365XWhiUpc%2BTSnvG2exztDs7INjTcjdU%2Bs%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305838\", oauth_nonce=\"0784e9124ecacdebaf740044112e5a49\", oauth_version=\"1.0\", oauth_signature=\"hgH5MWfY%2BrjYvbnHqgZmSM85h2vfww6XKzGRGU8gPm0%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304707.42737a86",
+          "akamai-grn": "0.13ecc017.1773305838.4292597a",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "291",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:28 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:18 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "9d984949-0dab-45c8-a8cd-017fb35b0cad",
-          "x-netsuite-jobid": "ffbbf5f7-fa95-47cd-9b0e-02b3d881fdf2"
+          "x-n-operationid": "9cb30ff4-ca5d-4a28-a4c9-91af9be59d57",
+          "x-netsuite-jobid": "6b8c3eb5-460b-4fd6-845b-8d105d500398"
         }
       },
       "response": {
@@ -1248,28 +1248,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 498,
+      "elapsed": 435,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304708\", oauth_nonce=\"490e3f5fa21c9f59915bc56759742d5e\", oauth_version=\"1.0\", oauth_signature=\"i9vffLbhwwjYEWqXxUblMubv6e%2FVvDTaMMGBukjJ8TE%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305839\", oauth_nonce=\"bf3b30d95903091cf6ffc77c9261a056\", oauth_version=\"1.0\", oauth_signature=\"dEP8XQK8Duj8MMnzahoBwncFzVdCBpeHM4mNWr3vuv8%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304708.42737eb7",
+          "akamai-grn": "0.13ecc017.1773305839.42925e70",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "283",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:29 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:19 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "57f1ec1a-6177-4a49-bb8c-62d30fbda247",
-          "x-netsuite-jobid": "58527507-3bf2-410a-9d7b-7e626452879f"
+          "x-n-operationid": "fbe45ce6-c025-4f52-afce-828356ef1f98",
+          "x-netsuite-jobid": "1d4aca43-54c4-44ca-aab5-7a7ba1713489"
         }
       },
       "response": {
@@ -1354,28 +1354,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 19998,
+      "elapsed": 15951,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304709\", oauth_nonce=\"a06a79d410a6f6f7697969f86664fcd3\", oauth_version=\"1.0\", oauth_signature=\"6iarpDFcAVuiQgD70UqFF4wK6UoDYT9ApLl49icosDs%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305840\", oauth_nonce=\"426e70b224e7c7cf3d7849ac04a05ded\", oauth_version=\"1.0\", oauth_signature=\"DELt%2B6m%2BW3Xc6uWo9DzN9JmL67tBuJtlqfItaYerJ3w%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304709.42738396",
+          "akamai-grn": "0.13ecc017.1773305840.42926659",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "272",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:49 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:35 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "231438bf-0bff-4328-a1e4-d20398bce0aa",
-          "x-netsuite-jobid": "1bc4aef5-8c9f-40f5-bd99-fb8fe104026d"
+          "x-n-operationid": "3f18a150-3834-4133-8f11-15c2fcc5dda1",
+          "x-netsuite-jobid": "d676d6be-1162-4b89-89ac-2b6fba0da1c2"
         }
       },
       "response": {
@@ -1460,28 +1460,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 450,
+      "elapsed": 157,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304730\", oauth_nonce=\"54a1665e7f043c919bd4dd492a56c828\", oauth_version=\"1.0\", oauth_signature=\"YCrC%2FcImagx154Y6ZiZJye4IIWm8mIOhul46hkuiof0%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305856\", oauth_nonce=\"9af063575404b5785c7c29ddd38595aa\", oauth_version=\"1.0\", oauth_signature=\"hgBkQIK4jgrCJ3pak6nJbvqhQkKRi1%2B2QSuoiYL8MVs%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304730.4273f4c4",
+          "akamai-grn": "0.13ecc017.1773305856.42930118",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "300",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:50 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:36 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "c9579a39-3432-4f8f-9732-5ffb36e15af8",
-          "x-netsuite-jobid": "0634a7a4-9b0d-4d6b-a020-d881a3ef4afd"
+          "x-n-operationid": "aba62a58-c75f-4356-a39d-c9c09c681c1b",
+          "x-netsuite-jobid": "9e2eab1f-7e74-4129-944b-505051184081"
         }
       },
       "response": {
@@ -1616,28 +1616,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 249,
+      "elapsed": 169,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304731\", oauth_nonce=\"825bc737ceef66534e9225fbe923b4cf\", oauth_version=\"1.0\", oauth_signature=\"qOQkuN3kDcrgFQTCsFBa0QW%2FmDM9Cxsd5sDkdI%2BJyFc%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"5d433c3470f8fec88ca0f66dd5d4a9e2\", oauth_version=\"1.0\", oauth_signature=\"p%2FDq2%2F3n%2BAlJdzn0ycHutJ7znh6Jy5L75lW1VLTEzLM%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304731.4273f9e8",
+          "akamai-grn": "0.13ecc017.1773305857.42930759",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "300",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:51 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:37 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "52126364-98e6-4a57-a2ae-09f094540889",
-          "x-netsuite-jobid": "37fea7d7-ddc9-4ba6-9dd3-22c57aba239f"
+          "x-n-operationid": "475a75b3-7d97-4df6-8dee-5af18294f3f9",
+          "x-netsuite-jobid": "c5815d4f-b252-4fb8-aec0-29927857fd25"
         }
       },
       "response": {
@@ -1772,28 +1772,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 202,
+      "elapsed": 140,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304731\", oauth_nonce=\"959233343615c3572186133de3e25f0f\", oauth_version=\"1.0\", oauth_signature=\"05ObQGad2Huda2QrFWN7TDSpqRYf9EwDDshy%2FbjVmrI%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"b653a077249e9a96624ead8a40cd7ef9\", oauth_version=\"1.0\", oauth_signature=\"mUSRACHSSOXFy8tYS0RSWdi5VyEA8MM1%2B%2F33DoMX2fM%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304732.4273fe59",
+          "akamai-grn": "0.13ecc017.1773305857.42930e48",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "253",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:52 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:37 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "3bacf351-ec94-4a53-8def-84d12da4db8a",
-          "x-netsuite-jobid": "f00a4e24-cc52-42a6-b521-341fcf0334d8"
+          "x-n-operationid": "ffc0e5f8-e3a4-4a21-a4c8-d294def214c4",
+          "x-netsuite-jobid": "7be7aecb-2a4c-4a07-a125-c41d3d78e292"
         }
       },
       "response": {
@@ -1904,47 +1904,158 @@
     },
     {
       "category": "Reference - Tax Codes",
-      "name": "List Tax Items",
+      "name": "List Sales Tax Items",
       "method": "GET",
-      "path": "/record/v1/taxItem",
-      "status": 404,
-      "statusText": "Not Found",
-      "success": false,
-      "elapsed": 132,
+      "path": "/record/v1/salestaxitem",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 717,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304732\", oauth_nonce=\"48ea10d24d545a54df55fa6290f7dbba\", oauth_version=\"1.0\", oauth_signature=\"TcfDfzpDOOenuAQNBx4RXFB8f8pNPtQsWflQtPDcz98%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305858\", oauth_nonce=\"12fb883699cd24e283ad936d975afcd7\", oauth_version=\"1.0\", oauth_signature=\"8Le%2B4l6o7TJL1kZUCMWjcTkXOA2j%2FIJ4uDKj%2BgHh400%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304732.4274021f",
+          "akamai-grn": "0.13ecc017.1773305858.42931333",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
-          "content-length": "212",
-          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:52 GMT",
+          "content-length": "302",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:57:39 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "083bc1f9-150a-4e25-934d-c505108ca044",
-          "x-netsuite-jobid": "c3ea41ef-c52b-4fe0-8f4a-6d621d994684"
+          "x-n-operationid": "e27ed980-5625-4e1a-91b1-d07d874add3f",
+          "x-netsuite-jobid": "485348aa-ca12-4267-b379-5862a5ec84eb"
         }
       },
       "response": {
-        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5",
-        "title": "Not Found",
-        "status": 404,
-        "o:errorDetails": [
+        "links": [
           {
-            "detail": "Record type 'taxItem' does not exist.",
-            "o:errorUrl": "/services/rest/record/v1/taxItem",
-            "o:errorCode": "NONEXISTENT_ID"
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=10"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=50"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10",
+            "method": "GET"
           }
-        ]
+        ],
+        "count": 10,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/-7",
+                "method": "GET"
+              }
+            ],
+            "id": "-7"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/752",
+                "method": "GET"
+              }
+            ],
+            "id": "752"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/754",
+                "method": "GET"
+              }
+            ],
+            "id": "754"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/755",
+                "method": "GET"
+              }
+            ],
+            "id": "755"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/756",
+                "method": "GET"
+              }
+            ],
+            "id": "756"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/757",
+                "method": "GET"
+              }
+            ],
+            "id": "757"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/758",
+                "method": "GET"
+              }
+            ],
+            "id": "758"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2327",
+                "method": "GET"
+              }
+            ],
+            "id": "2327"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2336",
+                "method": "GET"
+              }
+            ],
+            "id": "2336"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2335",
+                "method": "GET"
+              }
+            ],
+            "id": "2335"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 584
       }
     },
     {
@@ -1955,28 +2066,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 402,
+      "elapsed": 480,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304733\", oauth_nonce=\"cf0f71ffc099efe6ed60cdbe417b4394\", oauth_version=\"1.0\", oauth_signature=\"iW9o%2FEwEPqrxmWmrHR5U4%2FAXDDV6PRiTF%2FI12Nfh%2FzU%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305859\", oauth_nonce=\"226b8698158af12787247104bab9d571\", oauth_version=\"1.0\", oauth_signature=\"1Pp9HvMo9ehaPqbLHMe36pR2OrNrOcjT5%2BWsv3Fx6ik%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773304733.427405ae",
+          "akamai-grn": "0.13ecc017.1773305859.42931b3a",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "247",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:38:53 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:40 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "8fff4e41-501b-4444-b8b6-8cea46a60d5d",
-          "x-netsuite-jobid": "4e39bb4e-cd7b-41d0-a234-5869943832bb"
+          "x-n-operationid": "a200bb2f-9cdc-4065-861c-fd80076f8bec",
+          "x-netsuite-jobid": "f28a95db-4c92-4ab1-82bd-9edb8ed6d639"
         }
       },
       "response": {
@@ -2080,10 +2191,156 @@
       "name": "List Locations",
       "method": "GET",
       "path": "/record/v1/location",
-      "status": 0,
-      "statusText": "FAILED",
-      "success": false,
-      "error": "fetch failed"
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 409,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305860\", oauth_nonce=\"27873ccd8914e19dc43ee7bf23eebf96\", oauth_version=\"1.0\", oauth_signature=\"q9jF5296A8AwCGb4%2FeqVdFhlKDYwDjLlz3RKcrZuLQo%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773305860.42932222",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "293",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:57:41 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "4f95328f-32cb-4538-8df3-ac72351d16df",
+          "x-netsuite-jobid": "e4632a21-f02a-40f5-b64d-ebf955a40d6b"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=10"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=0"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 10,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/9",
+                "method": "GET"
+              }
+            ],
+            "id": "9"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/17",
+                "method": "GET"
+              }
+            ],
+            "id": "17"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/18",
+                "method": "GET"
+              }
+            ],
+            "id": "18"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/19",
+                "method": "GET"
+              }
+            ],
+            "id": "19"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/20",
+                "method": "GET"
+              }
+            ],
+            "id": "20"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/2",
+                "method": "GET"
+              }
+            ],
+            "id": "2"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/21",
+                "method": "GET"
+              }
+            ],
+            "id": "21"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/22",
+                "method": "GET"
+              }
+            ],
+            "id": "22"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/23",
+                "method": "GET"
+              }
+            ],
+            "id": "23"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/15",
+                "method": "GET"
+              }
+            ],
+            "id": "15"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 47
+      }
     },
     {
       "category": "Reference - Classifications",
@@ -2093,28 +2350,28 @@
       "status": 200,
       "statusText": "OK",
       "success": true,
-      "elapsed": 1204,
+      "elapsed": 146,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305411\", oauth_nonce=\"6246dedc6f3843557e755e355ac36571\", oauth_version=\"1.0\", oauth_signature=\"1RMnNJhddgCRZr6XYIJakQKaQk6PULcFD0PpVKjJ7%2BU%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305861\", oauth_nonce=\"825f33b211bb864e22485ff5bf397c3a\", oauth_version=\"1.0\", oauth_signature=\"yMQduM%2BJMQryzmlqMRJ0l5Si3KDPa%2FGP5FncjYcuhpI%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773305412.4284fb6a",
+          "akamai-grn": "0.13ecc017.1773305861.4293276d",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
           "content-length": "297",
           "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:50:13 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:41 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "2bfef605-1eb5-48d7-8f88-ec96b9ef2adc",
-          "x-netsuite-jobid": "17b29fee-60d0-4422-a81d-8ecd75d78f70"
+          "x-n-operationid": "e33c7b9f-6f57-4110-a397-a5895b816702",
+          "x-netsuite-jobid": "9f50a61d-7c9a-4e24-b9e5-402e91b8db9e"
         }
       },
       "response": {
@@ -2243,79 +2500,105 @@
     },
     {
       "category": "SuiteQL",
-      "name": "Execute SuiteQL Query",
+      "name": "Execute SuiteQL Query (FETCH FIRST syntax)",
       "method": "POST",
       "path": "/query/v1/suiteql",
-      "status": 400,
-      "statusText": "Bad Request",
-      "success": false,
-      "elapsed": 217,
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 244,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305413\", oauth_nonce=\"6d738c55b2e1981d3783497d88303771\", oauth_version=\"1.0\", oauth_signature=\"ZwXHysv9Lx03f3vxl6TNyTLq%2Bk%2BKMFMqUt%2FbjyGhYCk%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"f57915f8f75e5a5074a0dd4937ddbf45\", oauth_version=\"1.0\", oauth_signature=\"YyLoMAN%2FdCCyaoMlEGn3LPJnP60VoNr%2FA9qAR0xVJI0%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Prefer": "transient"
         },
         "response": {
-          "akamai-grn": "0.13ecc017.1773305413.428500cc",
+          "akamai-grn": "0.13ecc017.1773305862.42932c0f",
           "cache-control": "No-Cache",
-          "connection": "close",
+          "connection": "keep-alive",
           "content-encoding": "gzip",
-          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:50:13 GMT",
+          "content-length": "223",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:57:42 GMT",
           "expires": "0",
           "pragma": "No-Cache",
+          "preference-applied": "transient",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "87d955db-b35f-4df4-a085-0c2657a1cc1f",
-          "x-netsuite-jobid": "e6e7641b-d274-41ae-b996-636cac156ee5"
+          "x-n-operationid": "9461df60-6f1a-4f4d-b4ed-35a959b48871",
+          "x-netsuite-jobid": "21d7e19f-6e79-4d8e-93e1-a11a54c6fdef"
         }
       },
       "response": {
-        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.1",
-        "title": "Bad Request",
-        "status": 400,
-        "o:errorDetails": [
+        "links": [
           {
-            "detail": "Invalid search query. Detailed unprocessed description follows. Search error occurred: Failed to parse SQL [SELECT id, companyName FROM vendor WHERE id < 100 LIMIT 5]: syntax error, state:1545(10102) near: LIMIT(1,51, token code:0)\nno_root_node(-1000) near: no root node(0,0, token code:0).",
-            "o:errorQueryParam": "q",
-            "o:errorCode": "INVALID_PARAMETER"
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql",
+            "method": "POST"
           }
-        ]
+        ],
+        "count": 5,
+        "hasMore": false,
+        "items": [
+          {
+            "links": [],
+            "id": "-3"
+          },
+          {
+            "links": [],
+            "companyname": "HMRC",
+            "id": "8"
+          },
+          {
+            "links": [],
+            "id": "7"
+          },
+          {
+            "links": [],
+            "id": "6"
+          },
+          {
+            "links": [],
+            "id": "2"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 5
       }
     },
     {
       "category": "File Cabinet",
-      "name": "List Files in Folder",
+      "name": "List Files",
       "method": "GET",
-      "path": "/record/v1/folder",
+      "path": "/record/v1/file",
       "status": 404,
       "statusText": "Not Found",
       "success": false,
-      "elapsed": 496,
+      "elapsed": 348,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305414\", oauth_nonce=\"d2ee03df2d2bc6cf8ea194fcd86fa71d\", oauth_version=\"1.0\", oauth_signature=\"qYFhaSVSt1PDwxPD9fRA1wuA%2BfMavNwvEk31CHwFIQ4%3D\"",
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"afe77dd6b0750462cc515e072630c1ef\", oauth_version=\"1.0\", oauth_signature=\"aOrDCj1Nu%2FzxBiOxglwqp78Kgc5kmOWaMNTVFKgxwg8%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
         "response": {
-          "akamai-grn": "0.1cecc017.1773305414.39b95893",
+          "akamai-grn": "0.13ecc017.1773305862.429331f6",
           "cache-control": "No-Cache",
           "connection": "keep-alive",
           "content-encoding": "gzip",
-          "content-length": "212",
+          "content-length": "210",
           "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
-          "date": "Thu, 12 Mar 2026 08:50:14 GMT",
+          "date": "Thu, 12 Mar 2026 08:57:43 GMT",
           "expires": "0",
           "pragma": "No-Cache",
           "strict-transport-security": "max-age=31536000",
           "vary": "User-Agent, Accept-Encoding",
           "x-content-type-options": "nosniff",
-          "x-n-operationid": "7c62f10d-f0e0-431b-a31b-42da08f8259c",
-          "x-netsuite-jobid": "7ce85625-34b1-4f22-bb25-d8c22f837a9d"
+          "x-n-operationid": "a7400661-3f1a-4e41-b7bf-441292e9e839",
+          "x-netsuite-jobid": "2c0178c7-02d8-4dc1-a21c-656f58be57fc"
         }
       },
       "response": {
@@ -2324,8 +2607,8 @@
         "status": 404,
         "o:errorDetails": [
           {
-            "detail": "Record type 'folder' does not exist.",
-            "o:errorUrl": "/services/rest/record/v1/folder",
+            "detail": "Record type 'file' does not exist.",
+            "o:errorUrl": "/services/rest/record/v1/file",
             "o:errorCode": "NONEXISTENT_ID"
           }
         ]
