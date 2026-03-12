@@ -49,6 +49,7 @@ export const TOOLS_CONFIG = {
   
   billPayments: {
     netsuite_get_bill_payments: true,
+    netsuite_get_bill_payment: true,
     netsuite_create_bill_payment: true,
   },
   

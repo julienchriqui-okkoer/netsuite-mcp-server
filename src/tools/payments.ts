@@ -32,6 +32,29 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
     }
   );
 
+  // Get a single vendor payment by ID
+  server.registerTool(
+    "netsuite_get_bill_payment",
+    {
+      description: "Get a single NetSuite vendor payment (bill payment) by ID. Required parameter: id (string, payment ID)",
+      inputSchema: {
+        id: z.string(),
+      } as any,
+    },
+    async ({ id }: any) => {
+      try {
+        if (!id || typeof id !== "string") {
+          return errorResponse("Missing required parameter: id (string, payment ID)");
+        }
+
+        const result = await client.get<unknown>(`/vendorpayment/${id}`);
+        return successResponse(result);
+      } catch (error: any) {
+        return errorResponse(`Error getting bill payment: ${error.message}`);
+      }
+    }
+  );
+
   // Create vendor payment (bill payment)
   server.registerTool(
     "netsuite_create_bill_payment",
