@@ -1,19 +1,18 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerExpenseReportTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_get_expense_reports",
     {
-      description: "List NetSuite expense reports with optional search and pagination.",
+      description: "List NetSuite expense reports with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'ExpRpt:A' for approved)",
     },
     async ({ limit, offset, q, status }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
+        const params: Record<string, string> = { ...pagination };
         if (q) {
           params.q = q;
         }
@@ -22,26 +21,9 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         }
 
         const result = await client.get<unknown>("/expenseReport", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing expense reports.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite expense reports: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing expense reports: ${error.message}`);
       }
     }
   );
@@ -49,10 +31,21 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
   server.registerTool(
     "netsuite_create_expense_report",
     {
-      description: "Create a new NetSuite expense report for an employee with expense lines.",
+      description: "Create a new NetSuite expense report for an employee with expense lines. Required parameters: employee (string, employee ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), expenseList (object with expense array containing expenseDate, account, amount, taxCode, department, location, class, memo, currency, exchangeRate, foreignAmount)",
     },
     async ({ employee, subsidiary, tranDate, memo, externalId, expenseList }: any) => {
       try {
+        // Validate required parameters
+        if (!employee || typeof employee !== "string") {
+          return errorResponse("Missing required parameter: employee (string, employee ID)");
+        }
+        if (!subsidiary || typeof subsidiary !== "string") {
+          return errorResponse("Missing required parameter: subsidiary (string)");
+        }
+        if (!tranDate || typeof tranDate !== "string") {
+          return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
+        }
+
         const body: any = {
           employee: { id: employee },
           subsidiary: { id: subsidiary },
@@ -84,26 +77,9 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         }
 
         const result = await client.post<unknown>("/expenseReport", body);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error creating expense report.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error creating NetSuite expense report: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error creating expense report: ${error.message}`);
       }
     }
   );

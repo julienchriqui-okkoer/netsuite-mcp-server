@@ -1,44 +1,26 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerJournalEntryTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_get_journal_entries",
     {
-      description: "List NetSuite journal entries with optional search and pagination.",
+      description: "List NetSuite journal entries with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
     },
     async ({ limit, offset, q }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
+        const params: Record<string, string> = { ...pagination };
         if (q) {
           params.q = q;
         }
 
         const result = await client.get<unknown>("/journalEntry", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing journal entries.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite journal entries: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing journal entries: ${error.message}`);
       }
     }
   );
@@ -46,10 +28,18 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
   server.registerTool(
     "netsuite_create_journal_entry",
     {
-      description: "Create a new NetSuite journal entry with debit/credit lines.",
+      description: "Create a new NetSuite journal entry with debit/credit lines. Required parameters: subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), line (array with account, debit, credit, department, location, class, memo, entity)",
     },
     async ({ subsidiary, tranDate, memo, externalId, line }: any) => {
       try {
+        // Validate required parameters
+        if (!subsidiary || typeof subsidiary !== "string") {
+          return errorResponse("Missing required parameter: subsidiary (string)");
+        }
+        if (!tranDate || typeof tranDate !== "string") {
+          return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
+        }
+
         const body: any = {
           subsidiary: { id: subsidiary },
           tranDate,
@@ -75,26 +65,9 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         }
 
         const result = await client.post<unknown>("/journalEntry", body);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error creating journal entry.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error creating NetSuite journal entry: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error creating journal entry: ${error.message}`);
       }
     }
   );

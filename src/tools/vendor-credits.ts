@@ -1,44 +1,26 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorCreditTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_get_vendor_credits",
     {
-      description: "List NetSuite vendor credits with optional search and pagination.",
+      description: "List NetSuite vendor credits with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
     },
     async ({ limit, offset, q }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
+        const params: Record<string, string> = { ...pagination };
         if (q) {
           params.q = q;
         }
 
         const result = await client.get<unknown>("/vendorCredit", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing vendor credits.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite vendor credits: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing vendor credits: ${error.message}`);
       }
     }
   );
@@ -46,10 +28,21 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
   server.registerTool(
     "netsuite_create_vendor_credit",
     {
-      description: "Create a NetSuite vendor credit (credit note) and optionally apply it to vendor bills.",
+      description: "Create a NetSuite vendor credit (credit note) and optionally apply it to vendor bills. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), expenseList (object with expense array containing account, amount, department, location, memo), applyList (object with apply array containing doc, apply=true, amount)",
     },
     async ({ entity, subsidiary, tranDate, memo, externalId, expenseList, applyList }: any) => {
       try {
+        // Validate required parameters
+        if (!entity || typeof entity !== "string") {
+          return errorResponse("Missing required parameter: entity (string, vendor ID)");
+        }
+        if (!subsidiary || typeof subsidiary !== "string") {
+          return errorResponse("Missing required parameter: subsidiary (string)");
+        }
+        if (!tranDate || typeof tranDate !== "string") {
+          return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
+        }
+
         const body: any = {
           entity: { id: entity },
           subsidiary: { id: subsidiary },
@@ -85,26 +78,9 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
         }
 
         const result = await client.post<unknown>("/vendorCredit", body);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error creating vendor credit.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error creating NetSuite vendor credit: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error creating vendor credit: ${error.message}`);
       }
     }
   );

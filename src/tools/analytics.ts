@@ -1,41 +1,21 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerAnalyticsTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_get_locations",
     {
-      description: "List NetSuite locations (analytical dimension).",
+      description: "List NetSuite locations (analytical dimension for geographical or physical location tracking). Optional parameters: limit (number), offset (number)",
     },
     async ({ limit, offset }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
-
-        const result = await client.get<unknown>("/location", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        const result = await client.get<unknown>("/location", pagination);
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing locations.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite locations: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing locations: ${error.message}`);
       }
     }
   );
@@ -43,36 +23,15 @@ export function registerAnalyticsTools(server: McpServer, client: NetSuiteClient
   server.registerTool(
     "netsuite_get_classifications",
     {
-      description: "List NetSuite classifications (class - analytical dimension).",
+      description: "List NetSuite classifications (class - analytical dimension for project, product line, or business unit tracking). Optional parameters: limit (number), offset (number)",
     },
     async ({ limit, offset }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
-
-        const result = await client.get<unknown>("/classification", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        const result = await client.get<unknown>("/classification", pagination);
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing classifications.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite classifications: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing classifications: ${error.message}`);
       }
     }
   );
