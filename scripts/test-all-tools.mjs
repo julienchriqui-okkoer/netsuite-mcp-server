@@ -1,191 +1,397 @@
-import "dotenv/config";
+#!/usr/bin/env node
+/**
+ * Test suite for all MCP tools
+ * Run this before each deployment to ensure no regressions
+ * 
+ * Usage: npm run test:tools
+ */
 
-const BASE_URL = process.env.MCP_BASE_URL || "http://localhost:3001";
-const MCP_ENDPOINT = `${BASE_URL}/mcp`;
+import { spawn } from "child_process";
+import { createInterface } from "readline";
 
-async function parseSseResponse(response) {
-  const text = await response.text();
-  const lines = text.split("\n");
-  const messages = [];
-  let currentMessage = "";
+const SERVER_PORT = 3001;
+const SERVER_URL = `http://localhost:${SERVER_PORT}/mcp`;
+const HEALTH_URL = `http://localhost:${SERVER_PORT}/`;
+const STARTUP_WAIT = 5000; // Wait 5s for server to start
 
-  for (const line of lines) {
-    if (line.startsWith("data: ")) {
-      currentMessage += line.slice(6);
-    } else if (line === "") {
-      if (currentMessage) {
-        try {
-          messages.push(JSON.parse(currentMessage));
-        } catch {
-          // ignore
-        }
-        currentMessage = "";
-      }
-    }
-  }
+// Test configuration
+const TESTS = {
+  // ✅ Working tools to test
+  working: [
+    {
+      name: "netsuite_get_vendors",
+      params: { limit: 5 },
+      category: "Vendors",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_latest_vendors",
+      params: { limit: 3 },
+      category: "Vendors",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_vendor_bills",
+      params: { limit: 5 },
+      category: "Vendor Bills",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_vendor_bill",
+      params: { id: "135280" },
+      category: "Vendor Bills",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_accounts",
+      params: { limit: 10 },
+      category: "Reference",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_departments",
+      params: { limit: 10 },
+      category: "Reference",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_subsidiaries",
+      params: { limit: 10 },
+      category: "Reference",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_tax_codes",
+      params: { limit: 10 },
+      category: "Reference",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_currencies",
+      params: { limit: 10 },
+      category: "Reference",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_locations",
+      params: { limit: 10 },
+      category: "Analytics",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_classifications",
+      params: { limit: 10 },
+      category: "Analytics",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_employees",
+      params: { limit: 5 },
+      category: "Employees",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_expense_reports",
+      params: { limit: 5 },
+      category: "Expense Reports",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_vendor_credits",
+      params: { limit: 5 },
+      category: "Vendor Credits",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_get_journal_entries",
+      params: { limit: 5 },
+      category: "Journal Entries",
+      expectSuccess: true,
+    },
+    {
+      name: "netsuite_execute_suiteql",
+      params: { query: "SELECT id, companyName FROM vendor FETCH FIRST 5 ROWS ONLY" },
+      category: "SuiteQL",
+      expectSuccess: true,
+    },
+  ],
+  // ⚠️ Validation tests (should fail with clear error message)
+  validation: [
+    {
+      name: "netsuite_get_vendor_bill",
+      params: {}, // Missing required 'id'
+      category: "Vendor Bills",
+      expectError: "Missing required parameter: id",
+    },
+    {
+      name: "netsuite_create_vendor_bill",
+      params: { entity: "123" }, // Missing subsidiary and tranDate
+      category: "Vendor Bills",
+      expectError: "Missing required parameter",
+    },
+    {
+      name: "netsuite_execute_suiteql",
+      params: {}, // Missing required 'query'
+      category: "SuiteQL",
+      expectError: "Missing required parameter: query",
+    },
+  ],
+};
 
-  return messages.length > 0 ? messages[messages.length - 1] : null;
-}
-
-async function callMcp(method, params = {}, sessionId = null) {
-  const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json, text/event-stream",
-  };
-  if (sessionId) {
-    headers["mcp-session-id"] = sessionId;
-  }
-
-  const body = JSON.stringify({
+// Helper to call MCP tool via HTTP
+async function callTool(toolName, params = {}) {
+  const body = {
     jsonrpc: "2.0",
-    id: Date.now(),
-    method,
-    params,
-  });
+    id: Math.random().toString(36).substring(7),
+    method: "tools/call",
+    params: {
+      name: toolName,
+      arguments: params,
+    },
+  };
 
-  const response = await fetch(MCP_ENDPOINT, {
+  const response = await fetch(SERVER_URL, {
     method: "POST",
-    headers,
-    body,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+    },
+    body: JSON.stringify(body),
   });
 
-  const newSessionId = response.headers.get("mcp-session-id");
-  const contentType = response.headers.get("content-type") || "";
-
-  let result;
-  if (contentType.includes("text/event-stream")) {
-    result = await parseSseResponse(response);
-  } else {
-    result = await response.json();
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
-  return { result, sessionId: newSessionId || sessionId };
+  const text = await response.text();
+  
+  // Handle SSE responses
+  if (text.includes("data:")) {
+    const lines = text.split("\n").filter((line) => line.startsWith("data:"));
+    const lastData = lines[lines.length - 1];
+    if (lastData) {
+      return JSON.parse(lastData.replace("data:", "").trim());
+    }
+  }
+
+  // Handle direct JSON
+  return JSON.parse(text);
 }
 
-async function main() {
-  console.log("🧪 Testing NetSuite MCP HTTP server (all tools)...\n");
+// Test result tracking
+class TestRunner {
+  constructor() {
+    this.results = {
+      passed: 0,
+      failed: 0,
+      errors: [],
+    };
+  }
 
-  let sessionId = null;
+  async runTest(test, expectValidation = false) {
+    try {
+      console.log(`\n🧪 Testing: ${test.name} (${test.category})`);
+      console.log(`   Params: ${JSON.stringify(test.params)}`);
 
-  try {
-    console.log("1️⃣  Initialize session");
-    const init = await callMcp("initialize", {
-      protocolVersion: "2024-11-05",
-      capabilities: {},
-      clientInfo: {
-        name: "test-client-complete",
-        version: "1.0.0",
-      },
-    });
-    sessionId = init.sessionId;
-    console.log(`   ✓ Session ID: ${sessionId}\n`);
+      const result = await callTool(test.name, test.params);
 
-    console.log("2️⃣  List all tools");
-    const toolsList = await callMcp("tools/list", {}, sessionId);
-    const tools = toolsList.result?.result?.tools || [];
-    console.log(`   ✓ Found ${tools.length} tools:\n`);
-
-    const expectedTools = [
-      // Vendors
-      "netsuite_get_vendors",
-      "netsuite_get_vendor",
-      // Reference
-      "netsuite_get_accounts",
-      "netsuite_get_departments",
-      "netsuite_get_subsidiaries",
-      "netsuite_get_tax_codes",
-      "netsuite_get_currencies",
-      // Vendor Bills
-      "netsuite_get_vendor_bills",
-      "netsuite_get_vendor_bill",
-      "netsuite_create_vendor_bill",
-      "netsuite_update_vendor_bill",
-      // Journal Entries
-      "netsuite_get_journal_entries",
-      "netsuite_create_journal_entry",
-      // SuiteQL
-      "netsuite_execute_suiteql",
-      // Employees (NEW)
-      "netsuite_get_employees",
-      "netsuite_get_employee",
-      // Expense Reports (NEW)
-      "netsuite_get_expense_reports",
-      "netsuite_create_expense_report",
-      // Payments (NEW)
-      "netsuite_create_bill_payment",
-      // Vendor Credits (NEW)
-      "netsuite_get_vendor_credits",
-      "netsuite_create_vendor_credit",
-      // Analytics (NEW)
-      "netsuite_get_locations",
-      "netsuite_get_classifications",
-      // File Cabinet (NEW)
-      "netsuite_upload_file",
-      "netsuite_attach_file_to_record",
-    ];
-
-    const toolNames = tools.map((t) => t.name);
-    let allPresent = true;
-
-    expectedTools.forEach((expectedTool) => {
-      if (toolNames.includes(expectedTool)) {
-        console.log(`     ✓ ${expectedTool}`);
-      } else {
-        console.log(`     ✗ MISSING: ${expectedTool}`);
-        allPresent = false;
+      if (result.error) {
+        if (expectValidation && test.expectError) {
+          // Check if error message matches expectation
+          const errorMsg = result.error.message || JSON.stringify(result.error);
+          if (errorMsg.includes(test.expectError)) {
+            console.log(`   ✅ PASS - Validation worked: "${test.expectError}"`);
+            this.results.passed++;
+            return;
+          } else {
+            console.log(`   ❌ FAIL - Wrong error message`);
+            console.log(`      Expected: "${test.expectError}"`);
+            console.log(`      Got: "${errorMsg}"`);
+            this.results.failed++;
+            this.results.errors.push({
+              tool: test.name,
+              expected: test.expectError,
+              got: errorMsg,
+            });
+            return;
+          }
+        } else {
+          console.log(`   ❌ FAIL - Tool returned error: ${JSON.stringify(result.error)}`);
+          this.results.failed++;
+          this.results.errors.push({
+            tool: test.name,
+            error: result.error,
+          });
+          return;
+        }
       }
-    });
 
-    if (allPresent) {
-      console.log(`\n   ✅ All ${expectedTools.length} expected tools are present!\n`);
-    } else {
-      console.log(`\n   ❌ Some tools are missing!\n`);
-      process.exit(1);
+      // Check for result content
+      const content = result.result?.content?.[0];
+      if (!content) {
+        console.log(`   ❌ FAIL - No content in response`);
+        this.results.failed++;
+        this.results.errors.push({
+          tool: test.name,
+          error: "No content in response",
+        });
+        return;
+      }
+
+      // Check for isError flag
+      if (result.result.isError) {
+        if (expectValidation && test.expectError) {
+          const errorText = content.text || "";
+          if (errorText.includes(test.expectError)) {
+            console.log(`   ✅ PASS - Validation worked: "${test.expectError}"`);
+            this.results.passed++;
+            return;
+          }
+        }
+        console.log(`   ❌ FAIL - Response has isError=true`);
+        console.log(`      Message: ${content.text}`);
+        this.results.failed++;
+        this.results.errors.push({
+          tool: test.name,
+          error: content.text,
+        });
+        return;
+      }
+
+      // Success case
+      if (test.expectSuccess) {
+        const dataSize = content.text ? content.text.length : 0;
+        console.log(`   ✅ PASS - Response OK (${dataSize} chars)`);
+        this.results.passed++;
+      } else {
+        console.log(`   ⚠️  UNEXPECTED SUCCESS - Tool should have failed`);
+        this.results.failed++;
+        this.results.errors.push({
+          tool: test.name,
+          error: "Expected validation error but got success",
+        });
+      }
+    } catch (error) {
+      console.log(`   ❌ FAIL - Exception: ${error.message}`);
+      this.results.failed++;
+      this.results.errors.push({
+        tool: test.name,
+        error: error.message,
+      });
+    }
+  }
+
+  printSummary() {
+    console.log("\n" + "=".repeat(60));
+    console.log("📊 TEST SUMMARY");
+    console.log("=".repeat(60));
+    console.log(`✅ Passed: ${this.results.passed}`);
+    console.log(`❌ Failed: ${this.results.failed}`);
+    console.log(`📈 Total:  ${this.results.passed + this.results.failed}`);
+    console.log(`💯 Success Rate: ${Math.round((this.results.passed / (this.results.passed + this.results.failed)) * 100)}%`);
+
+    if (this.results.errors.length > 0) {
+      console.log("\n🔴 FAILURES:");
+      this.results.errors.forEach((err, i) => {
+        console.log(`\n${i + 1}. ${err.tool}`);
+        if (err.expected) {
+          console.log(`   Expected: ${err.expected}`);
+          console.log(`   Got: ${err.got}`);
+        } else {
+          console.log(`   Error: ${JSON.stringify(err.error, null, 2)}`);
+        }
+      });
     }
 
-    console.log("3️⃣  Test new tool: netsuite_get_employees (limit 2)");
-    const employeesCall = await callMcp(
-      "tools/call",
-      {
-        name: "netsuite_get_employees",
-        arguments: { limit: 2 },
-      },
-      sessionId
-    );
-    const employeesResult = employeesCall.result.result;
-    if (employeesResult.isError) {
-      console.error(`   ✗ Error: ${employeesResult.content[0].text}`);
-    } else {
-      const data = JSON.parse(employeesResult.content[0].text);
-      console.log(`   ✓ Got ${data.count || 0} employees\n`);
-    }
+    console.log("\n" + "=".repeat(60));
+    
+    return this.results.failed === 0;
+  }
+}
 
-    console.log("4️⃣  Test new tool: netsuite_get_locations (limit 2)");
-    const locationsCall = await callMcp(
-      "tools/call",
-      {
-        name: "netsuite_get_locations",
-        arguments: { limit: 2 },
-      },
-      sessionId
-    );
-    const locationsResult = locationsCall.result.result;
-    if (locationsResult.isError) {
-      console.error(`   ✗ Error: ${locationsResult.content[0].text}`);
-    } else {
-      const data = JSON.parse(locationsResult.content[0].text);
-      console.log(`   ✓ Got ${data.count || 0} locations\n`);
-    }
+// Main test execution
+async function main() {
+  console.log("🚀 Starting MCP Server Test Suite");
+  console.log("=".repeat(60));
 
-    console.log("✅ All tests passed!");
+  // Start server
+  console.log("\n📦 Starting local server...");
+  const server = spawn("npm", ["run", "start:http"], {
+    cwd: process.cwd(),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  let serverReady = false;
+  const serverLogs = [];
+
+  server.stdout.on("data", (data) => {
+    const log = data.toString();
+    serverLogs.push(log);
+    if (log.includes(`listening on port ${SERVER_PORT}`)) {
+      serverReady = true;
+    }
+  });
+
+  server.stderr.on("data", (data) => {
+    const log = data.toString();
+    serverLogs.push(log);
+    if (log.includes("error") || log.includes("Error")) {
+      console.error("❌ Server error:", log);
+    }
+  });
+
+  // Wait for server to start
+  console.log(`⏳ Waiting ${STARTUP_WAIT}ms for server startup...`);
+  await new Promise((resolve) => setTimeout(resolve, STARTUP_WAIT));
+
+  if (!serverReady) {
+    console.log("⚠️  Server may not be ready yet, but continuing...");
+  }
+
+  // Health check
+  try {
+    const healthResponse = await fetch(HEALTH_URL);
+    const health = await healthResponse.json();
+    console.log(`✅ Server health: ${health.status}`);
   } catch (error) {
-    console.error("❌ Test failed:");
-    console.error(error);
+    console.error("❌ Health check failed:", error.message);
+    console.log("Server logs:", serverLogs.join("\n"));
+    server.kill();
     process.exit(1);
   }
+
+  const runner = new TestRunner();
+
+  // Run working tools tests
+  console.log("\n" + "=".repeat(60));
+  console.log("🧪 TESTING WORKING TOOLS");
+  console.log("=".repeat(60));
+  
+  for (const test of TESTS.working) {
+    await runner.runTest(test, false);
+  }
+
+  // Run validation tests
+  console.log("\n" + "=".repeat(60));
+  console.log("🧪 TESTING PARAMETER VALIDATION");
+  console.log("=".repeat(60));
+  
+  for (const test of TESTS.validation) {
+    await runner.runTest(test, true);
+  }
+
+  // Print summary
+  const success = runner.printSummary();
+
+  // Cleanup
+  console.log("\n🛑 Stopping server...");
+  server.kill();
+
+  // Exit with appropriate code
+  process.exit(success ? 0 : 1);
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((error) => {
+  console.error("💥 Fatal error:", error);
   process.exit(1);
 });

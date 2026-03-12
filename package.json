@@ -11,7 +11,8 @@
     "dev:http": "tsx src/server-http.ts",
     "test:vendors": "npm run build && node scripts/test-netsuite-vendors.mjs",
     "test:http": "node scripts/test-netsuite-http.mjs",
-    "test:all": "node scripts/test-all-tools.mjs"
+    "test:all": "node scripts/test-all-tools.mjs",
+    "test:tools": "npm run build && node scripts/test-all-tools.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.11",

@@ -16,7 +16,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
       },
       async (args: any) => {
         try {
-          const { limit, offset, ...rest } = args;
+          const { limit, offset, signal, sendNotification, sendRequest, requestId, requestInfo, _meta, ...rest } = args;
           const pagination = buildPaginationQuery({ limit, offset });
           const params: Record<string, string> = {
             ...pagination,
