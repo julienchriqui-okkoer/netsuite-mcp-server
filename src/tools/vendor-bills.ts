@@ -8,13 +8,16 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_get_vendor_bills",
     {
-      description: "List NetSuite vendor bills with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'VendBill:A' for open bills)",
+      description:
+        "List NetSuite vendor bills with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'VendBill:A' for open bills)",
+      inputSchema: {
+        limit: z.number().optional(),
+        offset: z.number().optional(),
+        q: z.string().optional(),
+        status: z.string().optional(),
+      } as any,
     },
-    async (allArgs: any) => {
-      console.log("🔍 [get_vendor_bills] Raw args:", JSON.stringify(allArgs, null, 2));
-      const { limit, offset, q, status } = allArgs;
-      console.log("🔍 [get_vendor_bills] Destructured:", { limit, offset, q, status });
-      
+    async ({ limit, offset, q, status }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
         const params: Record<string, string> = {
@@ -38,7 +41,11 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_get_vendor_bill",
     {
-      description: "Get a single NetSuite vendor bill by internal ID. Returns full bill details with expanded sub-resources (expense lines, items). Required parameter: id (string, NetSuite internal vendor bill ID)",
+      description:
+        "Get a single NetSuite vendor bill by internal ID. Returns full bill details with expanded sub-resources (expense lines, items). Required parameter: id (string, NetSuite internal vendor bill ID)",
+      inputSchema: {
+        id: z.string(),
+      } as any,
     },
     async ({ id }: any) => {
       try {
@@ -53,6 +60,124 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error getting vendor bill: ${error.message}`);
+      }
+    }
+  );
+
+  // Get vendor bill by externalId (idempotency helper)
+  server.registerTool(
+    "netsuite_get_vendor_bill_by_external_id",
+    {
+      description:
+        "Get a vendor bill by its externalId (idempotency helper). Required: externalId (string). Returns { found: boolean, bill: { id, tranId, externalId, entity, tranDate, total } | null }",
+      inputSchema: {
+        externalId: z.string(),
+      } as any,
+    },
+    async ({ externalId }: any) => {
+      try {
+        if (!externalId || typeof externalId !== "string") {
+          return errorResponse("Missing required parameter: externalId (string)");
+        }
+
+        const escaped = externalId.replace(/'/g, "''");
+        const query = `
+          SELECT id, tranId, externalId, entity, tranDate, total
+          FROM transaction
+          WHERE externalId = '${escaped}'
+            AND type = 'VendBill'
+        `;
+
+        const result: any = await client.suiteql(query, 1);
+        const items = result?.items || [];
+
+        if (!items.length) {
+          return successResponse({
+            found: false,
+            bill: null,
+          });
+        }
+
+        const row = items[0];
+        const bill = {
+          id: row.id,
+          tranId: row.tranid ?? row.tranId,
+          externalId: row.externalid ?? row.externalId,
+          entity: row.entity,
+          tranDate: row.trandate ?? row.tranDate,
+          total: row.total,
+        };
+
+        return successResponse({
+          found: true,
+          bill,
+        });
+      } catch (error: any) {
+        return errorResponse(`Error getting vendor bill by externalId: ${error.message}`);
+      }
+    }
+  );
+
+  // Get vendor bills for a specific vendor (with optional date range)
+  server.registerTool(
+    "netsuite_get_vendor_bills_for_vendor",
+    {
+      description:
+        "Get vendor bills for a specific vendor, optionally filtered by date range. Required: vendorId (string). Optional: from (YYYY-MM-DD), to (YYYY-MM-DD), limit (number, default 50).",
+      inputSchema: {
+        vendorId: z.string(),
+        from: z.string().optional(),
+        to: z.string().optional(),
+        limit: z.number().optional(),
+      } as any,
+    },
+    async ({ vendorId, from, to, limit }: any) => {
+      try {
+        if (!vendorId || typeof vendorId !== "string") {
+          return errorResponse("Missing required parameter: vendorId (string)");
+        }
+
+        const whereParts: string[] = [];
+        whereParts.push("type = 'VendBill'");
+        whereParts.push(`entity = ${vendorId}`);
+
+        if (from && typeof from === "string") {
+          whereParts.push(`tranDate >= DATE '${from}'`);
+        }
+        if (to && typeof to === "string") {
+          whereParts.push(`tranDate <= DATE '${to}'`);
+        }
+
+        const whereClause = whereParts.join(" AND ");
+
+        const query = `
+          SELECT id, tranId, externalId, tranDate, dueDate, total, status
+          FROM transaction
+          WHERE ${whereClause}
+          ORDER BY tranDate DESC
+        `;
+
+        const maxRows = typeof limit === "number" ? limit : 50;
+        const result: any = await client.suiteql(query, maxRows);
+        const items = result?.items || [];
+
+        const bills = items.map((row: any) => ({
+          id: row.id,
+          tranId: row.tranid ?? row.tranId,
+          externalId: row.externalid ?? row.externalId,
+          tranDate: row.trandate ?? row.tranDate,
+          dueDate: row.duedate ?? row.dueDate,
+          total: row.total,
+          status: row.status,
+        }));
+
+        return successResponse({
+          vendorId,
+          count: bills.length,
+          bills,
+        });
+      } catch (error: any) {
+        return errorResponse(`Error getting vendor bills for vendor: ${error.message}`);
       }
     }
   );

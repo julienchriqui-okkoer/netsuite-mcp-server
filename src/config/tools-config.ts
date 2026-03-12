@@ -19,6 +19,8 @@ export const TOOLS_CONFIG = {
   vendorBills: {
     netsuite_get_vendor_bills: true,
     netsuite_get_vendor_bill: true,
+    netsuite_get_vendor_bill_by_external_id: true,
+    netsuite_get_vendor_bills_for_vendor: true,
     netsuite_create_vendor_bill: true,
     netsuite_update_vendor_bill: true,
   },
