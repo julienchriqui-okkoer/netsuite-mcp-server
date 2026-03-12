@@ -1,0 +1,2335 @@
+{
+  "timestamp": "2026-03-12T08:50:15.398Z",
+  "account": "5762887_SB1",
+  "summary": {
+    "total": 22,
+    "success": 15,
+    "failed": 7,
+    "successRate": "68.18%"
+  },
+  "categories": {
+    "Vendors": {
+      "total": 4,
+      "success": 4,
+      "failed": 0
+    },
+    "Vendor Bills": {
+      "total": 2,
+      "success": 1,
+      "failed": 1
+    },
+    "Employees": {
+      "total": 2,
+      "success": 1,
+      "failed": 1
+    },
+    "Expense Reports": {
+      "total": 2,
+      "success": 1,
+      "failed": 1
+    },
+    "Payments": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Vendor Credits": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Journal Entries": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Reference - Accounts": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Reference - Departments": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Reference - Subsidiaries": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Reference - Tax Codes": {
+      "total": 1,
+      "success": 0,
+      "failed": 1
+    },
+    "Reference - Currencies": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "Reference - Locations": {
+      "total": 1,
+      "success": 0,
+      "failed": 1
+    },
+    "Reference - Classifications": {
+      "total": 1,
+      "success": 1,
+      "failed": 0
+    },
+    "SuiteQL": {
+      "total": 1,
+      "success": 0,
+      "failed": 1
+    },
+    "File Cabinet": {
+      "total": 1,
+      "success": 0,
+      "failed": 1
+    }
+  },
+  "results": [
+    {
+      "category": "Vendors",
+      "name": "List Vendors (basic)",
+      "method": "GET",
+      "path": "/record/v1/vendor",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 2271,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304694\", oauth_nonce=\"bd87d9c39b12a559bb769ea87b63e495\", oauth_version=\"1.0\", oauth_signature=\"XTfbMBylZWOz5vo32rqPdaOGkIotUBSGk4yaWlSbv%2F8%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304694.42732aee",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "277",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:16 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "fabd66ad-66d5-4720-8a97-3176dd73e968",
+          "x-netsuite-jobid": "0fadcf1c-f745-4aeb-bf6f-b0646d35ccb1"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/-3",
+                "method": "GET"
+              }
+            ],
+            "id": "-3"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/37060",
+                "method": "GET"
+              }
+            ],
+            "id": "37060"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/69564",
+                "method": "GET"
+              }
+            ],
+            "id": "69564"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/27595",
+                "method": "GET"
+              }
+            ],
+            "id": "27595"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/66890",
+                "method": "GET"
+              }
+            ],
+            "id": "66890"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 3493
+      }
+    },
+    {
+      "category": "Vendors",
+      "name": "List Vendors (with offset)",
+      "method": "GET",
+      "path": "/record/v1/vendor",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 1082,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304696\", oauth_nonce=\"eb2dad05ed48e90c936906e41240c656\", oauth_version=\"1.0\", oauth_signature=\"l7TApciXIYPi9h0Y%2BZiTggpYnbZoTqXJJmQ%2B8Dqw4eQ%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304696.427339ba",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "298",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:17 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "9e1bf39e-cb64-48f2-8330-ff90a821ca54",
+          "x-netsuite-jobid": "938cff5f-cc02-46f3-a2fb-e119bee1c7d8"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "previous",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
+          },
+          {
+            "rel": "first",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=0"
+          },
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=15"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=10",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33985",
+                "method": "GET"
+              }
+            ],
+            "id": "33985"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/120369",
+                "method": "GET"
+              }
+            ],
+            "id": "120369"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33895",
+                "method": "GET"
+              }
+            ],
+            "id": "33895"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/1877",
+                "method": "GET"
+              }
+            ],
+            "id": "1877"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/54832",
+                "method": "GET"
+              }
+            ],
+            "id": "54832"
+          }
+        ],
+        "offset": 10,
+        "totalResults": 3493
+      }
+    },
+    {
+      "category": "Vendors",
+      "name": "Get Vendor by ID",
+      "method": "GET",
+      "path": "/record/v1/vendor/134775",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 899,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304698\", oauth_nonce=\"3dea28bc35abce28f95e3ef02385fe98\", oauth_version=\"1.0\", oauth_signature=\"JAvB1nk6D58oepAol2YWHgK%2Bar%2B8mQSQcUMUZ6TujDs%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304698.42734356",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "621",
+          "content-type": "application/vnd.oracle.resource+json; type=singular; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:19 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "f382fbdf-38a1-4c2d-b1ea-30ee833160fe",
+          "x-netsuite-jobid": "518aa7d8-4553-4498-994a-788e47f61336"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775",
+            "method": "GET"
+          }
+        ],
+        "addressBook": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
+              "method": "GET"
+            }
+          ]
+        },
+        "autoName": true,
+        "balance": 0,
+        "balancePrimary": 0,
+        "companyName": "2024/03/04-177",
+        "contactList": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
+              "method": "GET"
+            }
+          ]
+        },
+        "currency": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+              "method": "GET"
+            }
+          ],
+          "id": "1",
+          "refName": "EUR"
+        },
+        "currencyList": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
+              "method": "GET"
+            }
+          ]
+        },
+        "custentity1": false,
+        "custentity_11724_pay_bank_fees": false,
+        "custentity_2663_payment_method": false,
+        "customForm": {
+          "links": [],
+          "id": "297",
+          "refName": "Intercompany Vendor Form"
+        },
+        "dateCreated": "2024-04-09T10:08:00Z",
+        "defaultAddress": "2024/03/04-177",
+        "emailPreference": {
+          "links": [],
+          "id": "DEFAULT",
+          "refName": "Default"
+        },
+        "emailTransactions": false,
+        "entityId": "2024/03/04-177",
+        "faxTransactions": false,
+        "globalSubscriptionStatus": {
+          "links": [],
+          "id": "2",
+          "refName": "Soft Opt-Out"
+        },
+        "id": "134775",
+        "is1099Eligible": false,
+        "isAutogeneratedRepresentingEntity": false,
+        "isInactive": false,
+        "isJobResourceVend": false,
+        "isPerson": false,
+        "lastModifiedDate": "2024-04-09T10:08:00Z",
+        "legalName": "2024/03/04-177",
+        "prepaymentBalance": 0,
+        "printTransactions": false,
+        "subsidiary": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+              "method": "GET"
+            }
+          ],
+          "id": "1",
+          "refName": "SPENDESK SAS"
+        },
+        "subsidiaryEdition": "XX",
+        "unbilledOrders": 0,
+        "unbilledOrdersPrimary": 0,
+        "unsubscribe": true
+      }
+    },
+    {
+      "category": "Vendors",
+      "name": "Get Vendor by ID (expandSubResources)",
+      "method": "GET",
+      "path": "/record/v1/vendor/134775",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 815,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304699\", oauth_nonce=\"2af4e420e6d69088b6b59ceebc063b22\", oauth_version=\"1.0\", oauth_signature=\"zNQ4vVg4oZFSJTdxKtmZH%2BgQ2BRKUUkfbll2WttersE%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304699.42734bd6",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "844",
+          "content-type": "application/vnd.oracle.resource+json; type=singular; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:20 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "a0cd5339-7236-4753-8a6f-21ece675e958",
+          "x-netsuite-jobid": "5404e518-a50d-4c2e-bb60-37b4e3d91b3e"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775?expandSubResources=true",
+            "method": "GET"
+          }
+        ],
+        "addressBook": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
+              "method": "GET"
+            }
+          ],
+          "items": [
+            {
+              "links": [
+                {
+                  "rel": "self",
+                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940",
+                  "method": "GET"
+                }
+              ],
+              "addressBookAddress": {
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940/addressBookAddress",
+                    "method": "GET"
+                  }
+                ],
+                "addressee": "2024/03/04-177",
+                "addrText": "2024/03/04-177",
+                "country": {
+                  "links": [],
+                  "id": "FR",
+                  "refName": "France"
+                },
+                "override": true
+              },
+              "addressBookAddress_text": "2024/03/04-177",
+              "addressId": "682940",
+              "defaultBilling": true,
+              "defaultShipping": true,
+              "id": 682940,
+              "internalId": 682940
+            }
+          ],
+          "totalResults": 1
+        },
+        "autoName": true,
+        "balance": 0,
+        "balancePrimary": 0,
+        "companyName": "2024/03/04-177",
+        "contactList": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
+              "method": "GET"
+            }
+          ],
+          "count": 0,
+          "hasMore": false,
+          "items": [],
+          "offset": 0,
+          "totalResults": 0
+        },
+        "currency": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+              "method": "GET"
+            }
+          ],
+          "id": "1",
+          "refName": "EUR"
+        },
+        "currencyList": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
+              "method": "GET"
+            }
+          ],
+          "items": [
+            {
+              "links": [
+                {
+                  "rel": "self",
+                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/1",
+                  "method": "GET"
+                }
+              ],
+              "balance": 0,
+              "currency": {
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+                    "method": "GET"
+                  }
+                ],
+                "id": "1",
+                "refName": "EUR"
+              },
+              "prepaymentBalance": 0,
+              "unbilledOrders": 0
+            },
+            {
+              "links": [
+                {
+                  "rel": "self",
+                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/4",
+                  "method": "GET"
+                }
+              ],
+              "balance": 0,
+              "currency": {
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
+                    "method": "GET"
+                  }
+                ],
+                "id": "4",
+                "refName": "GBP"
+              },
+              "prepaymentBalance": 0,
+              "unbilledOrders": 0
+            },
+            {
+              "links": [
+                {
+                  "rel": "self",
+                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/2",
+                  "method": "GET"
+                }
+              ],
+              "balance": 0,
+              "currency": {
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
+                    "method": "GET"
+                  }
+                ],
+                "id": "2",
+                "refName": "USD"
+              },
+              "prepaymentBalance": 0,
+              "unbilledOrders": 0
+            }
+          ],
+          "totalResults": 3
+        },
+        "custentity1": false,
+        "custentity_11724_pay_bank_fees": false,
+        "custentity_2663_payment_method": false,
+        "customForm": {
+          "links": [],
+          "id": "297",
+          "refName": "Intercompany Vendor Form"
+        },
+        "dateCreated": "2024-04-09T10:08:00Z",
+        "defaultAddress": "2024/03/04-177",
+        "emailPreference": {
+          "links": [],
+          "id": "DEFAULT",
+          "refName": "Default"
+        },
+        "emailTransactions": false,
+        "entityId": "2024/03/04-177",
+        "faxTransactions": false,
+        "globalSubscriptionStatus": {
+          "links": [],
+          "id": "2",
+          "refName": "Soft Opt-Out"
+        },
+        "id": "134775",
+        "is1099Eligible": false,
+        "isAutogeneratedRepresentingEntity": false,
+        "isInactive": false,
+        "isJobResourceVend": false,
+        "isPerson": false,
+        "lastModifiedDate": "2024-04-09T10:08:00Z",
+        "legalName": "2024/03/04-177",
+        "prepaymentBalance": 0,
+        "printTransactions": false,
+        "subsidiary": {
+          "links": [
+            {
+              "rel": "self",
+              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+              "method": "GET"
+            }
+          ],
+          "id": "1",
+          "refName": "SPENDESK SAS"
+        },
+        "subsidiaryEdition": "XX",
+        "unbilledOrders": 0,
+        "unbilledOrdersPrimary": 0,
+        "unsubscribe": true
+      }
+    },
+    {
+      "category": "Vendor Bills",
+      "name": "List Vendor Bills",
+      "method": "GET",
+      "path": "/record/v1/vendorBill",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 1356,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304701\", oauth_nonce=\"7adad810177953db54a9e5a98c1c2fa5\", oauth_version=\"1.0\", oauth_signature=\"VlLQdWk%2BlY11eNmQuDfaPNxuD3feTb%2Fxg1QU9DuY4iU%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304701.42735314",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "292",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:22 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "971d09c8-aa99-4dd0-81fc-a9ca6ae0e79c",
+          "x-netsuite-jobid": "af82952f-ca20-477c-9cfc-7e9e5ef67865"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=995"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorBill?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/887470",
+                "method": "GET"
+              }
+            ],
+            "id": "887470"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/829778",
+                "method": "GET"
+              }
+            ],
+            "id": "829778"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/883577",
+                "method": "GET"
+              }
+            ],
+            "id": "883577"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/994939",
+                "method": "GET"
+              }
+            ],
+            "id": "994939"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/884255",
+                "method": "GET"
+              }
+            ],
+            "id": "884255"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 5000
+      }
+    },
+    {
+      "category": "Vendor Bills",
+      "name": "Get Vendor Bill by ID",
+      "method": "GET",
+      "path": "/record/v1/vendorBill/999999",
+      "status": 400,
+      "statusText": "Bad Request",
+      "success": false,
+      "elapsed": 172,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304703\", oauth_nonce=\"10afd8953f61bffaf134776cb41956fd\", oauth_version=\"1.0\", oauth_signature=\"fnYoc2FRLC1%2FfNZZrphQrztpiUAQt2I8LzwMmChql8E%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304703.42735e12",
+          "cache-control": "No-Cache",
+          "connection": "close",
+          "content-encoding": "gzip",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:23 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "bdad0319-7b71-4c2e-93e9-8b8d804e3f26",
+          "x-netsuite-jobid": "9550df1c-c3c3-43c2-a91d-3ac741ffab6c"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.1",
+        "title": "Bad Request",
+        "status": 400,
+        "o:errorDetails": [
+          {
+            "detail": "Error while accessing a resource. Transaction type specified is incorrect.",
+            "o:errorCode": "USER_ERROR"
+          }
+        ]
+      }
+    },
+    {
+      "category": "Employees",
+      "name": "List Employees",
+      "method": "GET",
+      "path": "/record/v1/employee",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 382,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304703\", oauth_nonce=\"19b9b0fecbe05c2dd663615beeff2832\", oauth_version=\"1.0\", oauth_signature=\"eJQEKpDoH%2FIEt%2Fy3OEkshS%2BH4IsDxDiss4a6DatavjA%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304703.4273654c",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "262",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:24 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "36514ab9-6c4d-4dbc-8ccb-2bed0eabbe66",
+          "x-netsuite-jobid": "ee3e9ebd-9fb3-4cca-8d5b-d9c641cfb258"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=70"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2225",
+                "method": "GET"
+              }
+            ],
+            "id": "2225"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2226",
+                "method": "GET"
+              }
+            ],
+            "id": "2226"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2227",
+                "method": "GET"
+              }
+            ],
+            "id": "2227"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2228",
+                "method": "GET"
+              }
+            ],
+            "id": "2228"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2229",
+                "method": "GET"
+              }
+            ],
+            "id": "2229"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 355
+      }
+    },
+    {
+      "category": "Employees",
+      "name": "Get Employee by ID",
+      "method": "GET",
+      "path": "/record/v1/employee/999999",
+      "status": 404,
+      "statusText": "Not Found",
+      "success": false,
+      "elapsed": 425,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304704\", oauth_nonce=\"6c296ca426a3bd2ff6382f780c912de7\", oauth_version=\"1.0\", oauth_signature=\"mPH4zAZz%2BA2qzrnbazvqbI%2F5nzfFQVwUHnGWeQkqwp0%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304704.4273672a",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "201",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:24 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "2bd8c4ae-5dcf-4c43-b34c-04f8efdbfc62",
+          "x-netsuite-jobid": "92221bd0-3b67-4b7f-bc9b-fb995fe6e2e3"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5",
+        "title": "Not Found",
+        "status": 404,
+        "o:errorDetails": [
+          {
+            "detail": "The record instance does not exist. Provide a valid record instance ID.",
+            "o:errorCode": "NONEXISTENT_ID"
+          }
+        ]
+      }
+    },
+    {
+      "category": "Expense Reports",
+      "name": "List Expense Reports",
+      "method": "GET",
+      "path": "/record/v1/expenseReport",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 613,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304705\", oauth_nonce=\"ecbc761e54dc1332f739ff83ea12d01b\", oauth_version=\"1.0\", oauth_signature=\"DaOlY7J%2FVAoSjIAeNQ3Y79oWvxsV0%2Bo6Ty9ZWFwyw0w%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304705.42736c73",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "281",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:26 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "eead9c5a-9dea-48c9-97c2-b5643e944b47",
+          "x-netsuite-jobid": "fbbe35bf-ec5a-43a4-81d3-ee250cd42cb0"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=10"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expenseReport?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/930935",
+                "method": "GET"
+              }
+            ],
+            "id": "930935"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934234",
+                "method": "GET"
+              }
+            ],
+            "id": "934234"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934235",
+                "method": "GET"
+              }
+            ],
+            "id": "934235"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759627",
+                "method": "GET"
+              }
+            ],
+            "id": "759627"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759827",
+                "method": "GET"
+              }
+            ],
+            "id": "759827"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 58
+      }
+    },
+    {
+      "category": "Expense Reports",
+      "name": "Get Expense Report by ID",
+      "method": "GET",
+      "path": "/record/v1/expenseReport/999999",
+      "status": 400,
+      "statusText": "Bad Request",
+      "success": false,
+      "elapsed": 264,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304706\", oauth_nonce=\"4dfaffa313bd63d9daebf19cbba6030f\", oauth_version=\"1.0\", oauth_signature=\"4tap%2FB52SPw4VBo3QUoDg58TZEWudqNOnucw9Q3hycU%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304706.4273730a",
+          "cache-control": "No-Cache",
+          "connection": "close",
+          "content-encoding": "gzip",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:26 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "cb4ca631-afa4-46d3-bb3a-c4783bfe3c91",
+          "x-netsuite-jobid": "dceabb7a-f95f-4aa6-bc67-e443cf6bbcef"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.1",
+        "title": "Bad Request",
+        "status": 400,
+        "o:errorDetails": [
+          {
+            "detail": "Error while accessing a resource. Transaction type specified is incorrect.",
+            "o:errorCode": "USER_ERROR"
+          }
+        ]
+      }
+    },
+    {
+      "category": "Payments",
+      "name": "List Vendor Payments",
+      "method": "GET",
+      "path": "/record/v1/vendorPayment",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 815,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304707\", oauth_nonce=\"080ebc55f9b4746e34afc1b95fcae9e1\", oauth_version=\"1.0\", oauth_signature=\"I61rmRIH9365XWhiUpc%2BTSnvG2exztDs7INjTcjdU%2Bs%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304707.42737a86",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "291",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:28 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "9d984949-0dab-45c8-a8cd-017fb35b0cad",
+          "x-netsuite-jobid": "ffbbf5f7-fa95-47cd-9b0e-02b3d881fdf2"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=995"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorPayment?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/567931",
+                "method": "GET"
+              }
+            ],
+            "id": "567931"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/733081",
+                "method": "GET"
+              }
+            ],
+            "id": "733081"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/708793",
+                "method": "GET"
+              }
+            ],
+            "id": "708793"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/743848",
+                "method": "GET"
+              }
+            ],
+            "id": "743848"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/1339734",
+                "method": "GET"
+              }
+            ],
+            "id": "1339734"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 5000
+      }
+    },
+    {
+      "category": "Vendor Credits",
+      "name": "List Vendor Credits",
+      "method": "GET",
+      "path": "/record/v1/vendorCredit",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 498,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304708\", oauth_nonce=\"490e3f5fa21c9f59915bc56759742d5e\", oauth_version=\"1.0\", oauth_signature=\"i9vffLbhwwjYEWqXxUblMubv6e%2FVvDTaMMGBukjJ8TE%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304708.42737eb7",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "283",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:29 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "57f1ec1a-6177-4a49-bb8c-62d30fbda247",
+          "x-netsuite-jobid": "58527507-3bf2-410a-9d7b-7e626452879f"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=45"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorCredit?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/963237",
+                "method": "GET"
+              }
+            ],
+            "id": "963237"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/869145",
+                "method": "GET"
+              }
+            ],
+            "id": "869145"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738090",
+                "method": "GET"
+              }
+            ],
+            "id": "738090"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738091",
+                "method": "GET"
+              }
+            ],
+            "id": "738091"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738092",
+                "method": "GET"
+              }
+            ],
+            "id": "738092"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 244
+      }
+    },
+    {
+      "category": "Journal Entries",
+      "name": "List Journal Entries",
+      "method": "GET",
+      "path": "/record/v1/journalEntry",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 19998,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304709\", oauth_nonce=\"a06a79d410a6f6f7697969f86664fcd3\", oauth_version=\"1.0\", oauth_signature=\"6iarpDFcAVuiQgD70UqFF4wK6UoDYT9ApLl49icosDs%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304709.42738396",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "272",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:49 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "231438bf-0bff-4328-a1e4-d20398bce0aa",
+          "x-netsuite-jobid": "1bc4aef5-8c9f-40f5-bd99-fb8fe104026d"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=5"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=995"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalEntry?limit=5",
+            "method": "GET"
+          }
+        ],
+        "count": 5,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/1",
+                "method": "GET"
+              }
+            ],
+            "id": "1"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/102",
+                "method": "GET"
+              }
+            ],
+            "id": "102"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/103",
+                "method": "GET"
+              }
+            ],
+            "id": "103"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/104",
+                "method": "GET"
+              }
+            ],
+            "id": "104"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/105",
+                "method": "GET"
+              }
+            ],
+            "id": "105"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 5000
+      }
+    },
+    {
+      "category": "Reference - Accounts",
+      "name": "List Accounts",
+      "method": "GET",
+      "path": "/record/v1/account",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 450,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304730\", oauth_nonce=\"54a1665e7f043c919bd4dd492a56c828\", oauth_version=\"1.0\", oauth_signature=\"YCrC%2FcImagx154Y6ZiZJye4IIWm8mIOhul46hkuiof0%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304730.4273f4c4",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "300",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:50 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "c9579a39-3432-4f8f-9732-5ffb36e15af8",
+          "x-netsuite-jobid": "0634a7a4-9b0d-4d6b-a020-d881a3ef4afd"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=10"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=70"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 10,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1210",
+                "method": "GET"
+              }
+            ],
+            "id": "1210"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1710",
+                "method": "GET"
+              }
+            ],
+            "id": "1710"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/225",
+                "method": "GET"
+              }
+            ],
+            "id": "225"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/226",
+                "method": "GET"
+              }
+            ],
+            "id": "226"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/227",
+                "method": "GET"
+              }
+            ],
+            "id": "227"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/228",
+                "method": "GET"
+              }
+            ],
+            "id": "228"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/229",
+                "method": "GET"
+              }
+            ],
+            "id": "229"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/230",
+                "method": "GET"
+              }
+            ],
+            "id": "230"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1044",
+                "method": "GET"
+              }
+            ],
+            "id": "1044"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1163",
+                "method": "GET"
+              }
+            ],
+            "id": "1163"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 742
+      }
+    },
+    {
+      "category": "Reference - Departments",
+      "name": "List Departments",
+      "method": "GET",
+      "path": "/record/v1/department",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 249,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304731\", oauth_nonce=\"825bc737ceef66534e9225fbe923b4cf\", oauth_version=\"1.0\", oauth_signature=\"qOQkuN3kDcrgFQTCsFBa0QW%2FmDM9Cxsd5sDkdI%2BJyFc%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304731.4273f9e8",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "300",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:51 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "52126364-98e6-4a57-a2ae-09f094540889",
+          "x-netsuite-jobid": "37fea7d7-ddc9-4ba6-9dd3-22c57aba239f"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=10"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=20"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 10,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/2",
+                "method": "GET"
+              }
+            ],
+            "id": "2"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/235",
+                "method": "GET"
+              }
+            ],
+            "id": "235"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/451",
+                "method": "GET"
+              }
+            ],
+            "id": "451"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/47",
+                "method": "GET"
+              }
+            ],
+            "id": "47"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/562",
+                "method": "GET"
+              }
+            ],
+            "id": "562"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/563",
+                "method": "GET"
+              }
+            ],
+            "id": "563"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/436",
+                "method": "GET"
+              }
+            ],
+            "id": "436"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/41",
+                "method": "GET"
+              }
+            ],
+            "id": "41"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/54",
+                "method": "GET"
+              }
+            ],
+            "id": "54"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/32",
+                "method": "GET"
+              }
+            ],
+            "id": "32"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 205
+      }
+    },
+    {
+      "category": "Reference - Subsidiaries",
+      "name": "List Subsidiaries",
+      "method": "GET",
+      "path": "/record/v1/subsidiary",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 202,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304731\", oauth_nonce=\"959233343615c3572186133de3e25f0f\", oauth_version=\"1.0\", oauth_signature=\"05ObQGad2Huda2QrFWN7TDSpqRYf9EwDDshy%2FbjVmrI%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304732.4273fe59",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "253",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:52 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "3bacf351-ec94-4a53-8def-84d12da4db8a",
+          "x-netsuite-jobid": "f00a4e24-cc52-42a6-b521-341fcf0334d8"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 9,
+        "hasMore": false,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/6",
+                "method": "GET"
+              }
+            ],
+            "id": "6"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/5",
+                "method": "GET"
+              }
+            ],
+            "id": "5"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/2",
+                "method": "GET"
+              }
+            ],
+            "id": "2"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/3",
+                "method": "GET"
+              }
+            ],
+            "id": "3"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/4",
+                "method": "GET"
+              }
+            ],
+            "id": "4"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+                "method": "GET"
+              }
+            ],
+            "id": "1"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/8",
+                "method": "GET"
+              }
+            ],
+            "id": "8"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/7",
+                "method": "GET"
+              }
+            ],
+            "id": "7"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/9",
+                "method": "GET"
+              }
+            ],
+            "id": "9"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 9
+      }
+    },
+    {
+      "category": "Reference - Tax Codes",
+      "name": "List Tax Items",
+      "method": "GET",
+      "path": "/record/v1/taxItem",
+      "status": 404,
+      "statusText": "Not Found",
+      "success": false,
+      "elapsed": 132,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304732\", oauth_nonce=\"48ea10d24d545a54df55fa6290f7dbba\", oauth_version=\"1.0\", oauth_signature=\"TcfDfzpDOOenuAQNBx4RXFB8f8pNPtQsWflQtPDcz98%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304732.4274021f",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "212",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:52 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "083bc1f9-150a-4e25-934d-c505108ca044",
+          "x-netsuite-jobid": "c3ea41ef-c52b-4fe0-8f4a-6d621d994684"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5",
+        "title": "Not Found",
+        "status": 404,
+        "o:errorDetails": [
+          {
+            "detail": "Record type 'taxItem' does not exist.",
+            "o:errorUrl": "/services/rest/record/v1/taxItem",
+            "o:errorCode": "NONEXISTENT_ID"
+          }
+        ]
+      }
+    },
+    {
+      "category": "Reference - Currencies",
+      "name": "List Currencies",
+      "method": "GET",
+      "path": "/record/v1/currency",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 402,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773304733\", oauth_nonce=\"cf0f71ffc099efe6ed60cdbe417b4394\", oauth_version=\"1.0\", oauth_signature=\"iW9o%2FEwEPqrxmWmrHR5U4%2FAXDDV6PRiTF%2FI12Nfh%2FzU%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773304733.427405ae",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "247",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:38:53 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "8fff4e41-501b-4444-b8b6-8cea46a60d5d",
+          "x-netsuite-jobid": "4e39bb4e-cd7b-41d0-a234-5869943832bb"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 8,
+        "hasMore": false,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/3",
+                "method": "GET"
+              }
+            ],
+            "id": "3"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/5",
+                "method": "GET"
+              }
+            ],
+            "id": "5"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/6",
+                "method": "GET"
+              }
+            ],
+            "id": "6"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+                "method": "GET"
+              }
+            ],
+            "id": "1"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
+                "method": "GET"
+              }
+            ],
+            "id": "4"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/8",
+                "method": "GET"
+              }
+            ],
+            "id": "8"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/7",
+                "method": "GET"
+              }
+            ],
+            "id": "7"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
+                "method": "GET"
+              }
+            ],
+            "id": "2"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 8
+      }
+    },
+    {
+      "category": "Reference - Locations",
+      "name": "List Locations",
+      "method": "GET",
+      "path": "/record/v1/location",
+      "status": 0,
+      "statusText": "FAILED",
+      "success": false,
+      "error": "fetch failed"
+    },
+    {
+      "category": "Reference - Classifications",
+      "name": "List Classifications",
+      "method": "GET",
+      "path": "/record/v1/classification",
+      "status": 200,
+      "statusText": "OK",
+      "success": true,
+      "elapsed": 1204,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305411\", oauth_nonce=\"6246dedc6f3843557e755e355ac36571\", oauth_version=\"1.0\", oauth_signature=\"1RMnNJhddgCRZr6XYIJakQKaQk6PULcFD0PpVKjJ7%2BU%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773305412.4284fb6a",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "297",
+          "content-type": "application/vnd.oracle.resource+json; type=collection; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:50:13 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "2bfef605-1eb5-48d7-8f88-ec96b9ef2adc",
+          "x-netsuite-jobid": "17b29fee-60d0-4422-a81d-8ecd75d78f70"
+        }
+      },
+      "response": {
+        "links": [
+          {
+            "rel": "next",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
+          },
+          {
+            "rel": "last",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
+          },
+          {
+            "rel": "self",
+            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10",
+            "method": "GET"
+          }
+        ],
+        "count": 10,
+        "hasMore": true,
+        "items": [
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/30",
+                "method": "GET"
+              }
+            ],
+            "id": "30"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/32",
+                "method": "GET"
+              }
+            ],
+            "id": "32"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/399",
+                "method": "GET"
+              }
+            ],
+            "id": "399"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/46",
+                "method": "GET"
+              }
+            ],
+            "id": "46"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/47",
+                "method": "GET"
+              }
+            ],
+            "id": "47"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/48",
+                "method": "GET"
+              }
+            ],
+            "id": "48"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/49",
+                "method": "GET"
+              }
+            ],
+            "id": "49"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/398",
+                "method": "GET"
+              }
+            ],
+            "id": "398"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/151",
+                "method": "GET"
+              }
+            ],
+            "id": "151"
+          },
+          {
+            "links": [
+              {
+                "rel": "self",
+                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/152",
+                "method": "GET"
+              }
+            ],
+            "id": "152"
+          }
+        ],
+        "offset": 0,
+        "totalResults": 109
+      }
+    },
+    {
+      "category": "SuiteQL",
+      "name": "Execute SuiteQL Query",
+      "method": "POST",
+      "path": "/query/v1/suiteql",
+      "status": 400,
+      "statusText": "Bad Request",
+      "success": false,
+      "elapsed": 217,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305413\", oauth_nonce=\"6d738c55b2e1981d3783497d88303771\", oauth_version=\"1.0\", oauth_signature=\"ZwXHysv9Lx03f3vxl6TNyTLq%2Bk%2BKMFMqUt%2FbjyGhYCk%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Prefer": "transient"
+        },
+        "response": {
+          "akamai-grn": "0.13ecc017.1773305413.428500cc",
+          "cache-control": "No-Cache",
+          "connection": "close",
+          "content-encoding": "gzip",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:50:13 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "87d955db-b35f-4df4-a085-0c2657a1cc1f",
+          "x-netsuite-jobid": "e6e7641b-d274-41ae-b996-636cac156ee5"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.1",
+        "title": "Bad Request",
+        "status": 400,
+        "o:errorDetails": [
+          {
+            "detail": "Invalid search query. Detailed unprocessed description follows. Search error occurred: Failed to parse SQL [SELECT id, companyName FROM vendor WHERE id < 100 LIMIT 5]: syntax error, state:1545(10102) near: LIMIT(1,51, token code:0)\nno_root_node(-1000) near: no root node(0,0, token code:0).",
+            "o:errorQueryParam": "q",
+            "o:errorCode": "INVALID_PARAMETER"
+          }
+        ]
+      }
+    },
+    {
+      "category": "File Cabinet",
+      "name": "List Files in Folder",
+      "method": "GET",
+      "path": "/record/v1/folder",
+      "status": 404,
+      "statusText": "Not Found",
+      "success": false,
+      "elapsed": 496,
+      "headers": {
+        "request": {
+          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305414\", oauth_nonce=\"d2ee03df2d2bc6cf8ea194fcd86fa71d\", oauth_version=\"1.0\", oauth_signature=\"qYFhaSVSt1PDwxPD9fRA1wuA%2BfMavNwvEk31CHwFIQ4%3D\"",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "response": {
+          "akamai-grn": "0.1cecc017.1773305414.39b95893",
+          "cache-control": "No-Cache",
+          "connection": "keep-alive",
+          "content-encoding": "gzip",
+          "content-length": "212",
+          "content-type": "application/vnd.oracle.resource+json; type=error; charset=UTF-8",
+          "date": "Thu, 12 Mar 2026 08:50:14 GMT",
+          "expires": "0",
+          "pragma": "No-Cache",
+          "strict-transport-security": "max-age=31536000",
+          "vary": "User-Agent, Accept-Encoding",
+          "x-content-type-options": "nosniff",
+          "x-n-operationid": "7c62f10d-f0e0-431b-a31b-42da08f8259c",
+          "x-netsuite-jobid": "7ce85625-34b1-4f22-bb25-d8c22f837a9d"
+        }
+      },
+      "response": {
+        "type": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5",
+        "title": "Not Found",
+        "status": 404,
+        "o:errorDetails": [
+          {
+            "detail": "Record type 'folder' does not exist.",
+            "o:errorUrl": "/services/rest/record/v1/folder",
+            "o:errorCode": "NONEXISTENT_ID"
+          }
+        ]
+      }
+    }
+  ]
+}

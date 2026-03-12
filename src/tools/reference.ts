@@ -70,10 +70,11 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     "/subsidiary"
   );
 
+  // Tax Codes - Note: Using salestaxitem instead of taxItem (which doesn't exist)
   registerSimpleListTool(
     "netsuite_get_tax_codes",
-    "List NetSuite tax codes.",
-    "/taxItem"
+    "List NetSuite sales tax items. Returns tax codes with rates and descriptions.",
+    "/salestaxitem"
   );
 
   registerSimpleListTool(

@@ -1,7 +1,42 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { buildPaginationQuery } from "../utils/pagination.js";
 
 export function registerFileCabinetTools(server: McpServer, client: NetSuiteClient): void {
+  // List files in File Cabinet
+  server.registerTool(
+    "netsuite_list_files",
+    {
+      description: "List files from NetSuite File Cabinet with optional pagination.",
+    },
+    async ({ limit, offset }: any) => {
+      try {
+        const pagination = buildPaginationQuery({ limit, offset });
+        const result = await client.get<unknown>("/file", pagination);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      } catch (error: any) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error listing files.";
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error listing files from NetSuite: ${message}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   server.registerTool(
     "netsuite_upload_file",
     {

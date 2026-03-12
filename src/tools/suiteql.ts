@@ -18,24 +18,31 @@ function isSafeQuery(query: string): boolean {
   return !FORBIDDEN_KEYWORDS.some((kw) => upperQuery.includes(kw));
 }
 
+function convertLimitToFetch(query: string): string {
+  // NetSuite SuiteQL uses "FETCH FIRST N ROWS ONLY" instead of "LIMIT N"
+  return query.replace(/\bLIMIT\s+(\d+)\b/gi, "FETCH FIRST $1 ROWS ONLY");
+}
+
 export function registerSuiteQLTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_execute_suiteql",
     {
       description: `Execute a read-only SuiteQL query against NetSuite. 
 Only SELECT queries are allowed. 
+⚠️ IMPORTANT: NetSuite uses "FETCH FIRST N ROWS ONLY" instead of "LIMIT N" for pagination.
 Examples:
-- SELECT id, companyName, email FROM vendor WHERE externalId = 'spk_supplier_xxx'
+- SELECT id, companyName, email FROM vendor WHERE externalId = 'spk_supplier_xxx' FETCH FIRST 10 ROWS ONLY
 - SELECT id, tranId, entity, amount, status FROM transaction WHERE type = 'VendBill' AND status = 'VendBill:B'
-- SELECT id, acctNumber, acctName, type FROM account WHERE acctNumber LIKE '6%'`,
+- SELECT id, acctNumber, acctName, type FROM account WHERE acctNumber LIKE '6%'
+Note: LIMIT syntax will be automatically converted to FETCH FIRST syntax.`,
     },
     async (args: any) => {
       try {
-        const query = args?.query;
+        const rawQuery = args?.query;
         const limit = args?.limit;
         const offset = args?.offset;
 
-        if (!query || typeof query !== "string") {
+        if (!rawQuery || typeof rawQuery !== "string") {
           return {
             content: [
               {
@@ -46,6 +53,9 @@ Examples:
             isError: true,
           };
         }
+
+        // Convert LIMIT to FETCH FIRST syntax for NetSuite compatibility
+        const query = convertLimitToFetch(rawQuery);
 
         if (!isSafeQuery(query)) {
           return {
