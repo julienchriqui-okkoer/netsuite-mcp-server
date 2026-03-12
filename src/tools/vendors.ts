@@ -37,6 +37,9 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     "netsuite_get_vendor_by_id",
     {
       description: "Get a single NetSuite vendor by internal ID. Returns full vendor details with expanded sub-resources. Required parameter: id (string, NetSuite internal vendor ID)",
+      inputSchema: {
+        id: z.string(),
+      } as any,
     },
     async ({ id }: any) => {
       try {

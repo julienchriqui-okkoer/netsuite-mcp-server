@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
@@ -8,6 +9,11 @@ export function registerEmployeeTools(server: McpServer, client: NetSuiteClient)
     "netsuite_get_employees",
     {
       description: "List NetSuite employees with optional search and pagination. Used to match Spendesk Members to NetSuite Employees for expense reports. Optional parameters: limit (number), offset (number), q (string, search query)",
+      inputSchema: {
+        limit: z.number().optional(),
+        offset: z.number().optional(),
+        q: z.string().optional(),
+      } as any,
     },
     async ({ limit, offset, q }: any) => {
       try {
@@ -29,6 +35,9 @@ export function registerEmployeeTools(server: McpServer, client: NetSuiteClient)
     "netsuite_get_employee",
     {
       description: "Get a single NetSuite employee by internal ID. Returns full employee details with expanded sub-resources. Required parameter: id (string, NetSuite internal employee ID)",
+      inputSchema: {
+        id: z.string(),
+      } as any,
     },
     async ({ id }: any) => {
       try {

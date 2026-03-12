@@ -9,7 +9,7 @@ export const TOOLS_CONFIG = {
   // ✅ WORKING TOOLS
   vendors: {
     netsuite_get_vendors: true,
-    netsuite_get_vendor_by_id: false, // ❌ DISABLED - Parameter transmission issue
+    netsuite_get_vendor_by_id: true, // ✅ FIXED - Added inputSchema
     netsuite_get_latest_vendors: true,
     netsuite_create_vendor: true,
     netsuite_update_vendor: true,
@@ -39,7 +39,7 @@ export const TOOLS_CONFIG = {
   
   employees: {
     netsuite_get_employees: true,
-    netsuite_get_employee: false, // ❌ DISABLED - Same parameter issue as vendor
+    netsuite_get_employee: true, // ✅ FIXED - Added inputSchema
   },
   
   expenseReports: {
