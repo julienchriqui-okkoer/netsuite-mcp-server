@@ -152,17 +152,6 @@ async function runTests() {
       }
     ]
   };
-    // Uncomment to test applying to a specific bill:
-    // applyList: {
-    //   apply: [
-    //     {
-    //       doc: "1339936", // Vendor bill ID
-    //       apply: true,
-    //       amount: 50.00
-    //     }
-    //   ]
-    // }
-  };
 
   console.log("   Test payment data:");
   console.log("   " + JSON.stringify(testPaymentData, null, 2).split("\n").join("\n   "));
