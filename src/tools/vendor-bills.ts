@@ -1,12 +1,13 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorBillTools(server: McpServer, client: NetSuiteClient): void {
   server.registerTool(
     "netsuite_get_vendor_bills",
     {
-      description: "List NetSuite vendor bills with optional search and pagination.",
+      description: "List NetSuite vendor bills with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'VendBill:A' for open bills)",
     },
     async ({ limit, offset, q, status }: any) => {
       try {
@@ -22,26 +23,9 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         }
 
         const result = await client.get<unknown>("/vendorBill", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing vendor bills.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite vendor bills: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing vendor bills: ${error.message}`);
       }
     }
   );
@@ -49,33 +33,21 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_get_vendor_bill",
     {
-      description: "Get a single NetSuite vendor bill by internal ID.",
+      description: "Get a single NetSuite vendor bill by internal ID. Returns full bill details with expanded sub-resources (expense lines, items). Required parameter: id (string, NetSuite internal vendor bill ID)",
     },
     async ({ id }: any) => {
       try {
+        // Validate required parameter
+        if (!id || typeof id !== "string") {
+          return errorResponse("Missing required parameter: id (string)");
+        }
+        
         const result = await client.get<unknown>(`/vendorBill/${id}`, {
           expandSubResources: "true",
         });
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error getting vendor bill.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite vendor bill: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error getting vendor bill: ${error.message}`);
       }
     }
   );
@@ -83,7 +55,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_create_vendor_bill",
     {
-      description: "Create a new NetSuite vendor bill with expense lines.",
+      description: "Create a new NetSuite vendor bill with expense lines. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, externalId (for idempotence), expense (array of lines with account, amount, department, location, class, memo, taxCode)",
     },
     async ({
       entity,
@@ -98,6 +70,17 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
       expense,
     }: any) => {
       try {
+        // Validate required parameters
+        if (!entity || typeof entity !== "string") {
+          return errorResponse("Missing required parameter: entity (string, vendor ID)");
+        }
+        if (!subsidiary || typeof subsidiary !== "string") {
+          return errorResponse("Missing required parameter: subsidiary (string)");
+        }
+        if (!tranDate || typeof tranDate !== "string") {
+          return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
+        }
+        
         const body: any = {
           entity: { id: entity },
           subsidiary: { id: subsidiary },
@@ -127,26 +110,9 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         }
 
         const result = await client.post<unknown>("/vendorBill", body);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error creating vendor bill.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error creating NetSuite vendor bill: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error creating vendor bill: ${error.message}`);
       }
     }
   );
@@ -154,35 +120,23 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_update_vendor_bill",
     {
-      description: "Update an existing NetSuite vendor bill (e.g. status, memo).",
+      description: "Update an existing NetSuite vendor bill (e.g. status, memo). Required parameter: id (string). Optional: status (string), memo (string)",
     },
     async ({ id, status, memo }: any) => {
       try {
+        // Validate required parameter
+        if (!id || typeof id !== "string") {
+          return errorResponse("Missing required parameter: id (string)");
+        }
+        
         const body: any = {};
         if (status) body.status = status;
         if (memo) body.memo = memo;
 
         const result = await client.patch<unknown>(`/vendorBill/${id}`, body);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error updating vendor bill.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error updating NetSuite vendor bill: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error updating vendor bill: ${error.message}`);
       }
     }
   );
