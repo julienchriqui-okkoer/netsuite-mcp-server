@@ -59,20 +59,20 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
   server.registerTool(
     "netsuite_create_bill_payment",
     {
-      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: subsidiary (string, defaults to '1'), externalId (for idempotence), memo, currency, exchangeRate, applyList (object with apply array containing doc, apply=true, amount)",
+      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: subsidiary (string, defaults to '1'), currency (string, defaults to '1' for EUR), externalId (for idempotence), memo, exchangeRate (default 1), applyList (object with apply array containing doc, apply=true, amount). NOTE: Without applyList, creates an unapplied payment.",
       inputSchema: {
         entity: z.string(),
         account: z.string(),
         tranDate: z.string(),
         subsidiary: z.string().optional(),
+        currency: z.string().optional(),
         externalId: z.string().optional(),
         memo: z.string().optional(),
-        currency: z.string().optional(),
         exchangeRate: z.number().optional(),
         applyList: z.any().optional(),
       } as any,
     },
-    async ({ entity, account, tranDate, subsidiary, externalId, memo, currency, exchangeRate, applyList }: any) => {
+    async ({ entity, account, tranDate, subsidiary, currency, externalId, memo, exchangeRate, applyList }: any) => {
       try {
         // Validate required parameters
         if (!entity || typeof entity !== "string") {
@@ -90,18 +90,18 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           account: { id: account },
           tranDate,
           subsidiary: { id: subsidiary || "1" }, // Default to subsidiary 1
+          currency: { id: currency || "1" }, // Default to EUR
+          exchangeRate: exchangeRate || 1, // Default exchange rate
         };
 
         if (externalId) body.externalId = externalId;
         if (memo) body.memo = memo;
-        if (currency) body.currency = { id: currency };
-        if (exchangeRate) body.exchangeRate = exchangeRate;
 
         if (applyList?.apply && Array.isArray(applyList.apply)) {
-          body.applyList = {
-            apply: applyList.apply.map((item: any) => ({
-              doc: item.doc,
-              apply: item.apply ?? true,
+          body.apply = {
+            items: applyList.apply.map((item: any) => ({
+              doc: { id: String(item.doc) }, // Document ID (bill ID)
+              apply: item.apply !== false, // Default to true
               amount: item.amount,
             })),
           };
