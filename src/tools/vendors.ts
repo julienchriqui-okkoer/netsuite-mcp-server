@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
 import { isToolEnabled } from "../config/tools-config.js";
@@ -125,15 +126,24 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   );
   }
 
-  // Create vendor (supplier) - SIMPLIFIED VERSION
+  // Create vendor (supplier) - WITH INPUT SCHEMA
   if (isToolEnabled("vendors", "netsuite_create_vendor")) {
     server.registerTool(
       "netsuite_create_vendor",
       {
         description: "Create a new NetSuite vendor (supplier). Required: companyName (string), subsidiary (string). Optional: email, externalId",
+        inputSchema: {
+          companyName: z.string(),
+          subsidiary: z.string(),
+          email: z.string().optional(),
+          externalId: z.string().optional(),
+        } as any,  // ← Type cast to avoid TS deep instantiation
       },
-      async ({ companyName, subsidiary, email, externalId }: any) => {
+      async (args: any) => {
         try {
+          const { companyName, subsidiary, email, externalId } = args;
+          console.log("🔍 [create_vendor] Received params:", { companyName, subsidiary, email, externalId });
+          
           // Validate required parameters
           if (!companyName || typeof companyName !== "string") {
             return errorResponse("Missing required parameter: companyName (string)");

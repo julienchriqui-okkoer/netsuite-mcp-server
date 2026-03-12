@@ -5,16 +5,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { registerAllTools } from "./tools/index.js";
 
-function createMcpServer(): McpServer {
-  const server = new McpServer({
-    name: "netsuite-mcp-server",
-    version: "1.0.0",
-  });
+// Create MCP server instance ONCE
+const mcpServer = new McpServer({
+  name: "netsuite-mcp-server",
+  version: "1.0.0",
+});
 
-  registerAllTools(server);
-
-  return server;
-}
+registerAllTools(mcpServer);
 
 const app = new Hono();
 
@@ -42,10 +39,18 @@ app.get("/", (c) =>
 );
 
 app.all("/mcp", async (c) => {
-  const transport = new WebStandardStreamableHTTPServerTransport();
-  const server = createMcpServer();
-  await server.connect(transport);
-  return transport.handleRequest(c.req.raw);
+  try {
+    const clonedReq = c.req.raw.clone();
+    const bodyText = await clonedReq.text();
+    console.log("🔍 [server-http] Incoming request body:", bodyText);
+    
+    const transport = new WebStandardStreamableHTTPServerTransport();
+    await mcpServer.connect(transport);
+    return transport.handleRequest(c.req.raw);
+  } catch (error: any) {
+    console.error("❌ [server-http] Error:", error);
+    return c.json({ error: error.message }, 500);
+  }
 });
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;

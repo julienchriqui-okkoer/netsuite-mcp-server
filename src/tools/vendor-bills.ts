@@ -9,7 +9,11 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
     {
       description: "List NetSuite vendor bills with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'VendBill:A' for open bills)",
     },
-    async ({ limit, offset, q, status }: any) => {
+    async (allArgs: any) => {
+      console.log("🔍 [get_vendor_bills] Raw args:", JSON.stringify(allArgs, null, 2));
+      const { limit, offset, q, status } = allArgs;
+      console.log("🔍 [get_vendor_bills] Destructured:", { limit, offset, q, status });
+      
       try {
         const pagination = buildPaginationQuery({ limit, offset });
         const params: Record<string, string> = {

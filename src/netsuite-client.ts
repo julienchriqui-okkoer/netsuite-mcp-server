@@ -100,6 +100,12 @@ export class NetSuiteClient {
     }
 
     if (!response.ok) {
+      console.error(`[NetSuiteClient] ERROR Response:`, {
+        status: response.status,
+        statusText: response.statusText,
+        body: json,
+        text: text?.substring(0, 500),
+      });
       const message =
         json?.title ||
         json?.detail ||
