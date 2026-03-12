@@ -33,11 +33,14 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     {
       description: "Get a single NetSuite vendor by internal ID. Returns full vendor details with expanded sub-resources. Required parameter: id (string, NetSuite internal vendor ID)",
     },
-    async ({ id }: any) => {
+    async (args: any) => {
       try {
+        const id = args?.id;
+        
         // Validate required parameter
-        const validation = validateRequired({ id }, ["id"]);
-        if (validation) return validation;
+        if (!id || typeof id !== "string") {
+          return errorResponse("Missing required parameter: id (string)");
+        }
         
         const result = await client.get<unknown>(`/vendor/${id}`, {
           expandSubResources: "true",
