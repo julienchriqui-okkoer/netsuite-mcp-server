@@ -139,28 +139,24 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       },
       async () => {
         try {
-          // Query existing vendors to discover their custom forms (IDs only)
-          const query = `
-            SELECT DISTINCT customform AS formId
-            FROM vendor
-            WHERE customform IS NOT NULL
-            LIMIT 50
-          `;
+          // Query a sample of vendors to discover their custom forms
+          const query = `SELECT id, customform FROM vendor WHERE customform IS NOT NULL`;
           
-          const result: any = await client.suiteql(query);
+          const result: any = await client.suiteql(query, 50); // Use client's limit param
           const items = result?.items || [];
           
-          const forms = items
-            .filter((item: any) => item.formid)
-            .map((item: any) => ({
-              id: String(item.formid),
-              name: `Custom Form ${item.formid}`,
-            }));
+          // Extract unique form IDs
+          const formIds = new Set<string>();
+          items.forEach((item: any) => {
+            if (item.customform) {
+              formIds.add(String(item.customform));
+            }
+          });
 
-          // Remove duplicates by ID
-          const uniqueForms = Array.from(
-            new Map(forms.map((f: any) => [f.id, f])).values()
-          );
+          const forms = Array.from(formIds).map((id) => ({
+            id,
+            name: `Custom Form ${id}`,
+          }));
 
           return successResponse({ 
             forms,
