@@ -134,25 +134,45 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     server.registerTool(
       "netsuite_get_vendor_forms",
       {
-        description: "Get list of available custom forms for vendors. Returns form IDs and names to use with netsuite_create_vendor. Use this if vendor creation fails with 400 to discover the correct customForm ID.",
+        description: "Get list of custom forms used by existing vendors. Returns form IDs and names to use with netsuite_create_vendor. Use this if vendor creation fails with 400 to discover the correct customForm ID.",
         inputSchema: {} as any,
       },
       async () => {
         try {
-          const metadata: any = await client.get<any>("/metadata-catalog/record/vendor");
+          // Query existing vendors to discover their custom forms
+          const query = `
+            SELECT DISTINCT 
+              v.customform AS formId,
+              cf.name AS formName
+            FROM vendor v
+            LEFT JOIN customrecordtype cf ON v.customform = cf.id
+            WHERE v.customform IS NOT NULL
+            FETCH FIRST 50 ROWS ONLY
+          `;
           
-          const forms = (metadata.customForms || []).map((form: any) => ({
-            id: form.id,
-            name: form.name || form.refName || `Form ${form.id}`,
-          }));
+          const result: any = await client.suiteql(query);
+          const items = result?.items || [];
+          
+          const forms = items
+            .filter((item: any) => item.formid)
+            .map((item: any) => ({
+              id: String(item.formid),
+              name: item.formname || `Form ${item.formid}`,
+            }));
+
+          // Remove duplicates by ID
+          const uniqueForms = Array.from(
+            new Map(forms.map((f: any) => [f.id, f])).values()
+          );
 
           return successResponse({ 
-            forms,
-            count: forms.length,
-            note: "Use the 'id' field as the customForm parameter when creating vendors"
+            forms: uniqueForms,
+            count: uniqueForms.length,
+            note: "These are custom forms currently used by existing vendors. Use the 'id' field as the customForm parameter when creating vendors.",
+            fallback: "If this query fails, inspect an existing vendor via netsuite_get_vendor_by_id and look for the customForm field."
           });
         } catch (error: any) {
-          return errorResponse(`Error getting vendor forms: ${error.message}`);
+          return errorResponse(`Error getting vendor forms: ${error.message}. Fallback: Use netsuite_get_vendor_by_id on an existing vendor to inspect its customForm field.`);
         }
       }
     );
