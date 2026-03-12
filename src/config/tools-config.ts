@@ -11,6 +11,7 @@ export const TOOLS_CONFIG = {
     netsuite_get_vendors: true,
     netsuite_get_vendor_by_id: true, // ✅ FIXED - Added inputSchema
     netsuite_get_latest_vendors: true,
+    netsuite_get_vendor_forms: true, // ✅ NEW - Get available custom forms
     netsuite_create_vendor: true,
     netsuite_update_vendor: true,
   },

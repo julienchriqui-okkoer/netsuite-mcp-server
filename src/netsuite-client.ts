@@ -111,14 +111,27 @@ export class NetSuiteClient {
         body: json,
         text: text?.substring(0, 500),
       });
-      const message =
-        json?.title ||
-        json?.detail ||
-        json?.error?.message ||
-        `HTTP ${response.status} ${response.statusText}`;
-      throw new Error(
-        `NetSuite ${response.status}: ${message}`
-      );
+      
+      // Extract detailed validation errors from NetSuite
+      let message = json?.title || json?.detail || json?.error?.message;
+      
+      // For 400 Bad Request, extract o:errorDetails
+      if (response.status === 400 && json?.['o:errorDetails']) {
+        const details = json['o:errorDetails']
+          .map((err: any) => err.detail || err.message || JSON.stringify(err))
+          .filter(Boolean)
+          .join('; ');
+        if (details) {
+          message = details;
+        }
+      }
+      
+      // Fallback to generic message
+      if (!message) {
+        message = `HTTP ${response.status} ${response.statusText}`;
+      }
+      
+      throw new Error(`NetSuite ${response.status}: ${message}`);
     }
 
     // Handle 204 No Content (create/update operations)

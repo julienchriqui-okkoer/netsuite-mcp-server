@@ -129,18 +129,49 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   );
   }
 
-  // Create vendor (supplier) - COMPLETE WITH ADDRESS SUPPORT
+  // Get available vendor custom forms
+  if (isToolEnabled("vendors", "netsuite_get_vendor_forms")) {
+    server.registerTool(
+      "netsuite_get_vendor_forms",
+      {
+        description: "Get list of available custom forms for vendors. Returns form IDs and names to use with netsuite_create_vendor. Use this if vendor creation fails with 400 to discover the correct customForm ID.",
+        inputSchema: {} as any,
+      },
+      async () => {
+        try {
+          const metadata: any = await client.get<any>("/metadata-catalog/record/vendor");
+          
+          const forms = (metadata.customForms || []).map((form: any) => ({
+            id: form.id,
+            name: form.name || form.refName || `Form ${form.id}`,
+          }));
+
+          return successResponse({ 
+            forms,
+            count: forms.length,
+            note: "Use the 'id' field as the customForm parameter when creating vendors"
+          });
+        } catch (error: any) {
+          return errorResponse(`Error getting vendor forms: ${error.message}`);
+        }
+      }
+    );
+  }
+
+  // Create vendor (supplier) - COMPLETE WITH CUSTOM FORMS AND IDEMPOTENCY
   if (isToolEnabled("vendors", "netsuite_create_vendor")) {
     server.registerTool(
       "netsuite_create_vendor",
       {
-        description: "Create a new NetSuite vendor (supplier). Required: companyName (string), subsidiary (string). Optional: email, phone, externalId, isPerson (boolean), currency, vatRegNumber, legalName, addr1, city, zip, country (for address)",
+        description: "Create a new NetSuite vendor (supplier). If vendor creation fails with 400, first call netsuite_get_vendor_forms to discover the correct customForm ID, then retry with customForm and any required customFields. Required: companyName (string), subsidiary (string). Optional: email, phone, externalId (for idempotency), customForm (string, custom form ID), customFields (object, key-value map of custom field IDs), isPerson (boolean), currency, vatRegNumber, legalName, addr1, city, zip, country",
         inputSchema: {
           companyName: z.string(),
           subsidiary: z.string(),
           email: z.string().optional(),
           phone: z.string().optional(),
           externalId: z.string().optional(),
+          customForm: z.string().optional(),
+          customFields: z.record(z.any()).optional(),
           isPerson: z.boolean().optional(),
           currency: z.string().optional(),
           vatRegNumber: z.string().optional(),
@@ -153,6 +184,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       },
       async ({ 
         companyName, subsidiary, email, phone, externalId,
+        customForm, customFields,
         isPerson, currency, vatRegNumber, legalName,
         addr1, city, zip, country 
       }: any) => {
@@ -165,10 +197,36 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             return errorResponse("Missing required parameter: subsidiary (string)");
           }
 
+          // Pre-flight check: if externalId is provided, check if vendor already exists (idempotency)
+          if (externalId && typeof externalId === "string") {
+            try {
+              const checkQuery = `SELECT id FROM vendor WHERE externalId = '${externalId.replace(/'/g, "''")}' FETCH FIRST 1 ROWS ONLY`;
+              const existing: any = await client.suiteql(checkQuery);
+              
+              if (existing?.items && existing.items.length > 0) {
+                const existingId = existing.items[0].id;
+                console.log(`[create_vendor] Vendor with externalId '${externalId}' already exists: ${existingId}`);
+                return successResponse({
+                  found: true,
+                  id: existingId,
+                  message: `Vendor with externalId '${externalId}' already exists (idempotent)`,
+                });
+              }
+            } catch (checkError: any) {
+              // If SuiteQL fails (permissions), continue with creation attempt
+              console.warn(`[create_vendor] Pre-flight check failed (continuing): ${checkError.message}`);
+            }
+          }
+
           const body: Record<string, unknown> = {
             companyName,
             isPerson: isPerson ?? false,
           };
+
+          // Custom form (required by some NetSuite instances)
+          if (customForm) {
+            body.customForm = { id: customForm };
+          }
 
           // References → objects { id }
           body.subsidiary = { id: subsidiary };
@@ -180,6 +238,13 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           if (externalId) body.externalId = externalId;
           if (vatRegNumber) body.vatRegNumber = vatRegNumber;
           if (legalName) body.legalName = legalName;
+
+          // Custom fields (key-value map)
+          if (customFields && typeof customFields === "object") {
+            for (const [key, value] of Object.entries(customFields)) {
+              body[key] = value;
+            }
+          }
 
           // Address → nested addressbook.items[] structure
           if (addr1 || city || zip || country) {
