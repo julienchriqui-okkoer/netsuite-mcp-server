@@ -136,14 +136,22 @@ async function runTests() {
   const timestamp = Date.now();
   const uniqueExternalId = `TEST-PAY-${timestamp}`;
 
-  // Test data - ADJUST THESE IDs TO MATCH YOUR NETSUITE INSTANCE
+  // Test data - Using working Postman data
   const testPaymentData = {
-    entity: "136288", // Vendor ID (use a valid vendor from your instance)
-    account: "308", // Bank account ID (from existing payment: "512413 Banque Unicredit DE")
-    tranDate: "2025-01-15", // Use a date in an open accounting period
-    customForm: "-112", // Same as n8n workflow
-    memo: "Test payment from MCP script (unapplied)",
+    entity: "136482", // Vendor ID from working Postman
+    account: "857", // Bank account ID from working Postman  
+    tranDate: "2026-03-12", // Date from working Postman
+    currency: "1", // EUR
+    memo: "Test payment from MCP - Matching Postman",
     externalId: uniqueExternalId,
+    apply: [
+      {
+        doc: "1339937", // Bill ID from working Postman
+        apply: true,
+        amount: 100.00
+      }
+    ]
+  };
     // Uncomment to test applying to a specific bill:
     // applyList: {
     //   apply: [

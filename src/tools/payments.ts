@@ -24,7 +24,7 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           params.q = q;
         }
 
-        const result = await client.get<unknown>("/vendorpayment", params);
+        const result = await client.get<unknown>("/vendorPayment", params);
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error listing bill payments: ${error.message}`);
@@ -47,7 +47,7 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           return errorResponse("Missing required parameter: id (string, payment ID)");
         }
 
-        const result = await client.get<unknown>(`/vendorpayment/${id}`);
+        const result = await client.get<unknown>(`/vendorPayment/${id}`);
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error getting bill payment: ${error.message}`);
@@ -59,20 +59,18 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
   server.registerTool(
     "netsuite_create_bill_payment",
     {
-      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: currency (string, defaults to '1' for EUR), customForm (string, defaults to '-112'), externalId (for idempotence), memo, exchangeRate (default 1), apply (array of {doc: billId, apply: true, amount: number}). NOTE: Without apply array, creates an unapplied payment.",
+      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: currency (string, defaults to '1' for EUR), externalId (for idempotence), memo, apply (array of {doc: billId, apply: true, amount: number}). NOTE: Without apply array, creates an unapplied payment.",
       inputSchema: {
         entity: z.string(),
         account: z.string(),
         tranDate: z.string(),
         currency: z.string().optional(),
-        customForm: z.string().optional(),
         externalId: z.string().optional(),
         memo: z.string().optional(),
-        exchangeRate: z.number().optional(),
         apply: z.array(z.any()).optional(),
       } as any,
     },
-    async ({ entity, account, tranDate, currency, customForm, externalId, memo, exchangeRate, apply }: any) => {
+    async ({ entity, account, tranDate, currency, externalId, memo, apply }: any) => {
       try {
         // Validate required parameters
         if (!entity || typeof entity !== "string") {
@@ -86,27 +84,27 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
         }
 
         const body: any = {
-          customform: { id: customForm || "-112" }, // Custom form (default: -112, same as n8n)
           entity: { id: entity },
           account: { id: account },
           tranDate,
           currency: { id: currency || "1" }, // Default to EUR
-          exchangerate: exchangeRate || 1.0, // IMPORTANT: lowercase 'r' like n8n
         };
 
-        if (externalId) body.custbody_spendesk_id = externalId; // Use NetSuite custom field
+        if (externalId) body.externalId = externalId; // Direct externalId like Postman
         if (memo) body.memo = memo;
 
-        // IMPORTANT: apply is a direct array, not nested in items
+        // CRITICAL: apply must be nested in { items: [...] } like Postman
         if (apply && Array.isArray(apply) && apply.length > 0) {
-          body.apply = apply.map((item: any) => ({
-            doc: { id: String(item.doc) }, // Document ID (bill ID)
-            apply: item.apply !== false, // Default to true
-            amount: item.amount,
-          }));
+          body.apply = {
+            items: apply.map((item: any) => ({
+              doc: { id: String(item.doc) }, // Document ID (bill ID)
+              apply: item.apply !== false, // Default to true
+              amount: item.amount,
+            })),
+          };
         }
 
-        const result = await client.post<unknown>("/vendorpayment", body);
+        const result = await client.post<unknown>("/vendorPayment", body);
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error creating bill payment: ${error.message}`);
