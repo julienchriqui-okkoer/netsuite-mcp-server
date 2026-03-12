@@ -132,28 +132,46 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       {
         description: "Create a new NetSuite vendor (supplier) from Spendesk data. Required parameters: companyName (string), subsidiary (string). Optional: entityId (string, vendor ID/code), legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson (boolean), department, location, class, externalId (for idempotence, use Spendesk supplier ID), terms (payment terms ID), category (vendor category ID), memo, accountNumber (supplier account number), isInactive (boolean)",
       },
-      async ({
-        companyName,
-        subsidiary,
-        entityId,
-        legalName,
-        email,
-        phone,
-        currency,
-        vatRegNumber,
-        defaultAddress,
-        isPerson,
-        department,
-        location,
-        class: vendorClass,
-        externalId,
-        terms,
-        category,
-        memo,
-        accountNumber,
-        isInactive,
-      }: any) => {
+      async (args: any) => {
         try {
+          // Debug: log received args
+          console.error("[netsuite_create_vendor] Received args keys:", Object.keys(args));
+          
+          // Filter out MCP SDK metadata
+          const {
+            signal,
+            sendNotification,
+            sendRequest,
+            requestId,
+            requestInfo,
+            _meta,
+            ...params
+          } = args;
+
+          console.error("[netsuite_create_vendor] Params after filter:", Object.keys(params));
+
+          const {
+            companyName,
+            subsidiary,
+            entityId,
+            legalName,
+            email,
+            phone,
+            currency,
+            vatRegNumber,
+            defaultAddress,
+            isPerson,
+            department,
+            location,
+            class: vendorClass,
+            externalId,
+            terms,
+            category,
+            memo,
+            accountNumber,
+            isInactive,
+          } = params;
+
           // Validate required parameters
           if (!companyName || typeof companyName !== "string") {
             return errorResponse("Missing required parameter: companyName (string)");
@@ -219,27 +237,40 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       {
         description: "Update an existing NetSuite vendor (supplier). Required parameter: id (string, NetSuite internal vendor ID). Optional: companyName, entityId, legalName, email, phone, currency, vatRegNumber, defaultAddress, isPerson, department, location, class, terms, category, memo, accountNumber, isInactive",
       },
-      async ({
-        id,
-        companyName,
-        entityId,
-        legalName,
-        email,
-        phone,
-        currency,
-        vatRegNumber,
-        defaultAddress,
-        isPerson,
-        department,
-        location,
-        class: vendorClass,
-        terms,
-        category,
-        memo,
-        accountNumber,
-        isInactive,
-      }: any) => {
+      async (args: any) => {
         try {
+          // Filter out MCP SDK metadata
+          const {
+            signal,
+            sendNotification,
+            sendRequest,
+            requestId,
+            requestInfo,
+            _meta,
+            ...params
+          } = args;
+
+          const {
+            id,
+            companyName,
+            entityId,
+            legalName,
+            email,
+            phone,
+            currency,
+            vatRegNumber,
+            defaultAddress,
+            isPerson,
+            department,
+            location,
+            class: vendorClass,
+            terms,
+            category,
+            memo,
+            accountNumber,
+            isInactive,
+          } = params;
+
           // Validate required parameter
           if (!id || typeof id !== "string") {
             return errorResponse("Missing required parameter: id (string)");
