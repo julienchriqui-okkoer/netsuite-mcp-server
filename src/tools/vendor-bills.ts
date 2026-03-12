@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
@@ -60,6 +61,18 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
     "netsuite_create_vendor_bill",
     {
       description: "Create a new NetSuite vendor bill with expense lines. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, externalId (for idempotence), expense (array of lines with account, amount, department, location, class, memo, taxCode)",
+      inputSchema: {
+        entity: z.string(),
+        subsidiary: z.string(),
+        tranDate: z.string(),
+        dueDate: z.string().optional(),
+        tranId: z.string().optional(),
+        memo: z.string().optional(),
+        currency: z.string().optional(),
+        exchangeRate: z.number().optional(),
+        externalId: z.string().optional(),
+        expense: z.array(z.any()).optional(),
+      } as any,
     },
     async ({
       entity,
