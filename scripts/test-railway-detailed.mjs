@@ -35,8 +35,6 @@ async function testRailway() {
 
     console.log(`📥 Response status: ${response.status}`);
     const responseText = await response.text();
-    console.log("📥 Response:");
-    console.log(responseText);
     
     // Parse SSE
     if (responseText.startsWith("event:")) {
@@ -46,17 +44,24 @@ async function testRailway() {
         const data = JSON.parse(dataLine.replace("data: ", ""));
         const resultText = data.result?.content?.[0]?.text;
         if (resultText) {
-          console.log("\n✅ Tool result:");
+          console.log("\n📋 Tool result:");
           console.log(resultText);
+          console.log();
           
-          // Check if params were transmitted
+          // Diagnostic
           if (resultText.includes("Missing required parameter: companyName")) {
-            console.log("\n❌ FAIL: Parameters NOT transmitted");
+            console.log("❌ FAIL: Parameters NOT transmitted");
+            console.log("The destructuring fix did NOT work on Railway");
             process.exit(1);
-          } else if (resultText.includes("Address")) {
-            console.log("\n✅ SUCCESS: Parameters transmitted (NetSuite needs address)");
+          } else if (resultText.includes("Address") || resultText.includes("address")) {
+            console.log("✅ SUCCESS: Parameters transmitted correctly!");
+            console.log("NetSuite is just asking for an address field");
+            console.log("This confirms the fix works on Railway ✅");
+          } else if (resultText.includes("Bad Request")) {
+            console.log("⚠️  UNCERTAIN: Got 400 Bad Request but can't determine cause");
+            console.log("Need to check Railway logs for detailed error");
           } else {
-            console.log("\n✅ Result received");
+            console.log("✅ Result received (check if vendor was created)");
           }
         }
       }

@@ -162,7 +162,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           const result = await client.post<unknown>("/vendor", body);
           return successResponse(result);
         } catch (error: any) {
-          return errorResponse(`Error creating vendor: ${error.message}`);
+          // Enhanced error message with more context
+          const errorMsg = error.message || String(error);
+          console.error("❌ [create_vendor] Error:", errorMsg);
+          return errorResponse(`Error creating vendor: ${errorMsg}`);
         }
       }
     );
