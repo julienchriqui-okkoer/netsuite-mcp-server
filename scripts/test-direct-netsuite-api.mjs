@@ -25,11 +25,11 @@ async function testDirectNetSuiteCall() {
     });
 
     const vendorData = {
-      companyName: "Test Vendor Direct API",
+      companyName: `Test Vendor Direct ${Date.now()}`,
       subsidiary: { id: "1" },
-      email: "test.direct.api@example.com",
+      email: `test.direct.${Date.now()}@example.com`,
       phone: "+33 1 23 45 67 89",
-      externalId: "DIRECT-API-TEST-001",
+      externalId: `DIRECT-API-${Date.now()}`,
       isPerson: false,
       addressbook: {
         items: [{

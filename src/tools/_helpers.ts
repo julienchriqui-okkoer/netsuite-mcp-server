@@ -4,13 +4,19 @@
 
 /**
  * Create a successful MCP tool response
+ * Handles NetSuite 204 No Content responses correctly
  */
 export function successResponse(data: unknown) {
+  // Handle undefined/null from 204 No Content responses
+  const textContent = data === undefined || data === null
+    ? JSON.stringify({ success: true })
+    : JSON.stringify(data, null, 2);
+    
   return {
     content: [
       {
         type: "text" as const,
-        text: JSON.stringify(data, null, 2),
+        text: textContent,
       },
     ],
   };

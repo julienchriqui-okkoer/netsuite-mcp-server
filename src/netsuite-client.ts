@@ -116,6 +116,18 @@ export class NetSuiteClient {
       );
     }
 
+    // Handle 204 No Content (create/update operations)
+    // NetSuite returns the new record ID in the Location header
+    if (response.status === 204) {
+      const location = response.headers.get("Location") || "";
+      const id = location.split("/").pop() || "unknown";
+      return {
+        success: true,
+        id,
+        location,
+      } as T;
+    }
+
     return json as T;
   }
 
