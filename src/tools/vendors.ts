@@ -139,9 +139,8 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           externalId: z.string().optional(),
         } as any,  // ← Type cast to avoid TS deep instantiation
       },
-      async (args: any) => {
+      async ({ companyName, subsidiary, email, externalId }: any) => {
         try {
-          const { companyName, subsidiary, email, externalId } = args;
           console.log("🔍 [create_vendor] Received params:", { companyName, subsidiary, email, externalId });
           
           // Validate required parameters
@@ -169,12 +168,18 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     );
   }
 
-  // Update vendor (supplier) - SIMPLIFIED VERSION
+  // Update vendor (supplier)
   if (isToolEnabled("vendors", "netsuite_update_vendor")) {
     server.registerTool(
       "netsuite_update_vendor",
       {
         description: "Update an existing NetSuite vendor. Required: id (string). Optional: companyName, email, externalId",
+        inputSchema: {
+          id: z.string(),
+          companyName: z.string().optional(),
+          email: z.string().optional(),
+          externalId: z.string().optional(),
+        } as any,
       },
       async ({ id, companyName, email, externalId }: any) => {
         try {
