@@ -36,11 +36,12 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
   server.registerTool(
     "netsuite_create_bill_payment",
     {
-      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: externalId (for idempotence), memo, currency, exchangeRate, applyList (object with apply array containing doc, apply=true, amount)",
+      description: "Create a NetSuite vendor payment (bill payment) and apply it to one or more vendor bills. Required parameters: entity (string, vendor ID), account (string, bank account ID), tranDate (string, YYYY-MM-DD). Optional: subsidiary (string, defaults to '1'), externalId (for idempotence), memo, currency, exchangeRate, applyList (object with apply array containing doc, apply=true, amount)",
       inputSchema: {
         entity: z.string(),
         account: z.string(),
         tranDate: z.string(),
+        subsidiary: z.string().optional(),
         externalId: z.string().optional(),
         memo: z.string().optional(),
         currency: z.string().optional(),
@@ -48,7 +49,7 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
         applyList: z.any().optional(),
       } as any,
     },
-    async ({ entity, account, tranDate, externalId, memo, currency, exchangeRate, applyList }: any) => {
+    async ({ entity, account, tranDate, subsidiary, externalId, memo, currency, exchangeRate, applyList }: any) => {
       try {
         // Validate required parameters
         if (!entity || typeof entity !== "string") {
@@ -65,6 +66,7 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           entity: { id: entity },
           account: { id: account },
           tranDate,
+          subsidiary: { id: subsidiary || "1" }, // Default to subsidiary 1
         };
 
         if (externalId) body.externalId = externalId;
