@@ -139,19 +139,24 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       },
       async () => {
         try {
-          // Query a sample of vendors to discover their custom forms
-          const query = `SELECT id, customform FROM vendor WHERE customform IS NOT NULL`;
+          // Get a sample of vendors via REST API (simpler than SuiteQL)
+          const vendors: any = await client.get<any>("/vendor", { limit: "50" });
+          const items = vendors?.items || [];
           
-          const result: any = await client.suiteql(query, 50); // Use client's limit param
-          const items = result?.items || [];
-          
-          // Extract unique form IDs
+          // Extract unique form IDs by fetching full vendor details
           const formIds = new Set<string>();
-          items.forEach((item: any) => {
-            if (item.customform) {
-              formIds.add(String(item.customform));
+          
+          for (const vendorRef of items.slice(0, 20)) { // Check first 20 vendors
+            try {
+              const vendor: any = await client.get<any>(`/vendor/${vendorRef.id}`);
+              if (vendor.customForm?.id) {
+                formIds.add(String(vendor.customForm.id));
+              }
+            } catch (e) {
+              // Skip vendor if error
+              continue;
             }
-          });
+          }
 
           const forms = Array.from(formIds).map((id) => ({
             id,
