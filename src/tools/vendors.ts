@@ -144,7 +144,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             SELECT DISTINCT customform AS formId
             FROM vendor
             WHERE customform IS NOT NULL
-            FETCH FIRST 50 ROWS ONLY
+            LIMIT 50
           `;
           
           const result: any = await client.suiteql(query);
@@ -217,7 +217,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           // Pre-flight check: if externalId is provided, check if vendor already exists (idempotency)
           if (externalId && typeof externalId === "string") {
             try {
-              const checkQuery = `SELECT id FROM vendor WHERE externalId = '${externalId.replace(/'/g, "''")}' FETCH FIRST 1 ROWS ONLY`;
+              const checkQuery = `SELECT id FROM vendor WHERE externalId = '${externalId.replace(/'/g, "''")}' LIMIT 1`;
               const existing: any = await client.suiteql(checkQuery);
               
               if (existing?.items && existing.items.length > 0) {
