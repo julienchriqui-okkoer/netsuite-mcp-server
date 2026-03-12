@@ -2,10 +2,12 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
+import { isToolEnabled } from "../config/tools-config.js";
 
 export function registerVendorTools(server: McpServer, client: NetSuiteClient): void {
   // List vendors with pagination and search
-  server.registerTool(
+  if (isToolEnabled("vendors", "netsuite_get_vendors")) {
+    server.registerTool(
     "netsuite_get_vendors",
     {
       description: "List NetSuite vendors (suppliers) with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
@@ -26,9 +28,11 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       }
     }
   );
+  }
 
   // Get single vendor by ID
-  server.registerTool(
+  if (isToolEnabled("vendors", "netsuite_get_vendor_by_id")) {
+    server.registerTool(
     "netsuite_get_vendor_by_id",
     {
       description: "Get a single NetSuite vendor by internal ID. Returns full vendor details with expanded sub-resources. Required parameter: id (string, NetSuite internal vendor ID)",
@@ -50,9 +54,11 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       }
     }
   );
+  }
 
   // Get latest vendors with Spendesk-compatible format
-  server.registerTool(
+  if (isToolEnabled("vendors", "netsuite_get_latest_vendors")) {
+    server.registerTool(
     "netsuite_get_latest_vendors",
     {
       description: "Get the most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID). Uses REST API (no SuiteQL required). Optional parameter: limit (number, default 5)",
@@ -117,5 +123,6 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       }
     }
   );
+  }
 }
 
