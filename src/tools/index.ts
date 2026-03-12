@@ -12,7 +12,6 @@ import { registerPaymentTools } from "./payments.js";
 import { registerVendorCreditTools } from "./vendor-credits.js";
 import { registerAnalyticsTools } from "./analytics.js";
 import { registerFileCabinetTools } from "./file-cabinet.js";
-import { registerVendorGetByIdTest } from "./vendor-get-test.js";
 
 dotenv.config();
 
@@ -61,17 +60,15 @@ export function registerAllTools(server: McpServer): void {
   try {
     const client = createNetSuiteClient();
     
-    // Register VendorBills FIRST to test if order matters
-    registerVendorBillTools(server, client);
-    registerVendorGetByIdTest(server, client); // Test exact copy
     registerVendorTools(server, client);
-    registerReferenceTools(server, client);
-    registerJournalEntryTools(server, client);
-    registerSuiteQLTools(server, client);
+    registerVendorBillTools(server, client);
     registerEmployeeTools(server, client);
     registerExpenseReportTools(server, client);
     registerPaymentTools(server, client);
     registerVendorCreditTools(server, client);
+    registerJournalEntryTools(server, client);
+    registerReferenceTools(server, client);
+    registerSuiteQLTools(server, client);
     registerAnalyticsTools(server, client);
     registerFileCabinetTools(server, client);
 

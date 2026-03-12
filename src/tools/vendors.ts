@@ -1,119 +1,80 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { buildPaginationQuery } from "../utils/pagination.js";
-import { z } from "zod";
+import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
 
 export function registerVendorTools(server: McpServer, client: NetSuiteClient): void {
+  // List vendors with pagination and search
   server.registerTool(
     "netsuite_get_vendors",
     {
-      description: "List NetSuite vendors (suppliers) with optional search and pagination.",
+      description: "List NetSuite vendors (suppliers) with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
     },
     async ({ limit, offset, q }: any) => {
       try {
         const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = {
-          ...pagination,
-        };
+        const params: Record<string, string> = { ...pagination };
+        
         if (q) {
           params.q = q;
         }
 
         const result = await client.get<unknown>("/vendor", params);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error listing vendors.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite vendors: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error listing vendors: ${error.message}`);
       }
     }
   );
 
-  // Get single vendor by ID - FIXED with destructuring
+  // Get single vendor by ID
   server.registerTool(
     "netsuite_get_vendor_by_id",
     {
-      description: "Get a single NetSuite vendor by internal ID. Requires parameter: id (string, NetSuite internal vendor ID)",
+      description: "Get a single NetSuite vendor by internal ID. Returns full vendor details with expanded sub-resources. Required parameter: id (string, NetSuite internal vendor ID)",
     },
     async ({ id }: any) => {
       try {
-        console.error(`[netsuite_get_vendor_by_id] Calling NetSuite with ID: ${id}`);
+        // Validate required parameter
+        const validation = validateRequired({ id }, ["id"]);
+        if (validation) return validation;
         
         const result = await client.get<unknown>(`/vendor/${id}`, {
           expandSubResources: "true",
         });
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
+        
+        return successResponse(result);
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error getting vendor.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite vendor: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error getting vendor: ${error.message}`);
       }
     }
   );
 
-  // NEW TOOL: Get latest vendors with Spendesk-compatible format
+  // Get latest vendors with Spendesk-compatible format
   server.registerTool(
     "netsuite_get_latest_vendors",
     {
-      description: "Get the 5 most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID). Uses REST API (no SuiteQL required).",
+      description: "Get the most recently created vendors in a Spendesk-compatible format (name, email, phone, address, VAT, currency, external ID). Uses REST API (no SuiteQL required). Optional parameter: limit (number, default 5)",
     },
-    async (args: any) => {
+    async ({ limit }: any) => {
       try {
-        const limitValue = args?.limit || 5;
-        
-        console.error(`[netsuite_get_latest_vendors] Fetching latest ${limitValue} vendors`);
+        const limitValue = limit || 5;
         
         // Step 1: Get vendor list (lighter call without full details)
         const pagination = buildPaginationQuery({ limit: 50, offset: 0 });
         const listResult: any = await client.get<any>("/vendor", pagination);
         
-        // Extract vendors from result
         const items = listResult.items || [];
-        
-        console.error(`[netsuite_get_latest_vendors] Retrieved ${items.length} vendors from list`);
         
         // Step 2: Sort by ID DESC (higher ID = more recent) and take top N
         const sortedVendorIds = items
-          .map((item: any) => ({ id: item.id, links: item.links }))
+          .map((item: any) => ({ id: item.id }))
           .sort((a: any, b: any) => {
             const idA = parseInt(a.id) || 0;
             const idB = parseInt(b.id) || 0;
             return idB - idA; // DESC order
           })
           .slice(0, limitValue);
-        
-        console.error(`[netsuite_get_latest_vendors] Selected top ${sortedVendorIds.length} vendor IDs:`, 
-          sortedVendorIds.map((v: any) => v.id).join(', '));
         
         // Step 3: Fetch full details for each vendor
         const vendors = [];
@@ -140,37 +101,18 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
               externalId: vendorDetail.externalId || null,
             });
           } catch (detailError: any) {
+            // Continue with next vendor if one fails
             console.error(`[netsuite_get_latest_vendors] Error fetching vendor ${vendorRef.id}:`, detailError.message);
-            // Continue with next vendor
           }
         }
 
-        console.error(`[netsuite_get_latest_vendors] Successfully retrieved ${vendors.length} vendor details`);
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({ 
-                vendors, 
-                count: vendors.length,
-                note: "Using REST API (no SuiteQL permissions required). Sorted by ID DESC (higher ID = more recent)."
-              }, null, 2),
-            },
-          ],
-        };
+        return successResponse({ 
+          vendors, 
+          count: vendors.length,
+          note: "Sorted by ID DESC (higher ID = more recent). Using REST API (no SuiteQL permissions required)."
+        });
       } catch (error: any) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error getting latest vendors.";
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error calling NetSuite latest vendors: ${message}`,
-            },
-          ],
-          isError: true,
-        };
+        return errorResponse(`Error getting latest vendors: ${error.message}`);
       }
     }
   );
