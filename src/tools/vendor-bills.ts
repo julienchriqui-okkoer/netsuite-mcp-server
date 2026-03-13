@@ -202,7 +202,8 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_create_vendor_bill",
     {
-      description: "Create a new NetSuite vendor bill with expense lines. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, externalId (for idempotence), expense (array of lines with account, amount, department, location, class, memo, taxCode)",
+      description:
+        "Create a new NetSuite vendor bill with expense lines. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, foreignAmount, vatAmount, taxCodeId, externalId (for idempotence), expense (array of lines with account, amount, department, location, class, memo, taxCode).",
       inputSchema: {
         entity: z.string(),
         subsidiary: z.string(),
@@ -210,8 +211,26 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         dueDate: z.string().optional(),
         tranId: z.string().optional(),
         memo: z.string().optional(),
-        currency: z.string().optional(),
-        exchangeRate: z.number().optional(),
+        currency: z
+          .string()
+          .optional()
+          .describe("NetSuite currency ID (1=EUR, 2=USD, 3=GBP)"),
+        exchangeRate: z
+          .number()
+          .optional()
+          .describe("Exchange rate to EUR (e.g. 0.8651 for USD)"),
+        foreignAmount: z
+          .number()
+          .optional()
+          .describe("Original amount in foreign currency"),
+        vatAmount: z
+          .number()
+          .optional()
+          .describe("VAT amount in EUR"),
+        taxCodeId: z
+          .string()
+          .optional()
+          .describe('NetSuite tax code ID (e.g. "VAT:S-FR")'),
         externalId: z.string().optional(),
         expense: z.array(z.any()).optional(),
       } as any,
@@ -225,6 +244,9 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
       memo,
       currency,
       exchangeRate,
+      foreignAmount,
+      vatAmount,
+      taxCodeId,
       externalId,
       expense,
     }: any) => {
@@ -250,14 +272,19 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         if (dueDate) body.dueDate = dueDate;
         if (tranId) body.tranId = tranId;
         if (memo) body.memo = memo;
-        if (currency) body.currency = { id: currency };
-        if (exchangeRate) body.exchangeRate = exchangeRate;
+        // Currency / FX: only set when meaningfully different from defaults
+        if (currency && currency !== "1") {
+          body.currency = { id: currency };
+        }
+        if (typeof exchangeRate === "number" && exchangeRate !== 1) {
+          body.exchangeRate = exchangeRate;
+        }
         if (externalId) body.externalId = externalId;
 
         // NetSuite expects: expense: { items: [...] }
         if (expense && Array.isArray(expense) && expense.length > 0) {
           body.expense = {
-            items: expense.map((line: any) => {
+            items: expense.map((line: any, index: number) => {
               const expenseLine: any = {
                 account: { id: line.account },
                 amount: line.amount,
@@ -267,6 +294,18 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
               if (line.class) expenseLine.class = { id: line.class };
               if (line.memo) expenseLine.memo = line.memo;
               if (line.taxCode) expenseLine.taxCode = { id: line.taxCode };
+
+              // Top-level VAT support: apply to each line if provided
+              if (vatAmount && vatAmount > 0 && taxCodeId) {
+                expenseLine.taxCode = { id: taxCodeId };
+                expenseLine.taxAmount = vatAmount;
+              }
+
+              // foreignAmount for first expense line when provided
+              if (index === 0 && typeof foreignAmount === "number") {
+                expenseLine.foreignAmount = foreignAmount;
+              }
+
               return expenseLine;
             })
           };

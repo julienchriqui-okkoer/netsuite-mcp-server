@@ -674,10 +674,96 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             raw: result,
           });
         } catch (error: any) {
-          const errorMsg = error.message || String(error);
-          console.error("❌ [create_vendor] Error:", errorMsg);
+          const msg = parseNetSuiteError(error);
+          console.error("❌ [create_vendor] Error:", msg);
+
+          if (
+            msg.includes("already a vendor using that entity name") ||
+            msg.toLowerCase().includes("unique entity name")
+          ) {
+            try {
+              const safeName = companyName.replace(/"/g, '\\"').split(" ")[0];
+
+              const searchResult: any = await withRetry(
+                () =>
+                  client.get<any>("/vendor", {
+                    q: `companyname START_WITH "${safeName}"`,
+                    limit: "10",
+                  }),
+                `search_vendor_by_name ${companyName}`
+              );
+              const items = searchResult?.items ?? [];
+
+              const enriched = await Promise.all(
+                items.slice(0, 5).map((item: any) =>
+                  withRetry(
+                    () => client.get<any>(`/vendor/${item.id}`),
+                    `search_vendor_by_name detail ${item.id}`
+                  )
+                    .then((v: any) => ({
+                      id: v.id,
+                      companyName: v.companyName,
+                      externalId: v.externalId,
+                    }))
+                    .catch(() => null)
+                )
+              );
+
+              const match = enriched.find(
+                (v: any) =>
+                  v &&
+                  typeof v.companyName === "string" &&
+                  v.companyName.toLowerCase() === companyName.toLowerCase()
+              );
+
+              if (match) {
+                if (externalId && !match.externalId) {
+                  await withRetry(
+                    () =>
+                      client.patch<any>(`/vendor/${match.id}`, {
+                        externalId,
+                      }),
+                    `link_externalId vendor ${match.id}`
+                  );
+                }
+
+                return successResponse({
+                  created: false,
+                  found: true,
+                  linkedExisting: Boolean(externalId && !match.externalId),
+                  id: match.id,
+                  companyName: match.companyName,
+                  message: `Vendor "${companyName}" already existed (id: ${match.id}).${
+                    externalId && !match.externalId
+                      ? ` ExternalId "${externalId}" linked.`
+                      : ""
+                  }`,
+                });
+              }
+
+              return successResponse({
+                created: false,
+                found: false,
+                linkedExisting: false,
+                id: null,
+                companyName,
+                manualAction:
+                  `Vendor "${companyName}" exists in NetSuite but could not be auto-linked. ` +
+                  `Find its ID in NetSuite UI and call: ` +
+                  (externalId
+                    ? `netsuite_update_vendor(id="<id>", externalId="${externalId}")`
+                    : `netsuite_update_vendor(id="<id>", externalId="<desired_externalId>")`),
+              });
+            } catch (linkError: any) {
+              const linkMsg = parseNetSuiteError(linkError);
+              return errorResponse(
+                `Error creating vendor '${companyName}': name appears to be already taken, and auto-linking failed: ${linkMsg}`
+              );
+            }
+          }
+
           return errorResponse(
-            `Error creating vendor '${companyName}': ${errorMsg}. If this is a 400 validation error, try calling netsuite_get_vendor_forms first to discover the correct customForm ID and required custom fields.`
+            `Error creating vendor '${companyName}': ${msg}. If this is a 400 validation error, try calling netsuite_get_vendor_forms first to discover the correct customForm ID and required custom fields.`
           );
         }
       }
