@@ -263,14 +263,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           }
           const maxRows = typeof limit === "number" ? limit : 10;
           const safeName = name.replace(/"/g, '\\"');
-          const subFilter =
-            subsidiaryId && typeof subsidiaryId === "string"
-              ? ` AND subsidiary IS "${subsidiaryId}"`
-              : "";
 
           const listRes: any = await client.get<any>("/vendor", {
-            q: `companyName CONTAINS "${safeName}"${subFilter}`,
-            limit: String(maxRows),
+            q: `entityId STARTS WITH "${safeName}"`,
+            limit: String(maxRows * 3),
           });
           const items = listRes?.items ?? [];
 
@@ -281,6 +277,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                 .then((v: any) => ({
                   id: v.id,
                   companyName: v.companyName,
+                  entityId: v.entityId,
                   externalId: v.externalId,
                   email: v.email,
                   subsidiary: v.subsidiary?.id ?? v.subsidiary,
@@ -289,9 +286,16 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             )
           );
 
+          const filtered =
+            subsidiaryId && typeof subsidiaryId === "string"
+              ? vendors.filter((v: any) => v.subsidiary === subsidiaryId)
+              : vendors;
+
+          const sliced = filtered.slice(0, maxRows);
+
           return successResponse({
-            count: vendors.length,
-            vendors,
+            count: sliced.length,
+            vendors: sliced,
             source: "rql",
           });
         } catch (e: any) {

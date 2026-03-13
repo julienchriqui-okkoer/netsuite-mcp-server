@@ -53,7 +53,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
             const maxRows = typeof limit === "number" ? limit : 50;
             const offsetVal = typeof offset === "number" ? offset : 0;
             const type = rest.type as string | undefined;
-            const typeFilter = type ? `type IS "${type}"` : "";
+            const typeFilter = type ? `acctType IS "${type}"` : "";
 
             const listParams: Record<string, string> = {
               limit: String(maxRows),
@@ -176,9 +176,9 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           });
         }
 
-        // 2) RQL on account list: type IS "Bank"
+        // 2) RQL on account list: acctType IS "Bank"
         const listRes: any = await client.get<any>("/account", {
-          q: `type IS "Bank"`,
+          q: `acctType IS "Bank"`,
           limit: "100",
         });
         const items = listRes?.items ?? [];
