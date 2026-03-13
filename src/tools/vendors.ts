@@ -5,6 +5,7 @@ import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
 import { parseNetSuiteError } from "../lib/errors.js";
+import { withRetry } from "../lib/retry.js";
 import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
 import { isToolEnabled } from "../config/tools-config.js";
 
@@ -55,7 +56,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           // REST path: with q, fetch more and filter client-side; without q, plain pagination
           if (q && typeof q === "string" && q.trim().length > 0) {
             const restLimit = 500;
-            const page: any = await client.get<any>("/vendor", { limit: String(restLimit), offset: "0" });
+          const page: any = await withRetry(
+            () => client.get<any>("/vendor", { limit: String(restLimit), offset: "0" }),
+            "get_vendors REST list"
+          );
             const items = page?.items || [];
             const qLower = q.toLowerCase().trim();
             const filtered = items.filter(
@@ -77,7 +81,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           }
 
           const pagination = buildPaginationQuery({ limit, offset });
-          const result = await client.get<unknown>("/vendor", pagination);
+          const result = await withRetry(
+            () => client.get<unknown>("/vendor", pagination),
+            "get_vendors REST pagination"
+          );
           return successResponse(result);
         } catch (error: any) {
           return errorResponse(`Error listing vendors: ${error.message}`);
@@ -152,7 +159,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           }
 
           // REST fallback: fetch a page and filter
-          const page: any = await client.get<any>("/vendor", { limit: "1000", offset: "0" });
+          const page: any = await withRetry(
+            () => client.get<any>("/vendor", { limit: "1000", offset: "0" }),
+            "find_vendor REST list"
+          );
           const items = page?.items || [];
           if (externalId && typeof externalId === "string") {
             const v = items.find((x: any) => x.externalId === externalId);
@@ -199,7 +209,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     },
     async () => {
       try {
-        const meta: any = await client.get<any>("/vendor/metadata-catalog");
+        const meta: any = await withRetry(
+          () => client.get<any>("/vendor/metadata-catalog"),
+          "get_vendor_filterable_fields metadata"
+        );
 
         const properties =
           meta?.properties ??
@@ -251,17 +264,24 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             return errorResponse("Missing required parameter: externalId (string)");
           }
 
-          const listRes: any = await client.get<any>("/vendor", {
-            q: `externalId IS "${externalId}"`,
-            limit: "1",
-          });
+          const listRes: any = await withRetry(
+            () =>
+              client.get<any>("/vendor", {
+                q: `externalId IS "${externalId}"`,
+                limit: "1",
+              }),
+            "get_vendor_by_external_id list"
+          );
           const items = listRes?.items ?? [];
 
           if (items.length === 0) {
             return successResponse({ found: false, vendor: null, source: "rql" });
           }
 
-          const vendorDetail: any = await client.get<any>(`/vendor/${items[0].id}`);
+          const vendorDetail: any = await withRetry(
+            () => client.get<any>(`/vendor/${items[0].id}`),
+            "get_vendor_by_external_id detail"
+          );
 
           return successResponse({
             found: true,
@@ -306,16 +326,25 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           const maxRows = typeof limit === "number" ? limit : 10;
           const safeName = name.replace(/"/g, '\\"');
 
-          const listRes: any = await client.get<any>("/vendor", {
-            q: `entityId START_WITH "${safeName}"`,
-            limit: String(maxRows * 3),
-          });
+          const listRes: any = await withRetry(
+            async () => {
+              // Try lowercase field name first (companyname), then camelCase (companyName)
+              const primary = await client.get<any>("/vendor", {
+                q: `companyname START_WITH "${safeName}"`,
+                limit: String(maxRows * 3),
+              });
+              return primary;
+            },
+            "search_vendors_by_name list"
+          );
           const items = listRes?.items ?? [];
 
           const vendors = await Promise.all(
             items.map((item: any) =>
-              client
-                .get<any>(`/vendor/${item.id}`)
+              withRetry(
+                () => client.get<any>(`/vendor/${item.id}`),
+                "search_vendors_by_name detail"
+              )
                 .then((v: any) => ({
                   id: v.id,
                   companyName: v.companyName,
@@ -366,9 +395,13 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           return errorResponse("Missing required parameter: id (string)");
         }
         
-        const result = await client.get<unknown>(`/vendor/${id}`, {
-          expandSubResources: "true",
-        });
+        const result = await withRetry(
+          () =>
+            client.get<unknown>(`/vendor/${id}`, {
+              expandSubResources: "true",
+            }),
+          `get_vendor ${id}`
+        );
         
         return successResponse(result);
       } catch (error: any) {
@@ -391,7 +424,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         
         // Step 1: Get vendor list (lighter call without full details)
         const pagination = buildPaginationQuery({ limit: 50, offset: 0 });
-        const listResult: any = await client.get<any>("/vendor", pagination);
+        const listResult: any = await withRetry(
+          () => client.get<any>("/vendor", pagination),
+          "get_latest_vendors list"
+        );
         
         const items = listResult.items || [];
         
@@ -409,9 +445,13 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
         const vendors = [];
         for (const vendorRef of sortedVendorIds) {
           try {
-            const vendorDetail: any = await client.get<any>(`/vendor/${vendorRef.id}`, {
-              expandSubResources: "true",
-            });
+            const vendorDetail: any = await withRetry(
+              () =>
+                client.get<any>(`/vendor/${vendorRef.id}`, {
+                  expandSubResources: "true",
+                }),
+              `get_latest_vendors detail ${vendorRef.id}`
+            );
             
             // Step 4: Transform to Spendesk-compatible format
             vendors.push({
@@ -458,7 +498,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
       async () => {
         try {
           // Get a sample of vendors via REST API (simpler than SuiteQL)
-          const vendors: any = await client.get<any>("/vendor", { limit: "50" });
+          const vendors: any = await withRetry(
+            () => client.get<any>("/vendor", { limit: "50" }),
+            "get_vendor_forms list"
+          );
           const items = vendors?.items || [];
           
           // Extract unique form IDs by fetching full vendor details
@@ -466,7 +509,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           
           for (const vendorRef of items.slice(0, 20)) { // Check first 20 vendors
             try {
-              const vendor: any = await client.get<any>(`/vendor/${vendorRef.id}`);
+              const vendor: any = await withRetry(
+                () => client.get<any>(`/vendor/${vendorRef.id}`),
+                "get_vendor_forms detail"
+              );
               if (vendor.customForm?.id) {
                 formIds.add(String(vendor.customForm.id));
               }
@@ -616,7 +662,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             };
           }
 
-          const result: any = await client.post<unknown>("/vendor", body);
+          const result: any = await withRetry(
+            () => client.post<unknown>("/vendor", body),
+            "create_vendor"
+          );
           const id = (result as any)?.id ?? (result as any)?.location?.split("/").pop();
           return successResponse({
             created: true,

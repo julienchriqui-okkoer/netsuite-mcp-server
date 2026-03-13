@@ -5,6 +5,7 @@ import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
 import { parseNetSuiteError } from "../lib/errors.js";
+import { withRetry } from "../lib/retry.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorBillTools(server: McpServer, client: NetSuiteClient): void {
@@ -33,7 +34,10 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           params.status = status;
         }
 
-        const result = await client.get<unknown>("/vendorBill", params);
+        const result = await withRetry(
+          () => client.get<unknown>("/vendorBill", params),
+          "get_vendor_bills"
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error listing vendor bills: ${error.message}`);
@@ -57,9 +61,13 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           return errorResponse("Missing required parameter: id (string)");
         }
         
-        const result = await client.get<unknown>(`/vendorBill/${id}`, {
-          expandSubResources: "true",
-        });
+        const result = await withRetry(
+          () =>
+            client.get<unknown>(`/vendorBill/${id}`, {
+              expandSubResources: "true",
+            }),
+          `get_vendor_bill ${id}`
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error getting vendor bill: ${error.message}`);
@@ -83,17 +91,24 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           return errorResponse("Missing required parameter: externalId (string)");
         }
 
-        const listRes: any = await client.get<any>("/vendorBill", {
-          q: `externalId IS "${externalId}"`,
-          limit: "1",
-        });
+        const listRes: any = await withRetry(
+          () =>
+            client.get<any>("/vendorBill", {
+              q: `externalId IS "${externalId}"`,
+              limit: "1",
+            }),
+          "get_vendor_bill_by_external_id list"
+        );
         const items = listRes?.items ?? [];
 
         if (items.length === 0) {
           return successResponse({ found: false, bill: null, source: "rql" });
         }
 
-        const billDetail: any = await client.get<any>(`/vendorBill/${items[0].id}`);
+        const billDetail: any = await withRetry(
+          () => client.get<any>(`/vendorBill/${items[0].id}`),
+          "get_vendor_bill_by_external_id detail"
+        );
 
         const bill = {
           id: billDetail.id,
@@ -156,7 +171,10 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           return successResponse({ vendorId, count: bills.length, bills, source: "suiteql" });
         }
 
-        const page: any = await client.get<any>("/vendorBill", { limit: "1000", offset: "0" });
+        const page: any = await withRetry(
+          () => client.get<any>("/vendorBill", { limit: "1000", offset: "0" }),
+          "get_vendor_bills_for_vendor list"
+        );
         const items = page?.items || [];
         const filtered = items.filter((b: any) => {
           if (String(b.entity?.id ?? b.entity) !== String(vendorId)) return false;
@@ -254,7 +272,10 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           };
         }
 
-        const result = await client.post<unknown>("/vendorBill", body);
+        const result = await withRetry(
+          () => client.post<unknown>("/vendorBill", body),
+          "create_vendor_bill"
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error creating vendor bill: ${error.message}`);

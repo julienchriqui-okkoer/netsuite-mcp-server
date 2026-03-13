@@ -4,6 +4,7 @@ import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { SUBSIDIARY_DEFAULT_BANK_ACCOUNTS } from "../config/subsidiary-bank-config.js";
+import { withRetry } from "../lib/retry.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 const sessionBankCache: Record<string, string> = {};
@@ -18,9 +19,13 @@ async function resolveBankAccountId(
   }
 
   try {
-    const vendor: any = await client.get<any>(`/vendor/${entityId}`, {
-      expandSubResources: "false",
-    });
+    const vendor: any = await withRetry(
+      () =>
+        client.get<any>(`/vendor/${entityId}`, {
+          expandSubResources: "false",
+        }),
+      `resolveBankAccountId vendor ${entityId}`
+    );
     const subsidiaryId = vendor?.subsidiary?.id;
     const subsidiaryName = vendor?.subsidiary?.refName || vendor?.subsidiary?.name;
 
@@ -101,7 +106,10 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           params.q = q;
         }
 
-        const result = await client.get<unknown>("/vendorPayment", params);
+        const result = await withRetry(
+          () => client.get<unknown>("/vendorPayment", params),
+          "get_bill_payments"
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error listing bill payments: ${error.message}`);
@@ -124,7 +132,10 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           return errorResponse("Missing required parameter: id (string, payment ID)");
         }
 
-        const result = await client.get<unknown>(`/vendorPayment/${id}`);
+        const result = await withRetry(
+          () => client.get<unknown>(`/vendorPayment/${id}`),
+          `get_bill_payment ${id}`
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error getting bill payment: ${error.message}`);
@@ -186,7 +197,10 @@ export function registerPaymentTools(server: McpServer, client: NetSuiteClient):
           };
         }
 
-        const result = await client.post<unknown>("/vendorPayment", body);
+        const result = await withRetry(
+          () => client.post<unknown>("/vendorPayment", body),
+          "create_bill_payment"
+        );
         return successResponse(result);
       } catch (error: any) {
         return errorResponse(`Error creating bill payment: ${error.message}`);

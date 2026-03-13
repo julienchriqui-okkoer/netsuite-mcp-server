@@ -6,6 +6,7 @@ import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { SUBSIDIARY_DEFAULT_BANK_ACCOUNTS } from "../config/subsidiary-bank-config.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
 import { parseNetSuiteError } from "../lib/errors.js";
+import { withRetry } from "../lib/retry.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerReferenceTools(server: McpServer, client: NetSuiteClient): void {
@@ -63,13 +64,18 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
               listParams.q = typeFilter;
             }
 
-            const listRes: any = await client.get<any>("/account", listParams);
+            const listRes: any = await withRetry(
+              () => client.get<any>("/account", listParams),
+              "get_accounts list"
+            );
             const items = listRes?.items ?? [];
 
             const accounts = await Promise.all(
               items.map((item: any) =>
-                client
-                  .get<any>(`/account/${item.id}`)
+                withRetry(
+                  () => client.get<any>(`/account/${item.id}`),
+                  "get_accounts detail"
+                )
                   .then((a: any) => ({
                     id: a.id,
                     acctnumber: a.acctNumber,
@@ -100,7 +106,10 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
             params[key] = String(value);
           });
 
-          const result = await client.get<unknown>(path, params);
+          const result = await withRetry(
+            () => client.get<unknown>(path, params),
+            name
+          );
           return successResponse(result);
         } catch (error: any) {
           return errorResponse(
@@ -160,7 +169,10 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
         // 1) Config map shortcut
         const configAccount = SUBSIDIARY_DEFAULT_BANK_ACCOUNTS[subsidiaryId];
         if (configAccount) {
-          const account: any = await client.get<any>(`/account/${configAccount}`);
+          const account: any = await withRetry(
+            () => client.get<any>(`/account/${configAccount}`),
+            "get_bank_accounts_by_subsidiary config account"
+          );
           return successResponse({
             subsidiaryId,
             source: "config",
@@ -177,16 +189,22 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
         }
 
         // 2) RQL on account list: accttype IS "Bank"
-        const listRes: any = await client.get<any>("/account", {
-          q: `accttype IS "Bank"`,
-          limit: "100",
-        });
+        const listRes: any = await withRetry(
+          () =>
+            client.get<any>("/account", {
+              q: `accttype IS "Bank"`,
+              limit: "100",
+            }),
+          "get_bank_accounts_by_subsidiary list"
+        );
         const items = listRes?.items ?? [];
 
         const accounts = await Promise.all(
           items.map((item: any) =>
-            client
-              .get<any>(`/account/${item.id}`)
+            withRetry(
+              () => client.get<any>(`/account/${item.id}`),
+              "get_bank_accounts_by_subsidiary detail"
+            )
               .then((a: any) => ({
                 id: a.id,
                 acctnumber: a.acctNumber,
