@@ -33,6 +33,7 @@ export const TOOLS_CONFIG = {
     netsuite_get_currencies: true,
     netsuite_get_locations: true,
     netsuite_get_classifications: true,
+    netsuite_get_bank_accounts_by_subsidiary: true,
   },
   
   journalEntries: {

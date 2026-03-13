@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorBillTools(server: McpServer, client: NetSuiteClient): void {
@@ -80,37 +81,42 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           return errorResponse("Missing required parameter: externalId (string)");
         }
 
-        const escaped = externalId.replace(/'/g, "''");
-        const query = `
-          SELECT id, tranId, externalId, entity, tranDate, total
-          FROM transaction
-          WHERE externalId = '${escaped}'
-            AND type = 'VendBill'
-        `;
-
-        const result: any = await client.suiteql(query, 1);
-        const items = result?.items || [];
-
-        if (!items.length) {
+        if (await canUseSuiteQL(client)) {
+          const escaped = externalId.replace(/'/g, "''");
+          const result: any = await client.suiteql(
+            `SELECT id, tranId, externalId, entity, tranDate, total FROM transaction WHERE externalId = '${escaped}' AND type = 'VendBill'`,
+            1
+          );
+          const items = result?.items || [];
+          if (!items.length) return successResponse({ found: false, bill: null });
+          const row = items[0];
           return successResponse({
-            found: false,
-            bill: null,
+            found: true,
+            bill: {
+              id: row.id,
+              tranId: row.tranid ?? row.tranId,
+              externalId: row.externalid ?? row.externalId,
+              entity: row.entity,
+              tranDate: row.trandate ?? row.tranDate,
+              total: row.total,
+            },
           });
         }
 
-        const row = items[0];
-        const bill = {
-          id: row.id,
-          tranId: row.tranid ?? row.tranId,
-          externalId: row.externalid ?? row.externalId,
-          entity: row.entity,
-          tranDate: row.trandate ?? row.tranDate,
-          total: row.total,
-        };
-
+        const page: any = await client.get<any>("/vendorBill", { limit: "1000", offset: "0" });
+        const items = page?.items || [];
+        const bill = items.find((b: any) => b.externalId === externalId);
+        if (!bill) return successResponse({ found: false, bill: null });
         return successResponse({
           found: true,
-          bill,
+          bill: {
+            id: bill.id,
+            tranId: bill.tranId,
+            externalId: bill.externalId,
+            entity: bill.entity?.id ?? bill.entity,
+            tranDate: bill.tranDate,
+            total: bill.total,
+          },
         });
       } catch (error: any) {
         return errorResponse(`Error getting vendor bill by externalId: ${error.message}`);
@@ -136,46 +142,48 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         if (!vendorId || typeof vendorId !== "string") {
           return errorResponse("Missing required parameter: vendorId (string)");
         }
-
-        const whereParts: string[] = [];
-        whereParts.push("type = 'VendBill'");
-        whereParts.push(`entity = ${vendorId}`);
-
-        if (from && typeof from === "string") {
-          whereParts.push(`tranDate >= DATE '${from}'`);
-        }
-        if (to && typeof to === "string") {
-          whereParts.push(`tranDate <= DATE '${to}'`);
-        }
-
-        const whereClause = whereParts.join(" AND ");
-
-        const query = `
-          SELECT id, tranId, externalId, tranDate, dueDate, total, status
-          FROM transaction
-          WHERE ${whereClause}
-          ORDER BY tranDate DESC
-        `;
-
         const maxRows = typeof limit === "number" ? limit : 50;
-        const result: any = await client.suiteql(query, maxRows);
-        const items = result?.items || [];
 
-        const bills = items.map((row: any) => ({
+        if (await canUseSuiteQL(client)) {
+          const whereParts: string[] = ["type = 'VendBill'", `entity = ${vendorId}`];
+          if (from && typeof from === "string") whereParts.push(`tranDate >= DATE '${from}'`);
+          if (to && typeof to === "string") whereParts.push(`tranDate <= DATE '${to}'`);
+          const result: any = await client.suiteql(
+            `SELECT id, tranId, externalId, tranDate, dueDate, total, status FROM transaction WHERE ${whereParts.join(" AND ")} ORDER BY tranDate DESC`,
+            maxRows
+          );
+          const items = result?.items || [];
+          const bills = items.map((row: any) => ({
+            id: row.id,
+            tranId: row.tranid ?? row.tranId,
+            externalId: row.externalid ?? row.externalId,
+            tranDate: row.trandate ?? row.tranDate,
+            dueDate: row.duedate ?? row.dueDate,
+            total: row.total,
+            status: row.status,
+          }));
+          return successResponse({ vendorId, count: bills.length, bills, source: "suiteql" });
+        }
+
+        const page: any = await client.get<any>("/vendorBill", { limit: "1000", offset: "0" });
+        const items = page?.items || [];
+        const filtered = items.filter((b: any) => {
+          if (String(b.entity?.id ?? b.entity) !== String(vendorId)) return false;
+          if (from && (b.tranDate || "") < from) return false;
+          if (to && (b.tranDate || "") > to) return false;
+          return true;
+        });
+        const sorted = filtered.sort((a: any, b: any) => String(b.tranDate || "").localeCompare(String(a.tranDate || "")));
+        const bills = sorted.slice(0, maxRows).map((row: any) => ({
           id: row.id,
-          tranId: row.tranid ?? row.tranId,
-          externalId: row.externalid ?? row.externalId,
-          tranDate: row.trandate ?? row.tranDate,
-          dueDate: row.duedate ?? row.dueDate,
+          tranId: row.tranId,
+          externalId: row.externalId,
+          tranDate: row.tranDate,
+          dueDate: row.dueDate,
           total: row.total,
           status: row.status,
         }));
-
-        return successResponse({
-          vendorId,
-          count: bills.length,
-          bills,
-        });
+        return successResponse({ vendorId, count: bills.length, bills, source: "rest-filter" });
       } catch (error: any) {
         return errorResponse(`Error getting vendor bills for vendor: ${error.message}`);
       }

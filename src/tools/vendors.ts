@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
 import { isToolEnabled } from "../config/tools-config.js";
 
@@ -9,26 +10,182 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
   // List vendors with pagination and search
   if (isToolEnabled("vendors", "netsuite_get_vendors")) {
     server.registerTool(
-    "netsuite_get_vendors",
-    {
-      description: "List NetSuite vendors (suppliers) with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
-    },
-    async ({ limit, offset, q }: any) => {
-      try {
-        const pagination = buildPaginationQuery({ limit, offset });
-        const params: Record<string, string> = { ...pagination };
-        
-        if (q) {
-          params.q = q;
-        }
+      "netsuite_get_vendors",
+      {
+        description:
+          "List NetSuite vendors (suppliers) with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query on companyName, via SuiteQL when provided).",
+        inputSchema: {
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+          q: z.string().optional(),
+        } as any,
+      },
+      async ({ limit, offset, q }: any) => {
+        try {
+          const maxRows = typeof limit === "number" ? limit : 50;
+          const startOffset = typeof offset === "number" ? offset : 0;
 
-        const result = await client.get<unknown>("/vendor", params);
-        return successResponse(result);
-      } catch (error: any) {
-        return errorResponse(`Error listing vendors: ${error.message}`);
+          // If search query provided and SuiteQL available, use SuiteQL
+          if (q && typeof q === "string" && q.trim().length > 0 && (await canUseSuiteQL(client))) {
+            const safeQ = q.replace(/'/g, "''");
+            const query = `
+              SELECT id, companyName, externalId, email
+              FROM vendor 
+              WHERE LOWER(companyName) LIKE LOWER('%${safeQ}%')
+                AND isInactive = 'F'
+            `;
+            const suiteqlResult: any = await client.suiteql(query, maxRows, startOffset);
+            const items = suiteqlResult?.items || [];
+            const vendors = items.map((row: any) => ({
+              id: row.id,
+              companyName: row.companyname ?? row.companyName,
+              externalId: row.externalid ?? row.externalId,
+              email: row.email,
+            }));
+            return successResponse({
+              vendors,
+              count: vendors.length,
+              source: "suiteql",
+              note: "Filtered by companyName using SuiteQL.",
+            });
+          }
+
+          // REST path: with q, fetch more and filter client-side; without q, plain pagination
+          if (q && typeof q === "string" && q.trim().length > 0) {
+            const restLimit = 500;
+            const page: any = await client.get<any>("/vendor", { limit: String(restLimit), offset: "0" });
+            const items = page?.items || [];
+            const qLower = q.toLowerCase().trim();
+            const filtered = items.filter(
+              (v: any) => (v.companyName || "").toLowerCase().includes(qLower) && v.isInactive !== true
+            );
+            const sliced = filtered.slice(startOffset, startOffset + maxRows);
+            const vendors = sliced.map((v: any) => ({
+              id: v.id,
+              companyName: v.companyName,
+              externalId: v.externalId,
+              email: v.email,
+            }));
+            return successResponse({
+              vendors,
+              count: vendors.length,
+              source: "rest-filter",
+              note: "SuiteQL not available; filtered by companyName from REST list.",
+            });
+          }
+
+          const pagination = buildPaginationQuery({ limit, offset });
+          const result = await client.get<unknown>("/vendor", pagination);
+          return successResponse(result);
+        } catch (error: any) {
+          return errorResponse(`Error listing vendors: ${error.message}`);
+        }
       }
-    }
-  );
+    );
+  }
+
+  // Find vendor by externalId / name (multi-level match for deduplication)
+  if (isToolEnabled("vendors", "netsuite_find_vendor")) {
+    server.registerTool(
+      "netsuite_find_vendor",
+      {
+        description:
+          "Find a vendor using Spendesk-like 3-level matching: (1) externalId, (2) exact name (case-insensitive). Optional subsidiaryId filter. Returns { found, matchLevel, vendors }.",
+        inputSchema: {
+          externalId: z.string().optional(),
+          name: z.string().optional(),
+          subsidiaryId: z.string().optional(),
+        } as any,
+      },
+      async ({ externalId, name, subsidiaryId }: any) => {
+        try {
+          const useSuiteQL = await canUseSuiteQL(client);
+
+          if (useSuiteQL) {
+            if (externalId && typeof externalId === "string") {
+              const safeExt = externalId.replace(/'/g, "''");
+              const where: string[] = [`externalId = '${safeExt}'`];
+              if (subsidiaryId && typeof subsidiaryId === "string") where.push(`subsidiary = ${subsidiaryId}`);
+              const res: any = await client.suiteql(
+                `SELECT id, companyName, externalId, email, subsidiary FROM vendor WHERE ${where.join(" AND ")}`,
+                1
+              );
+              const items = res?.items || [];
+              if (items.length > 0) {
+                const v = items[0];
+                return successResponse({
+                  found: true,
+                  matchLevel: "externalId",
+                  vendors: [{
+                    id: v.id,
+                    companyName: v.companyname ?? v.companyName,
+                    externalId: v.externalid ?? v.externalId,
+                    email: v.email,
+                    subsidiary: v.subsidiary,
+                  }],
+                });
+              }
+            }
+            if (name && typeof name === "string") {
+              const safeName = name.replace(/'/g, "''");
+              const where: string[] = [`LOWER(companyName) = LOWER('${safeName}')`];
+              if (subsidiaryId && typeof subsidiaryId === "string") where.push(`subsidiary = ${subsidiaryId}`);
+              const res: any = await client.suiteql(
+                `SELECT id, companyName, externalId, email, subsidiary FROM vendor WHERE ${where.join(" AND ")}`,
+                5
+              );
+              const items = res?.items || [];
+              if (items.length > 0) {
+                const vendors = items.map((v: any) => ({
+                  id: v.id,
+                  companyName: v.companyname ?? v.companyName,
+                  externalId: v.externalid ?? v.externalId,
+                  email: v.email,
+                  subsidiary: v.subsidiary,
+                }));
+                return successResponse({ found: true, matchLevel: "name", vendors });
+              }
+            }
+            return successResponse({ found: false, matchLevel: "none", vendors: [] });
+          }
+
+          // REST fallback: fetch a page and filter
+          const page: any = await client.get<any>("/vendor", { limit: "1000", offset: "0" });
+          const items = page?.items || [];
+          if (externalId && typeof externalId === "string") {
+            const v = items.find((x: any) => x.externalId === externalId);
+            if (v) {
+              const subOk = !subsidiaryId || String(v.subsidiary?.id ?? v.subsidiary) === String(subsidiaryId);
+              if (subOk) {
+                return successResponse({
+                  found: true,
+                  matchLevel: "externalId",
+                  vendors: [{ id: v.id, companyName: v.companyName, externalId: v.externalId, email: v.email, subsidiary: v.subsidiary }],
+                });
+              }
+            }
+          }
+          if (name && typeof name === "string") {
+            const nameLower = name.toLowerCase();
+            const matches = items.filter((x: any) => (x.companyName || "").toLowerCase() === nameLower);
+            const subFilter = subsidiaryId
+              ? matches.filter((x: any) => String(x.subsidiary?.id ?? x.subsidiary) === String(subsidiaryId))
+              : matches;
+            const list = (subFilter.length ? subFilter : matches).slice(0, 5).map((v: any) => ({
+              id: v.id,
+              companyName: v.companyName,
+              externalId: v.externalId,
+              email: v.email,
+              subsidiary: v.subsidiary,
+            }));
+            if (list.length > 0) return successResponse({ found: true, matchLevel: "name", vendors: list });
+          }
+          return successResponse({ found: false, matchLevel: "none", vendors: [] });
+        } catch (error: any) {
+          return errorResponse(`Error finding vendor: ${error.message}`);
+        }
+      }
+    );
   }
 
   // Get single vendor by ID
@@ -215,15 +372,13 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
             return errorResponse("Missing required parameter: subsidiary (string)");
           }
 
-          // Pre-flight check: if externalId is provided, check if vendor already exists (idempotency)
-          if (externalId && typeof externalId === "string") {
+          // Pre-flight idempotency: if SuiteQL available and externalId provided, check for existing
+          if (externalId && typeof externalId === "string" && (await canUseSuiteQL(client))) {
             try {
               const checkQuery = `SELECT id FROM vendor WHERE externalId = '${externalId.replace(/'/g, "''")}' LIMIT 1`;
               const existing: any = await client.suiteql(checkQuery);
-              
               if (existing?.items && existing.items.length > 0) {
                 const existingId = existing.items[0].id;
-                console.log(`[create_vendor] Vendor with externalId '${externalId}' already exists: ${existingId}`);
                 return successResponse({
                   found: true,
                   id: existingId,
@@ -231,8 +386,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                 });
               }
             } catch (checkError: any) {
-              // If SuiteQL fails (permissions), continue with creation attempt
-              console.warn(`[create_vendor] Pre-flight check failed (continuing): ${checkError.message}`);
+              console.warn(`[create_vendor] Pre-flight check failed (continuing): ${(checkError as Error).message}`);
             }
           }
 

@@ -1,5 +1,68 @@
 import { buildOAuth1Header } from "./utils/oauth1.js";
 
+async function parseNetSuiteError(response: Response, rawText: string | null, json: any, context: string): Promise<never> {
+  console.error(`[NetSuiteClient] ERROR Response:`, {
+    status: response.status,
+    statusText: response.statusText,
+    body: json,
+    text: rawText?.substring(0, 500),
+  });
+
+  let details = "";
+  try {
+    if (json?.["o:errorDetails"]) {
+      details = json["o:errorDetails"]
+        .map(
+          (e: any) =>
+            `[${e.errorCode || e.type || "UNKNOWN"}] ${e.detail || e.message || ""}`.trim()
+        )
+        .join(" | ");
+    } else if (json?.message) {
+      details = json.message;
+    } else if (json?.error?.message) {
+      details = json.error.message;
+    } else if (json?.title || json?.detail) {
+      details = `${json.title ?? ""} ${json.detail ?? ""}`.trim();
+    }
+  } catch {
+    // ignore parsing errors
+  }
+
+  const hint = getHintFor(response.status, context);
+
+  throw new Error(
+    `NetSuite ${response.status} on ${context}: ${details || response.statusText}\n` +
+      `→ URL: ${response.url}\n` +
+      `→ Hint: ${hint}`
+  );
+}
+
+function getHintFor(status: number, context: string): string {
+  const ctx = context.toLowerCase();
+  if (status === 400 && ctx.includes("vendor")) {
+    return "Check customForm ID, required address, and mandatory custom fields. You can inspect an existing vendor with netsuite_get_vendor_by_id.";
+  }
+  if (status === 400 && (ctx.includes("payment") || ctx.includes("vendorpayment"))) {
+    return "Check bank account ID, currency, subsidiary, and apply structure. Compare with a known working vendor payment in Postman.";
+  }
+  if (status === 400 && (ctx.includes("vendorbill") || ctx.includes("vendor bill"))) {
+    return "Check entity (vendor), subsidiary, expense.items structure, and required fields. Compare with a working vendor bill example.";
+  }
+  if (status === 403) {
+    return "Missing permission. Verify the NetSuite role has the required permissions on this record type and SuiteQL if used.";
+  }
+  if (status === 404) {
+    return "Record not found. Verify the internal ID or externalId exists in this NetSuite account.";
+  }
+  if (status === 409) {
+    return "Duplicate detected. A record with this externalId or unique key already exists.";
+  }
+  if (status >= 500) {
+    return "NetSuite internal error. Retry later and check NetSuite status dashboard.";
+  }
+  return "Check NetSuite error details above and, if needed, the login/audit trail for more context.";
+}
+
 type NetSuiteClientConfig = {
   accountId: string;
   consumerKey: string;
@@ -105,33 +168,8 @@ export class NetSuiteClient {
     }
 
     if (!response.ok) {
-      console.error(`[NetSuiteClient] ERROR Response:`, {
-        status: response.status,
-        statusText: response.statusText,
-        body: json,
-        text: text?.substring(0, 500),
-      });
-      
-      // Extract detailed validation errors from NetSuite
-      let message = json?.title || json?.detail || json?.error?.message;
-      
-      // For 400 Bad Request, extract o:errorDetails
-      if (response.status === 400 && json?.['o:errorDetails']) {
-        const details = json['o:errorDetails']
-          .map((err: any) => err.detail || err.message || JSON.stringify(err))
-          .filter(Boolean)
-          .join('; ');
-        if (details) {
-          message = details;
-        }
-      }
-      
-      // Fallback to generic message
-      if (!message) {
-        message = `HTTP ${response.status} ${response.statusText}`;
-      }
-      
-      throw new Error(`NetSuite ${response.status}: ${message}`);
+      const context = `${method} ${cleanPath}`;
+      return parseNetSuiteError(response, text, json, context);
     }
 
     // Handle 204 No Content (create/update operations)
