@@ -5,6 +5,7 @@ import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { SUBSIDIARY_DEFAULT_BANK_ACCOUNTS } from "../config/subsidiary-bank-config.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerReferenceTools(server: McpServer, client: NetSuiteClient): void {
@@ -51,47 +52,40 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           if (name === "netsuite_get_accounts") {
             const maxRows = typeof limit === "number" ? limit : 50;
             const offsetVal = typeof offset === "number" ? offset : 0;
-            if (!(await canUseSuiteQL(client))) {
-              return errorResponse(
-                "netsuite_get_accounts requires SuiteQL in this implementation (REST API does not expose account names). Ask your NetSuite admin to enable SuiteQL or use a role with SuiteQL access."
-              );
-            }
-
             const type = rest.type as string | undefined;
-            if (type) {
-              const safeType = String(type).replace(/'/g, "''");
-              const result = await executeSuiteQL(
-                client,
-                `SELECT id, acctnumber, fullname, type, description, currency
-                 FROM account
-                 WHERE type = '${safeType}'
-                 ORDER BY acctnumber
-                 FETCH FIRST ${maxRows} ROWS ONLY`,
-                maxRows,
-                offsetVal
-              );
-              return successResponse({
-                count: result.items.length,
-                accounts: result.items,
-                source: "suiteql",
-              });
+            const typeFilter = type ? `type IS "${type}"` : "";
+
+            const listParams: Record<string, string> = {
+              limit: String(maxRows),
+              offset: String(offsetVal),
+            };
+            if (typeFilter) {
+              listParams.q = typeFilter;
             }
 
-            const result = await executeSuiteQL(
-              client,
-              `SELECT id, acctnumber, fullname, type, currency
-               FROM account
-               WHERE isInactive = 'F'
-               ORDER BY acctnumber
-               FETCH FIRST ${maxRows} ROWS ONLY`,
-              maxRows,
-              offsetVal
+            const listRes: any = await client.get<any>("/account", listParams);
+            const items = listRes?.items ?? [];
+
+            const accounts = await Promise.all(
+              items.map((item: any) =>
+                client
+                  .get<any>(`/account/${item.id}`)
+                  .then((a: any) => ({
+                    id: a.id,
+                    acctnumber: a.acctNumber,
+                    fullname: a.acctName ?? a.fullName,
+                    type: a.type?.id ?? a.type,
+                    description: a.description,
+                  }))
+                  .catch(() => ({ id: item.id }))
+              )
             );
+
             return successResponse({
-              count: result.items.length,
-              total: result.totalResults,
-              accounts: result.items,
-              source: "suiteql",
+              count: accounts.length,
+              total: listRes?.totalResults,
+              source: "rql",
+              accounts,
             });
           }
 
@@ -109,7 +103,9 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           const result = await client.get<unknown>(path, params);
           return successResponse(result);
         } catch (error: any) {
-          return errorResponse(`Error listing ${name.replace("netsuite_get_", "")}: ${error.message}`);
+          return errorResponse(
+            `Error listing ${name.replace("netsuite_get_", "")}: ${parseNetSuiteError(error)}`
+          );
         }
       }
     );
@@ -145,7 +141,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     "/currency"
   );
 
-  // Get bank accounts for a given subsidiary (SuiteQL or config fallback)
+  // Get bank accounts for a given subsidiary (config or RQL fallback)
   server.registerTool(
     "netsuite_get_bank_accounts_by_subsidiary",
     {
@@ -161,48 +157,63 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           return errorResponse("Missing required parameter: subsidiaryId (string)");
         }
 
-        if (await canUseSuiteQL(client)) {
-          const result = await executeSuiteQL(
-            client,
-            `SELECT a.id, a.acctNumber, a.fullName, a.description, a.currency
-             FROM account a
-             JOIN accountSubsidiaryMap asm ON asm.account = a.id
-             WHERE a.acctType = 'Bank'
-               AND asm.subsidiary = ${subsidiaryId}
-             ORDER BY a.acctNumber
-             FETCH FIRST 50 ROWS ONLY`,
-            50,
-            0
-          );
-          const items = result.items || [];
-          const bankAccounts = items.map((row: any) => ({
-            id: String(row.id),
-            acctnumber: row.acctnumber ?? row.acctNumber,
-            fullname: row.fullname ?? row.fullName,
-            description: row.description ?? null,
-            currency: row.currency ?? null,
-          }));
-          return successResponse({ subsidiaryId, bankAccounts, count: bankAccounts.length, source: "suiteql" });
-        }
-
-        const accountId = SUBSIDIARY_DEFAULT_BANK_ACCOUNTS[subsidiaryId];
-        if (accountId) {
+        // 1) Config map shortcut
+        const configAccount = SUBSIDIARY_DEFAULT_BANK_ACCOUNTS[subsidiaryId];
+        if (configAccount) {
+          const account: any = await client.get<any>(`/account/${configAccount}`);
           return successResponse({
             subsidiaryId,
-            bankAccounts: [{ id: accountId, acctnumber: null, fullname: null, description: "from config" }],
-            count: 1,
             source: "config",
+            count: 1,
+            bankAccounts: [
+              {
+                id: account.id,
+                acctnumber: account.acctNumber,
+                fullname: account.acctName ?? account.fullName,
+                isDefault: true,
+              },
+            ],
           });
         }
+
+        // 2) RQL on account list: type IS "Bank"
+        const listRes: any = await client.get<any>("/account", {
+          q: `type IS "Bank"`,
+          limit: "100",
+        });
+        const items = listRes?.items ?? [];
+
+        const accounts = await Promise.all(
+          items.map((item: any) =>
+            client
+              .get<any>(`/account/${item.id}`)
+              .then((a: any) => ({
+                id: a.id,
+                acctnumber: a.acctNumber,
+                fullname: a.acctName ?? a.fullName,
+                subsidiaries:
+                  a.subsidiaryList?.items?.map((s: any) => String(s.id)) ?? [],
+              }))
+              .catch(() => ({ id: item.id, subsidiaries: [] as string[] }))
+          )
+        );
+
+        const filtered = accounts.filter(
+          (a) =>
+            a.subsidiaries.length === 0 ||
+            a.subsidiaries.includes(String(subsidiaryId))
+        );
+
         return successResponse({
           subsidiaryId,
-          bankAccounts: [],
-          count: 0,
-          message:
-            "SuiteQL is not available. Add this subsidiaryId to SUBSIDIARY_DEFAULT_BANK_ACCOUNTS in src/config/subsidiary-bank-config.ts or use a role with SuiteQL.",
+          source: "rql",
+          count: filtered.length,
+          bankAccounts: filtered,
         });
-      } catch (error: any) {
-        return errorResponse(`Error getting bank accounts by subsidiary: ${error.message}`);
+      } catch (e: any) {
+        return errorResponse(
+          `get_bank_accounts_by_subsidiary failed: ${parseNetSuiteError(e)}`
+        );
       }
     }
   );

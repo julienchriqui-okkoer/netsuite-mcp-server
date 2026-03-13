@@ -4,6 +4,7 @@ import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorBillTools(server: McpServer, client: NetSuiteClient): void {
@@ -82,55 +83,34 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           return errorResponse("Missing required parameter: externalId (string)");
         }
 
-        if (await canUseSuiteQL(client)) {
-          const escaped = externalId.replace(/'/g, "''");
-          const result = await executeSuiteQL(
-            client,
-            `SELECT id, tranId, externalId, tranDate, dueDate, total, status, entity
-             FROM transaction
-             WHERE externalId = '${escaped}'
-               AND type = 'VendBill'
-             FETCH FIRST 1 ROWS ONLY`,
-            1,
-            0
-          );
-          const row = result.items[0];
-          if (!row) {
-            return successResponse({ found: false, bill: null, source: "suiteql" });
-          }
-          const bill = {
-            id: row.id,
-            tranId: row.tranid ?? row.tranId,
-            externalId: row.externalid ?? row.externalId,
-            tranDate: row.trandate ?? row.tranDate,
-            dueDate: row.duedate ?? row.dueDate,
-            total: row.total,
-            status: row.status,
-            entity: row.entity,
-          };
-          return successResponse({ found: true, bill, source: "suiteql" });
+        const listRes: any = await client.get<any>("/vendorBill", {
+          q: `externalId IS "${externalId}"`,
+          limit: "1",
+        });
+        const items = listRes?.items ?? [];
+
+        if (items.length === 0) {
+          return successResponse({ found: false, bill: null, source: "rql" });
         }
 
-        const page: any = await client.get<any>("/vendorBill", { limit: "1000", offset: "0" });
-        const items = page?.items || [];
-        const bill = items.find((b: any) => b.externalId === externalId);
-        if (!bill) return successResponse({ found: false, bill: null, source: "rest-filter" });
-        return successResponse({
-          found: true,
-          bill: {
-            id: bill.id,
-            tranId: bill.tranId,
-            externalId: bill.externalId,
-            entity: bill.entity?.id ?? bill.entity,
-            tranDate: bill.tranDate,
-            dueDate: bill.dueDate,
-            total: bill.total,
-            status: bill.status,
-          },
-          source: "rest-filter",
-        });
-      } catch (error: any) {
-        return errorResponse(`Error getting vendor bill by externalId: ${error.message}`);
+        const billDetail: any = await client.get<any>(`/vendorBill/${items[0].id}`);
+
+        const bill = {
+          id: billDetail.id,
+          tranId: billDetail.tranId,
+          externalId: billDetail.externalId,
+          tranDate: billDetail.tranDate,
+          dueDate: billDetail.dueDate,
+          total: billDetail.total,
+          status: billDetail.status?.id ?? billDetail.status,
+          entity: billDetail.entity?.id ?? billDetail.entity,
+        };
+
+        return successResponse({ found: true, bill, source: "rql" });
+      } catch (e: any) {
+        return errorResponse(
+          `get_vendor_bill_by_external_id failed: ${parseNetSuiteError(e)}`
+        );
       }
     }
   );
