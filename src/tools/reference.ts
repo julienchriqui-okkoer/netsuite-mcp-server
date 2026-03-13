@@ -4,6 +4,7 @@ import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { SUBSIDIARY_DEFAULT_BANK_ACCOUNTS } from "../config/subsidiary-bank-config.js";
+import { executeSuiteQL } from "../lib/suiteql.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerReferenceTools(server: McpServer, client: NetSuiteClient): void {
@@ -136,16 +137,25 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
         }
 
         if (await canUseSuiteQL(client)) {
-          const res: any = await client.suiteql(
-            `SELECT a.id, a.acctNumber, a.fullName, a.description FROM account a JOIN accountSubsidiaryMap asm ON asm.account = a.id WHERE a.acctType = 'Bank' AND asm.subsidiary = ${subsidiaryId} ORDER BY a.acctNumber`,
-            50
+          const result = await executeSuiteQL(
+            client,
+            `SELECT a.id, a.acctNumber, a.fullName, a.description, a.currency
+             FROM account a
+             JOIN accountSubsidiaryMap asm ON asm.account = a.id
+             WHERE a.acctType = 'Bank'
+               AND asm.subsidiary = ${subsidiaryId}
+             ORDER BY a.acctNumber
+             FETCH FIRST 50 ROWS ONLY`,
+            50,
+            0
           );
-          const items = res?.items || [];
+          const items = result.items || [];
           const bankAccounts = items.map((row: any) => ({
             id: String(row.id),
             acctnumber: row.acctnumber ?? row.acctNumber,
             fullname: row.fullname ?? row.fullName,
             description: row.description ?? null,
+            currency: row.currency ?? null,
           }));
           return successResponse({ subsidiaryId, bankAccounts, count: bankAccounts.length, source: "suiteql" });
         }

@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
@@ -8,6 +9,13 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
     "netsuite_get_journal_entries",
     {
       description: "List NetSuite journal entries with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query)",
+      inputSchema: z
+        .object({
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+          q: z.string().optional(),
+        })
+        .strict() as any,
     },
     async ({ limit, offset, q }: any) => {
       try {
@@ -29,6 +37,20 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
     "netsuite_create_journal_entry",
     {
       description: "Create a new NetSuite journal entry with debit/credit lines. Required parameters: subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), line (array with account, debit, credit, department, location, class, memo, entity)",
+      inputSchema: z
+        .object({
+          subsidiary: z.string().describe("Subsidiary internal ID"),
+          tranDate: z.string().describe("Date YYYY-MM-DD"),
+          memo: z.string().optional(),
+          externalId: z.string().optional(),
+          line: z
+            .array(z.any())
+            .optional()
+            .describe(
+              "Journal lines: [{ account, debit?, credit?, memo?, department?, location?, class?, entity? }]"
+            ),
+        })
+        .strict() as any,
     },
     async ({ subsidiary, tranDate, memo, externalId, line }: any) => {
       try {

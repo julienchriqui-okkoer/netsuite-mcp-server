@@ -14,6 +14,8 @@ export const TOOLS_CONFIG = {
     netsuite_get_vendor_forms: true, // ✅ NEW - Get available custom forms
     netsuite_create_vendor: true,
     netsuite_update_vendor: true,
+    netsuite_get_vendor_by_external_id: true,
+    netsuite_search_vendors_by_name: true,
   },
   
   vendorBills: {

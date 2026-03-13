@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
@@ -8,6 +9,14 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
     "netsuite_get_expense_reports",
     {
       description: "List NetSuite expense reports with optional search and pagination. Optional parameters: limit (number), offset (number), q (string, search query), status (string, e.g. 'ExpRpt:A' for approved)",
+      inputSchema: z
+        .object({
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+          q: z.string().optional(),
+          status: z.string().optional(),
+        })
+        .strict() as any,
     },
     async ({ limit, offset, q, status }: any) => {
       try {
@@ -32,6 +41,18 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
     "netsuite_create_expense_report",
     {
       description: "Create a new NetSuite expense report for an employee with expense lines. Required parameters: employee (string, employee ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), expenseList (object with expense array containing expenseDate, account, amount, taxCode, department, location, class, memo, currency, exchangeRate, foreignAmount)",
+      inputSchema: z
+        .object({
+          employee: z.string().describe("Employee internal ID"),
+          subsidiary: z.string().describe("Subsidiary internal ID"),
+          tranDate: z.string().describe("Date YYYY-MM-DD"),
+          memo: z.string().optional(),
+          externalId: z.string().optional().describe("Idempotency key"),
+          expenseList: z.any().optional().describe(
+            "{ expense: [{ expenseDate, account, amount, memo, currency, exchangeRate, foreignAmount }] }"
+          ),
+        })
+        .strict() as any,
     },
     async ({ employee, subsidiary, tranDate, memo, externalId, expenseList }: any) => {
       try {

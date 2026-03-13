@@ -3,6 +3,7 @@ import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
+import { executeSuiteQL } from "../lib/suiteql.js";
 import { successResponse, errorResponse, validateRequired } from "./_helpers.js";
 import { isToolEnabled } from "../config/tools-config.js";
 
@@ -183,6 +184,160 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           return successResponse({ found: false, matchLevel: "none", vendors: [] });
         } catch (error: any) {
           return errorResponse(`Error finding vendor: ${error.message}`);
+        }
+      }
+    );
+  }
+
+  // Find vendor by externalId only (idempotency helper)
+  if (isToolEnabled("vendors", "netsuite_get_vendor_by_external_id")) {
+    server.registerTool(
+      "netsuite_get_vendor_by_external_id",
+      {
+        description:
+          "Find a NetSuite vendor by its externalId (e.g. 'spk_supplier_<spendeskId>'). Uses SuiteQL when available, otherwise falls back to REST list and filter. Returns { found, vendor: { id, companyName, externalId, email, subsidiary } | null }",
+        inputSchema: z
+          .object({
+            externalId: z.string().describe("e.g. spk_supplier_9wlihd_41supnn"),
+          })
+          .strict() as any,
+      },
+      async ({ externalId }: any) => {
+        try {
+          if (!externalId || typeof externalId !== "string") {
+            return errorResponse("Missing required parameter: externalId (string)");
+          }
+
+          const useSuiteQL = await canUseSuiteQL(client);
+
+          if (useSuiteQL) {
+            const safeExt = externalId.replace(/'/g, "''");
+            const result = await executeSuiteQL(
+              client,
+              `SELECT id, companyName, externalId, email, subsidiary
+               FROM vendor
+               WHERE externalId = '${safeExt}'
+                 AND isInactive = 'F'
+               FETCH FIRST 1 ROWS ONLY`,
+              1,
+              0
+            );
+            const row = result.items[0];
+            if (!row) {
+              return successResponse({ found: false, vendor: null, source: "suiteql" });
+            }
+            const vendor = {
+              id: row.id,
+              companyName: row.companyname ?? row.companyName,
+              externalId: row.externalid ?? row.externalId,
+              email: row.email,
+              subsidiary: row.subsidiary,
+            };
+            return successResponse({ found: true, vendor, source: "suiteql" });
+          }
+
+          // REST fallback: list vendors and filter by externalId
+          const page: any = await client.get<any>("/vendor", { limit: "1000", offset: "0" });
+          const items = page?.items || [];
+          const match = items.find(
+            (v: any) => v.externalId === externalId && v.isInactive !== true
+          );
+          if (!match) {
+            return successResponse({ found: false, vendor: null, source: "rest-filter" });
+          }
+          const vendor = {
+            id: match.id,
+            companyName: match.companyName,
+            externalId: match.externalId,
+            email: match.email,
+            subsidiary: match.subsidiary,
+          };
+          return successResponse({ found: true, vendor, source: "rest-filter" });
+        } catch (error: any) {
+          return errorResponse(`Error getting vendor by externalId: ${error.message}`);
+        }
+      }
+    );
+  }
+
+  // Search vendors by name (partial, case-insensitive)
+  if (isToolEnabled("vendors", "netsuite_search_vendors_by_name")) {
+    server.registerTool(
+      "netsuite_search_vendors_by_name",
+      {
+        description:
+          "Search NetSuite vendors by name (case-insensitive, partial match). Uses SuiteQL when available, otherwise falls back to REST list and filter. Optional filter by subsidiaryId.",
+        inputSchema: z
+          .object({
+            name: z.string().describe("Vendor name to search for"),
+            subsidiaryId: z.string().optional().describe("Filter by subsidiary ID (optional)"),
+            limit: z.number().optional().describe("Max results to return (default 10)"),
+          })
+          .strict() as any,
+      },
+      async ({ name, subsidiaryId, limit }: any) => {
+        try {
+          if (!name || typeof name !== "string") {
+            return errorResponse("Missing required parameter: name (string)");
+          }
+          const maxRows = typeof limit === "number" ? limit : 10;
+
+          const useSuiteQL = await canUseSuiteQL(client);
+          if (useSuiteQL) {
+            const safeName = name.replace(/'/g, "''");
+            const safeSubsidiary =
+              subsidiaryId && !Number.isNaN(Number(subsidiaryId))
+                ? Number(subsidiaryId)
+                : null;
+            const subsidiaryCond = safeSubsidiary !== null ? `AND subsidiary = ${safeSubsidiary}` : "";
+
+            const result = await executeSuiteQL(
+              client,
+              `SELECT id, companyName, externalId, email, subsidiary
+               FROM vendor
+               WHERE LOWER(companyName) LIKE LOWER('%${safeName}%')
+                 AND isInactive = 'F'
+                 ${subsidiaryCond}
+               FETCH FIRST ${maxRows} ROWS ONLY`,
+              maxRows,
+              0
+            );
+
+            const vendors = result.items.map((row: any) => ({
+              id: row.id,
+              companyName: row.companyname ?? row.companyName,
+              externalId: row.externalid ?? row.externalId,
+              email: row.email,
+              subsidiary: row.subsidiary,
+            }));
+            return successResponse({ count: vendors.length, vendors, source: "suiteql" });
+          }
+
+          // REST fallback: list and filter by name
+          const page: any = await client.get<any>("/vendor", { limit: "1000", offset: "0" });
+          const items = page?.items || [];
+          const nameLower = name.toLowerCase();
+          const filtered = items.filter((v: any) => {
+            if (v.isInactive === true) return false;
+            if (!v.companyName) return false;
+            if (!v.companyName.toLowerCase().includes(nameLower)) return false;
+            if (subsidiaryId) {
+              const subId = String(v.subsidiary?.id ?? v.subsidiary);
+              if (subId !== String(subsidiaryId)) return false;
+            }
+            return true;
+          });
+          const slice = filtered.slice(0, maxRows);
+          const vendors = slice.map((v: any) => ({
+            id: v.id,
+            companyName: v.companyName,
+            externalId: v.externalId,
+            email: v.email,
+            subsidiary: v.subsidiary,
+          }));
+          return successResponse({ count: vendors.length, vendors, source: "rest-filter" });
+        } catch (error: any) {
+          return errorResponse(`Error searching vendors by name: ${error.message}`);
         }
       }
     );

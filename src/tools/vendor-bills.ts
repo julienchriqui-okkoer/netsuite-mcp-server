@@ -3,6 +3,7 @@ import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
+import { executeSuiteQL } from "../lib/suiteql.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorBillTools(server: McpServer, client: NetSuiteClient): void {
@@ -83,30 +84,37 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
 
         if (await canUseSuiteQL(client)) {
           const escaped = externalId.replace(/'/g, "''");
-          const result: any = await client.suiteql(
-            `SELECT id, tranId, externalId, entity, tranDate, total FROM transaction WHERE externalId = '${escaped}' AND type = 'VendBill'`,
-            1
+          const result = await executeSuiteQL(
+            client,
+            `SELECT id, tranId, externalId, tranDate, dueDate, total, status, entity
+             FROM transaction
+             WHERE externalId = '${escaped}'
+               AND type = 'VendBill'
+             FETCH FIRST 1 ROWS ONLY`,
+            1,
+            0
           );
-          const items = result?.items || [];
-          if (!items.length) return successResponse({ found: false, bill: null });
-          const row = items[0];
-          return successResponse({
-            found: true,
-            bill: {
-              id: row.id,
-              tranId: row.tranid ?? row.tranId,
-              externalId: row.externalid ?? row.externalId,
-              entity: row.entity,
-              tranDate: row.trandate ?? row.tranDate,
-              total: row.total,
-            },
-          });
+          const row = result.items[0];
+          if (!row) {
+            return successResponse({ found: false, bill: null, source: "suiteql" });
+          }
+          const bill = {
+            id: row.id,
+            tranId: row.tranid ?? row.tranId,
+            externalId: row.externalid ?? row.externalId,
+            tranDate: row.trandate ?? row.tranDate,
+            dueDate: row.duedate ?? row.dueDate,
+            total: row.total,
+            status: row.status,
+            entity: row.entity,
+          };
+          return successResponse({ found: true, bill, source: "suiteql" });
         }
 
         const page: any = await client.get<any>("/vendorBill", { limit: "1000", offset: "0" });
         const items = page?.items || [];
         const bill = items.find((b: any) => b.externalId === externalId);
-        if (!bill) return successResponse({ found: false, bill: null });
+        if (!bill) return successResponse({ found: false, bill: null, source: "rest-filter" });
         return successResponse({
           found: true,
           bill: {
@@ -115,8 +123,11 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
             externalId: bill.externalId,
             entity: bill.entity?.id ?? bill.entity,
             tranDate: bill.tranDate,
+            dueDate: bill.dueDate,
             total: bill.total,
+            status: bill.status,
           },
+          source: "rest-filter",
         });
       } catch (error: any) {
         return errorResponse(`Error getting vendor bill by externalId: ${error.message}`);
