@@ -248,9 +248,14 @@ class TestRunner {
           this.results.passed++;
           return;
         }
-        // SuiteQL test: if role has no SuiteQL access, we return a clear message — accept as PASS
-        if (!expectValidation && test.expectSuccess && test.name === "netsuite_execute_suiteql" && errorText.includes("SuiteQL is not available")) {
-          console.log(`   ✅ PASS - Tool returned clear message (SuiteQL not available for this role)`);
+        // SuiteQL tools: if role has no SuiteQL access, we return a clear message — accept as PASS
+        if (
+          !expectValidation &&
+          test.expectSuccess &&
+          (test.name === "netsuite_execute_suiteql" || test.name === "netsuite_get_accounts") &&
+          (errorText.includes("SuiteQL is not available") || errorText.includes("requires SuiteQL"))
+        ) {
+          console.log(`   ✅ PASS - Tool returned clear message (SuiteQL not available for this role)`); 
           this.results.passed++;
           return;
         }

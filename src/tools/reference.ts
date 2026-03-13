@@ -19,11 +19,16 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
         description,
         inputSchema:
           name === "netsuite_get_accounts"
-            ? ({
-                limit: z.number().optional(),
-                offset: z.number().optional(),
-                type: z.string().optional(),
-              } as any)
+            ? (z
+                .object({
+                  type: z
+                    .string()
+                    .optional()
+                    .describe("Account type filter: 'Bank', 'Expense', 'AccountsPayable', etc."),
+                  limit: z.number().int().min(1).max(1000).optional(),
+                  offset: z.number().int().min(0).optional(),
+                })
+                .strict() as any)
             : ({
                 limit: z.number().optional(),
                 offset: z.number().optional(),
@@ -31,46 +36,66 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
       },
       async (args: any) => {
         try {
-          const { limit, offset, signal, sendNotification, sendRequest, requestId, requestInfo, _meta, ...rest } = args;
-          // Special handling for accounts with type filter (SuiteQL or REST fallback)
-          if (name === "netsuite_get_accounts" && rest.type) {
-            const { type, ..._rest } = rest;
-            const acctTypeFilter = String(rest.type);
+          const {
+            limit,
+            offset,
+            signal,
+            sendNotification,
+            sendRequest,
+            requestId,
+            requestInfo,
+            _meta,
+            ...rest
+          } = args;
+
+          if (name === "netsuite_get_accounts") {
             const maxRows = typeof limit === "number" ? limit : 50;
             const offsetVal = typeof offset === "number" ? offset : 0;
+            if (!(await canUseSuiteQL(client))) {
+              return errorResponse(
+                "netsuite_get_accounts requires SuiteQL in this implementation (REST API does not expose account names). Ask your NetSuite admin to enable SuiteQL or use a role with SuiteQL access."
+              );
+            }
 
-            if (await canUseSuiteQL(client)) {
-              const safeType = acctTypeFilter.replace(/'/g, "''");
-              const res: any = await client.suiteql(
-                `SELECT id, acctNumber, acctName, acctType FROM account WHERE acctType = '${safeType}'`,
+            const type = rest.type as string | undefined;
+            if (type) {
+              const safeType = String(type).replace(/'/g, "''");
+              const result = await executeSuiteQL(
+                client,
+                `SELECT id, acctnumber, fullname, type, description, currency
+                 FROM account
+                 WHERE type = '${safeType}'
+                 ORDER BY acctnumber
+                 FETCH FIRST ${maxRows} ROWS ONLY`,
                 maxRows,
                 offsetVal
               );
-              const items = res?.items || [];
-              const accounts = items.map((row: any) => ({
-                id: row.id,
-                number: row.acctnumber ?? row.acctNumber,
-                name: row.acctname ?? row.acctName,
-                type: row.accttype ?? row.acctType,
-              }));
-              return successResponse({ accounts, count: accounts.length, source: "suiteql" });
+              return successResponse({
+                count: result.items.length,
+                accounts: result.items,
+                source: "suiteql",
+              });
             }
 
-            const page: any = await client.get<any>("/account", { limit: "1000", offset: "0" });
-            const all = page?.items || [];
-            const filtered = all.filter((a: any) => (a.acctType || a.accttype || "") === acctTypeFilter);
-            const accounts = filtered
-              .slice(offsetVal, offsetVal + maxRows)
-              .map((row: any) => ({
-                id: row.id,
-                number: row.acctNumber ?? row.acctnumber,
-                name: row.acctName ?? row.acctname,
-                type: row.acctType ?? row.accttype,
-              }));
-            return successResponse({ accounts, count: accounts.length, source: "rest-filter" });
+            const result = await executeSuiteQL(
+              client,
+              `SELECT id, acctnumber, fullname, type, currency
+               FROM account
+               WHERE isInactive = 'F'
+               ORDER BY acctnumber
+               FETCH FIRST ${maxRows} ROWS ONLY`,
+              maxRows,
+              offsetVal
+            );
+            return successResponse({
+              count: result.items.length,
+              total: result.totalResults,
+              accounts: result.items,
+              source: "suiteql",
+            });
           }
 
-          // Default REST-based pagination
+          // Default REST-based pagination for other reference lists
           const pagination = buildPaginationQuery({ limit, offset });
           const params: Record<string, string> = {
             ...pagination,
@@ -84,7 +109,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           const result = await client.get<unknown>(path, params);
           return successResponse(result);
         } catch (error: any) {
-          return errorResponse(`Error listing ${name.replace('netsuite_get_', '')}: ${error.message}`);
+          return errorResponse(`Error listing ${name.replace("netsuite_get_", "")}: ${error.message}`);
         }
       }
     );
