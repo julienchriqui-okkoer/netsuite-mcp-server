@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { batchParallel } from "../utils/batchParallel.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { SUBSIDIARY_DEFAULT_BANK_ACCOUNTS } from "../config/subsidiary-bank-config.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
@@ -127,21 +128,178 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
   );
 
   registerSimpleListTool(
-    "netsuite_get_departments",
-    "List NetSuite departments / cost centers for analytical tracking. Optional parameters: limit (number), offset (number)",
-    "/department"
-  );
-
-  registerSimpleListTool(
-    "netsuite_get_subsidiaries",
-    "List NetSuite subsidiaries (legal entities). Optional parameters: limit (number), offset (number)",
-    "/subsidiary"
-  );
-
-  registerSimpleListTool(
     "netsuite_get_tax_codes",
     "List NetSuite sales tax items. Returns tax codes with rates and descriptions. Optional parameters: limit (number), offset (number)",
     "/salestaxitem"
+  );
+
+  // Enriched departments with names
+  server.registerTool(
+    "netsuite_get_departments",
+    {
+      description:
+        "List NetSuite departments / cost centers with names, full names, and parent. Fetches pages and enriches each entry via the detail endpoint.",
+      inputSchema: z
+        .object({
+          limit: z
+            .number()
+            .optional()
+            .describe("Max departments to return (default 200)"),
+          offset: z
+            .number()
+            .optional()
+            .describe("Pagination offset (default 0)"),
+          activeOnly: z
+            .boolean()
+            .optional()
+            .describe("If true, exclude inactive departments (default true)"),
+        })
+        .strict() as any,
+    },
+    async ({ limit = 200, offset = 0, activeOnly = true }: any) => {
+      try {
+        const allIds: string[] = [];
+        let currentOffset = offset;
+        const pageSize = 100;
+
+        while (true) {
+          const listRes: any = await withRetry(
+            () =>
+              client.get<any>("/department", {
+                limit: String(pageSize),
+                offset: String(currentOffset),
+              }),
+            "get_departments list"
+          );
+          const items: any[] = listRes?.items ?? [];
+          allIds.push(...items.map((i: any) => String(i.id)));
+          if (!listRes?.hasMore || allIds.length >= limit) break;
+          currentOffset += pageSize;
+        }
+
+        const enriched = await batchParallel(
+          allIds.slice(0, limit),
+          (id: string) =>
+            withRetry(
+              () => client.get<any>(`/department/${id}`),
+              `get_departments detail ${id}`
+            )
+              .then((dept: any) => ({
+                id: dept.id,
+                name:
+                  dept.name ??
+                  dept.refName ??
+                  `Department ${dept.id}`,
+                fullName:
+                  dept.fullName ??
+                  dept.name ??
+                  `Department ${dept.id}`,
+                isInactive: dept.isInactive ?? false,
+                parent: dept.parent?.refName ?? null,
+              }))
+              .catch(() => ({
+                id,
+                name: `[error] Department ${id}`,
+                fullName: null,
+                isInactive: false,
+                parent: null,
+              })),
+          10
+        );
+
+        const result = activeOnly
+          ? enriched.filter((d: any) => !d.isInactive)
+          : enriched;
+
+        return successResponse({
+          count: result.length,
+          totalFetched: allIds.length,
+          departments: result,
+        });
+      } catch (error: any) {
+        return errorResponse(
+          `Error enriching departments: ${parseNetSuiteError(error)}`
+        );
+      }
+    }
+  );
+
+  // Enriched subsidiaries with names and currencies
+  server.registerTool(
+    "netsuite_get_subsidiaries",
+    {
+      description:
+        "List NetSuite subsidiaries with names, countries, currencies, and elimination flags.",
+      inputSchema: z
+        .object({
+          limit: z
+            .number()
+            .optional()
+            .describe("Max results to return (default 50)"),
+        })
+        .strict() as any,
+    },
+    async ({ limit = 50 }: any) => {
+      try {
+        const listRes: any = await withRetry(
+          () =>
+            client.get<any>("/subsidiary", {
+              limit: String(limit),
+              offset: "0",
+            }),
+          "get_subsidiaries list"
+        );
+        const ids: string[] = (listRes?.items ?? []).map((i: any) =>
+          String(i.id)
+        );
+
+        const enriched = await batchParallel(
+          ids,
+          (id: string) =>
+            withRetry(
+              () => client.get<any>(`/subsidiary/${id}`),
+              `get_subsidiary detail ${id}`
+            )
+              .then((sub: any) => ({
+                id: sub.id,
+                name:
+                  sub.name ??
+                  sub.refName ??
+                  `Subsidiary ${id}`,
+                country:
+                  sub.country?.refName ??
+                  sub.country?.id ??
+                  null,
+                currency:
+                  sub.currency?.refName ??
+                  sub.currency?.id ??
+                  null,
+                isElimination: sub.isElimination ?? false,
+                isInactive: sub.isInactive ?? false,
+              }))
+              .catch(() => ({
+                id,
+                name: `[error] Subsidiary ${id}`,
+                country: null,
+                currency: null,
+                isElimination: false,
+                isInactive: false,
+              })),
+          5
+        );
+
+        const active = enriched.filter((s: any) => !s.isInactive);
+
+        return successResponse({
+          count: active.length,
+          subsidiaries: active,
+        });
+      } catch (error: any) {
+        return errorResponse(
+          `Error enriching subsidiaries: ${parseNetSuiteError(error)}`
+        );
+      }
+    }
   );
 
   registerSimpleListTool(
