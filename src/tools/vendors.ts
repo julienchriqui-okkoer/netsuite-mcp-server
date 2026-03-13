@@ -328,7 +328,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
 
           const listRes: any = await withRetry(
             async () => {
-              // Try lowercase field name first (companyname), then camelCase (companyName)
+              // Essai principal: champ lowercase companyname (pattern Oracle N/query)
               const primary = await client.get<any>("/vendor", {
                 q: `companyname START_WITH "${safeName}"`,
                 limit: String(maxRows * 3),
@@ -339,7 +339,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           );
           const items = listRes?.items ?? [];
 
-          const vendors = await Promise.all(
+          const enriched = await Promise.all(
             items.map((item: any) =>
               withRetry(
                 () => client.get<any>(`/vendor/${item.id}`),
@@ -353,21 +353,47 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                   email: v.email,
                   subsidiary: v.subsidiary?.id ?? v.subsidiary,
                 }))
-                .catch(() => ({ id: item.id }))
+                .catch(() => null)
             )
           );
 
-          const filtered =
-            subsidiaryId && typeof subsidiaryId === "string"
-              ? vendors.filter((v: any) => v.subsidiary === subsidiaryId)
-              : vendors;
+          const vendors = enriched.filter((v: any) => v !== null);
 
-          const sliced = filtered.slice(0, maxRows);
+          // Classement: priorité au bon subsidiary + nom exact
+          vendors.sort((a: any, b: any) => {
+            const aExact =
+              a.companyName &&
+              a.companyName.toLowerCase() === name.toLowerCase()
+                ? 0
+                : 1;
+            const bExact =
+              b.companyName &&
+              b.companyName.toLowerCase() === name.toLowerCase()
+                ? 0
+                : 1;
+            const aSub =
+              subsidiaryId && a.subsidiary === subsidiaryId ? 0 : 1;
+            const bSub =
+              subsidiaryId && b.subsidiary === subsidiaryId ? 0 : 1;
+            return aExact + aSub - (bExact + bSub);
+          });
+
+          const topVendor = vendors[0];
+          const subsidiaryMismatch =
+            Boolean(subsidiaryId) &&
+            Boolean(topVendor) &&
+            String(topVendor.subsidiary) !== String(subsidiaryId);
+
+          const sliced = vendors.slice(0, maxRows);
 
           return successResponse({
             count: sliced.length,
             vendors: sliced,
             source: "rql",
+            subsidiaryMismatch,
+            warning: subsidiaryMismatch
+              ? `Top result vendor ${topVendor.id} is in subsidiary ${topVendor.subsidiary}, not the requested subsidiary ${subsidiaryId}. Bill creation may fail or use the wrong legal entity.`
+              : undefined,
           });
         } catch (e: any) {
           return errorResponse(
@@ -606,6 +632,8 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                 return successResponse({
                   created: false,
                   found: true,
+                  linkedExisting: false,
+                  subsidiaryMismatch: false,
                   id: row.id,
                   companyName: row.companyname ?? row.companyName,
                   message: "Vendor already exists with this externalId (idempotent)",
@@ -704,6 +732,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                       id: v.id,
                       companyName: v.companyName,
                       externalId: v.externalId,
+                      subsidiary: v.subsidiary?.id ?? v.subsidiary,
                     }))
                     .catch(() => null)
                 )
@@ -717,6 +746,30 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
               );
 
               if (match) {
+                const subsidiaryOk =
+                  !subsidiary ||
+                  String(match.subsidiary) === String(subsidiary);
+
+                if (!subsidiaryOk) {
+                  return successResponse({
+                    created: false,
+                    found: true,
+                    linkedExisting: false,
+                    subsidiaryMismatch: true,
+                    id: match.id,
+                    matchedSubsidiary: match.subsidiary,
+                    requestedSubsidiary: subsidiary,
+                    companyName: match.companyName,
+                    warning:
+                      `Vendor "${companyName}" found (id: ${match.id}) in subsidiary ` +
+                      `${match.subsidiary} but subsidiary ${subsidiary} was requested. ` +
+                      `ExternalId NOT set. Options: ` +
+                      `1) Use this vendor with its own subsidiary bank account. ` +
+                      `2) Create a vendor with a different name (e.g. "${companyName} FR"). ` +
+                      `3) Manual action in NetSuite UI.`,
+                  });
+                }
+
                 if (externalId && !match.externalId) {
                   await withRetry(
                     () =>
@@ -731,13 +784,10 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
                   created: false,
                   found: true,
                   linkedExisting: Boolean(externalId && !match.externalId),
+                  subsidiaryMismatch: false,
                   id: match.id,
                   companyName: match.companyName,
-                  message: `Vendor "${companyName}" already existed (id: ${match.id}).${
-                    externalId && !match.externalId
-                      ? ` ExternalId "${externalId}" linked.`
-                      : ""
-                  }`,
+                  message: `Vendor "${companyName}" already existed (id: ${match.id}). ExternalId${externalId && !match.externalId ? ` "${externalId}"` : ""} linked.`,
                 });
               }
 
