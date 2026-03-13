@@ -190,6 +190,48 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
     );
   }
 
+  // Discover filterable vendor fields for RQL (?q=) queries
+  server.registerTool(
+    "netsuite_get_vendor_filterable_fields",
+    {
+      description:
+        "Inspect NetSuite vendor metadata-catalog and return fields that are filterable with the REST Record Query Language (?q=). Useful to know which field names are valid in RQL filters.",
+    },
+    async () => {
+      try {
+        const meta: any = await client.get<any>("/vendor/metadata-catalog");
+
+        const properties =
+          meta?.properties ??
+          meta?.components?.schemas?.vendor?.properties ??
+          {};
+
+        const filterableFields: Array<{ name: string; type: string }> = [];
+
+        Object.entries(properties).forEach(([fieldName, fieldDef]: any) => {
+          if (fieldDef && fieldDef["x-ns-filterable"] === true) {
+            filterableFields.push({
+              name: fieldName,
+              type: fieldDef.type ?? fieldDef["$ref"] ?? "unknown",
+            });
+          }
+        });
+
+        return successResponse({
+          record: "vendor",
+          filterableFields,
+          total: filterableFields.length,
+          hint:
+            "Use these field names with the ?q= filter. Example: ?q=<fieldName> CONTAIN \"value\" (see NetSuite N/query operators).",
+        });
+      } catch (e: any) {
+        return errorResponse(
+          `netsuite_get_vendor_filterable_fields failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
   // Find vendor by externalId only (idempotency helper)
   if (isToolEnabled("vendors", "netsuite_get_vendor_by_external_id")) {
     server.registerTool(
@@ -265,7 +307,7 @@ export function registerVendorTools(server: McpServer, client: NetSuiteClient): 
           const safeName = name.replace(/"/g, '\\"');
 
           const listRes: any = await client.get<any>("/vendor", {
-            q: `entityId STARTS WITH "${safeName}"`,
+            q: `entityId START_WITH "${safeName}"`,
             limit: String(maxRows * 3),
           });
           const items = listRes?.items ?? [];
