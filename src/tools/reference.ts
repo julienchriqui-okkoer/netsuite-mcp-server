@@ -133,7 +133,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     "/salestaxitem"
   );
 
-  // Enriched departments with names
+  // Enriched departments with names (filter inactive at source, enrich with low concurrency)
   server.registerTool(
     "netsuite_get_departments",
     {
@@ -144,7 +144,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           limit: z
             .number()
             .optional()
-            .describe("Max departments to return (default 200)"),
+            .describe("Max departments to return (default 50)"),
           offset: z
             .number()
             .optional()
@@ -156,29 +156,32 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
         })
         .strict() as any,
     },
-    async ({ limit = 200, offset = 0, activeOnly = true }: any) => {
+    async ({ limit = 50, offset = 0, activeOnly = true }: any) => {
       try {
-        const allIds: string[] = [];
-        let currentOffset = offset;
-        const pageSize = 100;
+        const listParams: Record<string, string> = {
+          limit: String(Math.min(limit, 100)),
+          offset: String(offset),
+        };
+        if (activeOnly) {
+          listParams.q = "isInactive IS false";
+        }
+        const listRes: any = await withRetry(
+          () => client.get<any>("/department", listParams),
+          "get_departments list"
+        );
+        const items: any[] = listRes?.items ?? [];
+        const ids = items.map((i: any) => String(i.id)).slice(0, limit);
 
-        while (true) {
-          const listRes: any = await withRetry(
-            () =>
-              client.get<any>("/department", {
-                limit: String(pageSize),
-                offset: String(currentOffset),
-              }),
-            "get_departments list"
-          );
-          const items: any[] = listRes?.items ?? [];
-          allIds.push(...items.map((i: any) => String(i.id)));
-          if (!listRes?.hasMore || allIds.length >= limit) break;
-          currentOffset += pageSize;
+        if (ids.length === 0) {
+          return successResponse({
+            count: 0,
+            hasMore: listRes?.hasMore ?? false,
+            departments: [],
+          });
         }
 
         const enriched = await batchParallel(
-          allIds.slice(0, limit),
+          ids,
           (id: string) =>
             withRetry(
               () => client.get<any>(`/department/${id}`),
@@ -197,24 +200,17 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
                 isInactive: dept.isInactive ?? false,
                 parent: dept.parent?.refName ?? null,
               }))
-              .catch(() => ({
-                id,
-                name: `[error] Department ${id}`,
-                fullName: null,
-                isInactive: false,
-                parent: null,
-              })),
-          10
+              .catch(() => null),
+          3,
+          500
         );
 
-        const result = activeOnly
-          ? enriched.filter((d: any) => !d.isInactive)
-          : enriched;
+        const departments = enriched.filter((d: any) => d != null);
 
         return successResponse({
-          count: result.length,
-          totalFetched: allIds.length,
-          departments: result,
+          count: departments.length,
+          hasMore: listRes?.hasMore ?? false,
+          departments,
         });
       } catch (error: any) {
         return errorResponse(
@@ -224,7 +220,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     }
   );
 
-  // Enriched subsidiaries with names and currencies
+  // Enriched subsidiaries with names and currencies (fallback for root subsidiary 403/404)
   server.registerTool(
     "netsuite_get_subsidiaries",
     {
@@ -235,11 +231,11 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           limit: z
             .number()
             .optional()
-            .describe("Max results to return (default 50)"),
+            .describe("Max results to return (default 20)"),
         })
         .strict() as any,
     },
-    async ({ limit = 50 }: any) => {
+    async ({ limit = 20 }: any) => {
       try {
         const listRes: any = await withRetry(
           () =>
@@ -253,46 +249,74 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           String(i.id)
         );
 
+        const fetchSub = (id: string, expand: boolean) =>
+          client.get<any>(
+            `/subsidiary/${id}${expand ? "?expandSubResources=true" : ""}`
+          );
+
         const enriched = await batchParallel(
           ids,
-          (id: string) =>
-            withRetry(
-              () => client.get<any>(`/subsidiary/${id}`),
-              `get_subsidiary detail ${id}`
-            )
-              .then((sub: any) => ({
-                id: sub.id,
+          async (id: string) => {
+            try {
+              const sub = await withRetry(
+                () => fetchSub(id, true),
+                `get_subsidiary detail ${id}`
+              );
+              return {
+                id,
                 name:
                   sub.name ??
                   sub.refName ??
                   `Subsidiary ${id}`,
                 country:
-                  sub.country?.refName ??
-                  sub.country?.id ??
-                  null,
+                  sub.country?.refName ?? sub.country?.id ?? null,
                 currency:
-                  sub.currency?.refName ??
-                  sub.currency?.id ??
-                  null,
+                  sub.currency?.refName ?? sub.currency?.id ?? null,
                 isElimination: sub.isElimination ?? false,
                 isInactive: sub.isInactive ?? false,
-              }))
-              .catch(() => ({
-                id,
-                name: `[error] Subsidiary ${id}`,
-                country: null,
-                currency: null,
-                isElimination: false,
-                isInactive: false,
-              })),
-          5
+              };
+            } catch {
+              try {
+                const sub = await withRetry(
+                  () => fetchSub(id, false),
+                  `get_subsidiary detail ${id} fallback`
+                );
+                return {
+                  id,
+                  name:
+                    sub.name ??
+                    sub.refName ??
+                    `Subsidiary ${id}`,
+                  country:
+                    sub.country?.refName ?? sub.country?.id ?? null,
+                  currency:
+                    sub.currency?.refName ?? sub.currency?.id ?? null,
+                  isElimination: sub.isElimination ?? false,
+                  isInactive: sub.isInactive ?? false,
+                };
+              } catch {
+                return {
+                  id,
+                  name: `[error] Subsidiary ${id}`,
+                  country: null,
+                  currency: null,
+                  isElimination: false,
+                  isInactive: false,
+                };
+              }
+            }
+          },
+          3,
+          300
         );
 
-        const active = enriched.filter((s: any) => !s.isInactive);
+        const subsidiaries = enriched.filter(
+          (s: any) => !s.isInactive && !s.isElimination
+        );
 
         return successResponse({
-          count: active.length,
-          subsidiaries: active,
+          count: subsidiaries.length,
+          subsidiaries,
         });
       } catch (error: any) {
         return errorResponse(
