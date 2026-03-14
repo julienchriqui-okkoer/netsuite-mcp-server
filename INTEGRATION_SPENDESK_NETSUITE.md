@@ -97,7 +97,9 @@
 | Tool | Action | Status | Use Case |
 |------|--------|--------|----------|
 | `netsuite_get_vendor_credits` | List | ✅ | Lister avoirs |
-| `netsuite_create_vendor_credit` | Create | ✅ | Créer avoir |
+| `netsuite_create_vendor_credit` | Create | ✅ | Créer avoir (Spendesk credit notes / refunds) |
+
+**Champs supportés pour create :** `entity`, `subsidiary`, `tranDate`, `memo`, `externalId` (idempotence), `expenseList` (items: account, amount, department, memo), `applyList` (items: doc, apply, amount) pour appliquer l’avoir à une facture existante.
 
 ---
 
@@ -156,15 +158,26 @@
 
 ---
 
-### Flow 2️⃣ : Create Vendor Bills (Spendesk Invoices → NetSuite)
+### Flow 2️⃣ : Create Vendor Bills / Credits (Spendesk Payables → NetSuite)
 
-**Objectif :** Créer les factures fournisseurs dans NetSuite
+**Objectif :** Créer les factures fournisseurs ou avoirs selon le type de payable
+
+**Step 2b — Route by payable type (for Dust system prompt):**
+- If `payable.type == "creditNote"`:
+  - Create vendor **credit** (not bill) → `netsuite_create_vendor_credit`
+  - `externalId`: `"spk_payable_<payableId>"`
+  - Expense amount: `abs(payable.netAmount / 100)` (credit notes are negative in Spendesk)
+  - If you can find the original bill via `payable.originalPayableId` (e.g. `netsuite_get_vendor_bill_by_external_id("spk_payable_<originalPayableId>")`), add it to `applyList` to offset the original bill
+  - Log as "credit note" in report
+- If `payable.type` in `["invoicePurchase", "subscriptionCard", ...]`:
+  - Normal bill flow (Steps 3–5 below)
 
 ```
-1. GET Spendesk API /invoices (status: approved)
-2. Pour chaque invoice:
-   a. Vérifier si existe: netsuite_get_vendor_bills(q: externalId)
-   b. Si n'existe pas:
+1. GET Spendesk API /invoices or payables (status: approved)
+2. Pour chaque payable:
+   a. Step 2b: si creditNote → netsuite_create_vendor_credit; sinon continuer
+   b. Vérifier si existe: netsuite_get_vendor_bills(q: externalId) ou get_vendor_credits
+   c. Si n'existe pas (bills):
       - Mapper vendor: netsuite_get_vendors(q: externalId)
       - Mapper accounts: netsuite_get_accounts
       - Mapper tax codes: netsuite_get_tax_codes
@@ -201,8 +214,10 @@ See `src/config/tax-codes.ts` in the repo.
 - `netsuite_get_accounts` (expense accounts)
 - `netsuite_get_tax_codes`
 - `netsuite_get_departments`
-- `netsuite_get_vendor_bills` (check existence)
-- `netsuite_create_vendor_bill` ⭐
+- `netsuite_get_vendor_bills` / `netsuite_get_vendor_credits` (check existence)
+- `netsuite_create_vendor_bill` ⭐ (invoices)
+- `netsuite_create_vendor_credit` ⭐ (credit notes / refunds)
+- `netsuite_get_vendor_bill_by_external_id` (find original bill for applyList)
 
 ---
 

@@ -2,6 +2,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { withRetry } from "../lib/retry.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerVendorCreditTools(server: McpServer, client: NetSuiteClient): void {
@@ -36,22 +38,55 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
   server.registerTool(
     "netsuite_create_vendor_credit",
     {
-      description: "Create a NetSuite vendor credit (credit note) and optionally apply it to vendor bills. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), expenseList (object with expense array containing account, amount, department, location, memo), applyList (object with apply array containing doc, apply=true, amount)",
+      description:
+        "Create a NetSuite vendor credit (for Spendesk credit notes / refunds). Use externalId for idempotency (e.g. spk_payable_<creditNoteId>). Optionally apply to an existing bill via applyList.",
       inputSchema: z
         .object({
           entity: z.string().describe("Vendor internal ID"),
           subsidiary: z.string().describe("Subsidiary internal ID"),
           tranDate: z.string().describe("Date YYYY-MM-DD"),
           memo: z.string().optional(),
-          externalId: z.string().optional(),
-          expenseList: z.any().optional(),
-          applyList: z.any().optional(),
+          externalId: z
+            .string()
+            .optional()
+            .describe("e.g. spk_payable_<creditNoteId>"),
+          expenseList: z
+            .object({
+              items: z
+                .array(
+                  z.object({
+                    account: z.string(),
+                    amount: z.number(),
+                    department: z.string().optional(),
+                    location: z.string().optional(),
+                    memo: z.string().optional(),
+                  })
+                )
+                .optional(),
+              expense: z.array(z.any()).optional(),
+            })
+            .optional()
+            .describe("Expense lines: use items or expense array with account, amount, department, memo"),
+          applyList: z
+            .object({
+              items: z
+                .array(
+                  z.object({
+                    doc: z.string().describe("Bill internal ID"),
+                    apply: z.boolean().optional(),
+                    amount: z.number(),
+                  })
+                )
+                .optional(),
+              apply: z.array(z.any()).optional(),
+            })
+            .optional()
+            .describe("Apply credit to existing bill(s): doc, apply, amount"),
         })
         .strict() as any,
     },
     async ({ entity, subsidiary, tranDate, memo, externalId, expenseList, applyList }: any) => {
       try {
-        // Validate required parameters
         if (!entity || typeof entity !== "string") {
           return errorResponse("Missing required parameter: entity (string, vendor ID)");
         }
@@ -71,24 +106,26 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
         if (memo) body.memo = memo;
         if (externalId) body.externalId = externalId;
 
-        if (expenseList?.expense && Array.isArray(expenseList.expense)) {
+        const expenseLines = expenseList?.items ?? expenseList?.expense ?? [];
+        if (Array.isArray(expenseLines) && expenseLines.length > 0) {
           body.expenseList = {
-            expense: expenseList.expense.map((line: any) => {
+            expense: expenseLines.map((line: any) => {
               const expLine: any = {
-                account: { id: line.account },
+                account: { id: String(line.account) },
                 amount: line.amount,
               };
-              if (line.department) expLine.department = { id: line.department };
-              if (line.location) expLine.location = { id: line.location };
-              if (line.memo) expLine.memo = line.memo;
+              if (line.department) expLine.department = { id: String(line.department) };
+              if (line.location) expLine.location = { id: String(line.location) };
+              if (line.memo != null) expLine.memo = line.memo;
               return expLine;
             }),
           };
         }
 
-        if (applyList?.apply && Array.isArray(applyList.apply)) {
+        const applyItems = applyList?.items ?? applyList?.apply ?? [];
+        if (Array.isArray(applyItems) && applyItems.length > 0) {
           body.applyList = {
-            apply: applyList.apply.map((item: any) => ({
+            apply: applyItems.map((item: any) => ({
               doc: item.doc,
               apply: item.apply ?? true,
               amount: item.amount,
@@ -96,10 +133,15 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           };
         }
 
-        const result = await client.post<unknown>("/vendorCredit", body);
+        const result = await withRetry(
+          () => client.post<unknown>("/vendorCredit", body),
+          "create_vendor_credit"
+        );
         return successResponse(result);
       } catch (error: any) {
-        return errorResponse(`Error creating vendor credit: ${error.message}`);
+        return errorResponse(
+          `Error creating vendor credit: ${parseNetSuiteError(error)}`
+        );
       }
     }
   );

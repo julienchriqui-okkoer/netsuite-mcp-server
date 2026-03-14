@@ -127,10 +127,87 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     "/account"
   );
 
-  registerSimpleListTool(
+  // Enriched tax codes with names and rate (filter at source, enrich with low concurrency)
+  server.registerTool(
     "netsuite_get_tax_codes",
-    "List NetSuite sales tax items. Returns tax codes with rates and descriptions. Optional parameters: limit (number), offset (number)",
-    "/salestaxitem"
+    {
+      description:
+        "List NetSuite sales tax items with id, name, rate, country, isInactive. Filter: itemType = SalesAndPurchases and country (default FR). Optional: limit, offset, country.",
+      inputSchema: z
+        .object({
+          limit: z
+            .number()
+            .optional()
+            .describe("Max tax codes to return (default 50)"),
+          offset: z
+            .number()
+            .optional()
+            .describe("Pagination offset (default 0)"),
+          country: z
+            .string()
+            .optional()
+            .describe("Country filter, e.g. FR (default FR)"),
+        })
+        .strict() as any,
+    },
+    async ({ limit = 50, offset = 0, country = "FR" }: any) => {
+      try {
+        const listParams: Record<string, string> = {
+          limit: String(Math.min(limit, 100)),
+          offset: String(offset),
+          q: `itemType IS "SalesAndPurchases" AND country IS "${country}"`,
+        };
+        const listRes: any = await withRetry(
+          () => client.get<any>("/salestaxitem", listParams),
+          "get_tax_codes list"
+        );
+        const items: any[] = listRes?.items ?? [];
+        const ids = items.map((i: any) => String(i.id)).slice(0, limit);
+
+        if (ids.length === 0) {
+          return successResponse({
+            count: 0,
+            hasMore: listRes?.hasMore ?? false,
+            taxCodes: [],
+          });
+        }
+
+        const enriched = await batchParallel(
+          ids,
+          (id: string) =>
+            withRetry(
+              () => client.get<any>(`/salestaxitem/${id}`),
+              `get_tax_codes detail ${id}`
+            )
+              .then((item: any) => {
+                const rawRate = typeof item.rate === "number" ? item.rate : parseFloat(item.rate) || 0;
+                const rate = rawRate > 0 && rawRate <= 1 ? rawRate * 100 : rawRate;
+                return {
+                  id: item.id,
+                  name: item.name ?? item.refName ?? `Tax ${id}`,
+                  rate,
+                  country: item.country?.refName ?? item.country?.id ?? item.country ?? country,
+                  isInactive: item.isInactive ?? false,
+                };
+              })
+              .catch(() => null),
+          3,
+          500
+        );
+
+        const taxCodes = enriched.filter((t: any) => t != null);
+
+        return successResponse({
+          count: taxCodes.length,
+          hasMore: listRes?.hasMore ?? false,
+          taxCodes,
+        });
+      } catch (error: any) {
+        return errorResponse(
+          `Error enriching tax codes: ${parseNetSuiteError(error)}`
+        );
+      }
+    }
   );
 
   // Enriched departments with names (filter inactive at source, enrich with low concurrency)
