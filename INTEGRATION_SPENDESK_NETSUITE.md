@@ -38,10 +38,8 @@
 
 **Champs supportés pour create :**
 - ✅ Header: `entity`, `subsidiary`, `tranDate`, `dueDate`, `tranId`, `memo`, `currency`, `exchangeRate`, `externalId`
-- ✅ Lines (`expense` array):
-  - Required: `account`, `amount`
-  - Analytics: `department`, `location`, `class`
-  - Optional: `memo`, `taxCode`
+- ✅ Lines (`expense` array): Required: `account`, `amount` (NET when VAT); Analytics: `department`, `location`, `class`; Optional: `memo`, `taxCode`
+- ✅ **VAT** : `vatLines` (array of `{ taxCodeId, taxRate, vatAmount, netAmount }`) — updates tax authority ledger; use NET amount on expense when VAT present
 
 ---
 
@@ -173,11 +171,30 @@
       - Créer: netsuite_create_vendor_bill(
           entity: vendor.id,
           externalId: `spk_inv_${invoice.id}`,
-          expense: [{
-            account, amount, department, location, class, taxCode
-          }]
+          expense: [{ account, amount (NET si VAT), department, location, class, memo, taxCode }],
+          vatLines: si payable.vatAmount > 0 → [{ taxCodeId, taxRate, vatAmount, netAmount }]
         )
 ```
+
+**Step 4 — Bill creation — VAT handling (for Dust system prompt):**
+- If `payable.vatAmount > 0`:
+  - `expense[0].amount` = `payable.netAmount / 100` (NET only)
+  - Resolve `taxCodeId` from `CLIENT_CONFIG.TAX_CODES[payable.vatRate]` (or `netsuite_get_tax_codes`)
+  - Pass `vatLines: [{ taxCodeId, taxRate, vatAmount: payable.vatAmount/100, netAmount: payable.netAmount/100 }]`
+- If `payable.vatAmount == 0`:
+  - `expense[0].amount` = `payable.grossAmount / 100` (no VAT)
+  - Do not pass `vatLines`
+
+**CLIENT_CONFIG.TAX_CODES** (resolve IDs in NetSuite: Setup → Accounting → Tax Codes):
+```json
+{
+  "0.20":  { "id": "TO_CONFIRM", "name": "TVA 20%" },
+  "0.10":  { "id": "TO_CONFIRM", "name": "TVA 10%" },
+  "0.055": { "id": "TO_CONFIRM", "name": "TVA 5.5%" },
+  "0.00":  { "id": "TO_CONFIRM", "name": "Exonéré / Hors champ" }
+}
+```
+See `src/config/tax-codes.ts` in the repo.
 
 **Tools utilisés :**
 - `netsuite_get_vendors` (find vendor)

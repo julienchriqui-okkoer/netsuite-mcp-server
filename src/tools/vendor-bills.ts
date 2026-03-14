@@ -203,7 +203,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
     "netsuite_create_vendor_bill",
     {
       description:
-        "Create a new NetSuite vendor bill with expense lines. Required parameters: entity (string, vendor ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, foreignAmount, vatAmount, taxCodeId, externalId (for idempotence), expense (array of lines with account, amount, department, location, class, memo, taxCode).",
+        "Create a new NetSuite vendor bill with expense lines. Required: entity (vendor ID), subsidiary, tranDate (YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, foreignAmount, externalId, expense (array of lines with account, amount as NET, department, location, class, memo, taxCode). Use vatLines for VAT: array of { taxCodeId, taxRate, vatAmount, netAmount } so the tax authority ledger is updated.",
       inputSchema: {
         entity: z.string(),
         subsidiary: z.string(),
@@ -226,13 +226,24 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         vatAmount: z
           .number()
           .optional()
-          .describe("VAT amount in EUR"),
+          .describe("VAT amount in EUR (legacy; prefer vatLines)"),
         taxCodeId: z
           .string()
           .optional()
-          .describe('NetSuite tax code ID (e.g. "VAT:S-FR")'),
+          .describe("NetSuite tax code ID (legacy; prefer vatLines or expense[].taxCode)"),
         externalId: z.string().optional(),
         expense: z.array(z.any()).optional(),
+        vatLines: z
+          .array(
+            z.object({
+              taxCodeId: z.string().describe("NS tax code ID (e.g. '7' for FR 20%)"),
+              taxRate: z.number().describe("Rate as decimal e.g. 0.20"),
+              vatAmount: z.number().describe("VAT amount in EUR"),
+              netAmount: z.number().describe("Net amount in EUR"),
+            })
+          )
+          .optional()
+          .describe("VAT breakdown per line; sets taxDetailsOverride so tax authority ledger is updated"),
       } as any,
     },
     async ({
@@ -249,6 +260,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
       taxCodeId,
       externalId,
       expense,
+      vatLines,
     }: any) => {
       try {
         // Validate required parameters
@@ -281,33 +293,45 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         }
         if (externalId) body.externalId = externalId;
 
-        // NetSuite expects: expense: { items: [...] }
+        // Expense lines: amount = NET only; taxCode per line when provided
         if (expense && Array.isArray(expense) && expense.length > 0) {
           body.expense = {
             items: expense.map((line: any, index: number) => {
               const expenseLine: any = {
                 account: { id: line.account },
                 amount: line.amount,
+                memo: line.memo ?? "",
               };
               if (line.department) expenseLine.department = { id: line.department };
               if (line.location) expenseLine.location = { id: line.location };
               if (line.class) expenseLine.class = { id: line.class };
-              if (line.memo) expenseLine.memo = line.memo;
               if (line.taxCode) expenseLine.taxCode = { id: line.taxCode };
 
-              // Top-level VAT support: apply to each line if provided
-              if (vatAmount && vatAmount > 0 && taxCodeId) {
+              // Legacy: single VAT on first line when vatLines not provided
+              if (!vatLines?.length && vatAmount != null && vatAmount > 0 && taxCodeId) {
                 expenseLine.taxCode = { id: taxCodeId };
                 expenseLine.taxAmount = vatAmount;
               }
 
-              // foreignAmount for first expense line when provided
               if (index === 0 && typeof foreignAmount === "number") {
                 expenseLine.foreignAmount = foreignAmount;
               }
 
               return expenseLine;
-            })
+            }),
+          };
+        }
+
+        // VAT breakdown: override tax details so tax authority ledger is updated
+        if (vatLines && vatLines.length > 0) {
+          body.taxDetailsOverride = true;
+          body.taxDetails = {
+            items: vatLines.map((v: any) => ({
+              taxCode: { id: v.taxCodeId },
+              taxRate: (v.taxRate ?? 0) * 100,
+              taxAmount: v.vatAmount,
+              netAmount: v.netAmount,
+            })),
           };
         }
 
