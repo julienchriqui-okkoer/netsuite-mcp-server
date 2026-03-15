@@ -101,14 +101,17 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           entity: { id: entity },
           subsidiary: { id: subsidiary },
           tranDate,
+          memo: memo ?? "",
         };
 
-        if (memo) body.memo = memo;
         if (externalId) body.externalId = externalId;
 
-        const lines = expenseList?.items ?? expenseList?.expense ?? [];
-        if (Array.isArray(lines) && lines.length > 0) {
-          body.expenseList = {
+        // Sub-bug 2 fix: read from .items first (agent passes expenseList.items)
+        const lines = (expenseList?.items ?? expenseList?.expense ?? []) as any[];
+
+        if (lines.length > 0) {
+          // Sub-bug 1 fix: use body.expense (same key as vendorBill), not body.expenseList
+          body.expense = {
             items: lines.map((line: any) => {
               const accountId = line.account?.id ?? line.account;
               const item: any = {
@@ -123,13 +126,13 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           };
         }
 
-        const applyItems = applyList?.items ?? applyList?.apply ?? [];
-        if (Array.isArray(applyItems) && applyItems.length > 0) {
+        const applyItems = (applyList?.items ?? applyList?.apply ?? []) as any[];
+        if (applyItems.length > 0) {
           body.applyList = {
-            apply: applyItems.map((item: any) => ({
-              doc: item.doc,
-              apply: item.apply ?? true,
-              amount: item.amount,
+            apply: applyItems.map((a: any) => ({
+              doc: typeof a.doc === "object" && a.doc?.id != null ? a.doc : { id: String(a.doc) },
+              apply: a.apply ?? true,
+              amount: a.amount,
             })),
           };
         }
