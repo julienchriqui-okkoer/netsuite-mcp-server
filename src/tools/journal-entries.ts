@@ -88,7 +88,6 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
     },
     async ({ subsidiary, tranDate, memo, externalId, line }: any) => {
       try {
-        // Validate required parameters
         if (!subsidiary || typeof subsidiary !== "string") {
           return errorResponse("Missing required parameter: subsidiary (string)");
         }
@@ -99,21 +98,22 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         const body: any = {
           subsidiary: { id: subsidiary },
           tranDate,
+          memo: memo ?? "",
         };
-
-        if (memo) body.memo = memo;
         if (externalId) body.externalId = externalId;
+        // Bypass workflow on NS instances that require approvalStatus
+        body.approvalStatus = { id: "2" };
 
-        if (line && Array.isArray(line)) {
+        if (line?.length > 0) {
           body.lineList = {
             line: line.map((l: any) => {
               const accountId = l.account?.id ?? l.account;
               const jeLine: any = {
                 account: { id: String(accountId) },
-                debit: l.debit ?? undefined,
-                credit: l.credit ?? undefined,
                 memo: l.memo ?? "",
               };
+              if (l.debit !== undefined) jeLine.debit = l.debit;
+              if (l.credit !== undefined) jeLine.credit = l.credit;
               if (l.department) jeLine.department = { id: String(l.department) };
               if (l.location) jeLine.location = { id: String(l.location) };
               if (l.class) jeLine.class = { id: String(l.class) };
@@ -123,10 +123,14 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
           };
         }
 
-        const result = await client.post<unknown>("/journalEntry", body);
-        return successResponse(result);
+        const result: any = await withRetry(
+          () => client.post<unknown>("/journalEntry", body),
+          "create_journal_entry"
+        );
+        const id = result?.id ?? (typeof result?.location === "string" ? result.location.split("/").pop() : undefined);
+        return successResponse({ id, success: true });
       } catch (error: any) {
-        return errorResponse(`Error creating journal entry: ${error.message}`);
+        return errorResponse(`Error creating journal entry: ${parseNetSuiteError(error)}`);
       }
     }
   );
