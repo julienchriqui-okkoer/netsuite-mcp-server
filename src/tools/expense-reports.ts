@@ -115,9 +115,9 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             .optional()
             .describe("If true, return the NS request body without calling NS (debug mode)"),
           expenseListFormat: z
-            .enum(["A", "B", "C"])
+            .enum(["A", "B", "C", "D"])
             .optional()
-            .describe("Debug: A=array direct, B=expense.items, C=items (default). Use with dryRun to test which NS accepts."),
+            .describe("Debug: A=array, B=expense.items, C=expenseList.items, D=expense.items like vendor bills (default). Use with dryRun to test."),
         })
         .strict() as any,
     },
@@ -155,9 +155,9 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             rawExpenseList = undefined;
           }
         }
-        // Map lines once; then set body.expenseList by format (debug: A/B/C)
+        // Map lines once; then set body by format (A/B/C = expenseList variants, D = expense like vendor bills)
         const lines = rawExpenseList?.expense ?? [];
-        const format = (params.expenseListFormat ?? "C") as "A" | "B" | "C";
+        const format = (params.expenseListFormat ?? "D") as "A" | "B" | "C" | "D";
         const mapLine = (e: any) => ({
           expenseDate: e.expenseDate ?? params.tranDate,
           account: { id: String(e.account?.id ?? e.account) },
@@ -172,7 +172,10 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
         });
         if (lines.length > 0) {
-          if (format === "A") {
+          if (format === "D") {
+            body.expense = { items: lines.map(mapLine) };
+            delete body.expenseList;
+          } else if (format === "A") {
             body.expenseList = lines.map(mapLine);
           } else if (format === "B") {
             body.expenseList = { expense: { items: lines.map(mapLine) } };
