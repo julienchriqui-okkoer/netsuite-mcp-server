@@ -108,6 +108,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
         }
 
+        // NS REST expects employee, subsidiary, currency as { id: string }
         const body: any = {
           employee: { id: String(employee) },
           subsidiary: { id: String(subsidiary) },
