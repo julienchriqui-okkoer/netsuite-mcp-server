@@ -2,9 +2,47 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { withRetry } from "../lib/retry.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerExpenseReportTools(server: McpServer, client: NetSuiteClient): void {
+  // Get expense report by externalId (idempotency helper for expense claims flow)
+  server.registerTool(
+    "netsuite_get_expense_report_by_external_id",
+    {
+      description: "Get an expense report by its externalId (idempotency check before creating an expense report).",
+      inputSchema: z.object({ externalId: z.string() }).strict() as any,
+    },
+    async ({ externalId }: any) => {
+      try {
+        if (!externalId || typeof externalId !== "string") {
+          return errorResponse("Missing required parameter: externalId (string)");
+        }
+        const res: any = await withRetry(
+          () =>
+            client.get<any>("/expenseReport", {
+              q: `externalId IS "${externalId}"`,
+              limit: "1",
+            }),
+          "get_expense_report_by_external_id"
+        );
+        const items = res?.items ?? [];
+        if (items.length === 0) {
+          return successResponse({ found: false, report: null });
+        }
+        return successResponse({
+          found: true,
+          report: { id: items[0].id, externalId: items[0].externalId ?? externalId },
+        });
+      } catch (e: any) {
+        return errorResponse(
+          `get_expense_report_by_external_id failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
   server.registerTool(
     "netsuite_get_expense_reports",
     {
@@ -56,7 +94,6 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
     },
     async ({ employee, subsidiary, tranDate, memo, externalId, expenseList }: any) => {
       try {
-        // Validate required parameters
         if (!employee || typeof employee !== "string") {
           return errorResponse("Missing required parameter: employee (string, employee ID)");
         }
@@ -68,39 +105,41 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         }
 
         const body: any = {
-          employee: { id: employee },
-          subsidiary: { id: subsidiary },
+          employee: { id: String(employee) },
+          subsidiary: { id: String(subsidiary) },
           tranDate,
+          memo: memo ?? "",
         };
-
-        if (memo) body.memo = memo;
         if (externalId) body.externalId = externalId;
 
-        if (expenseList?.expense && Array.isArray(expenseList.expense)) {
+        const expenseLines = expenseList?.expense ?? [];
+        if (expenseLines.length > 0) {
           body.expenseList = {
-            expense: expenseList.expense.map((line: any) => {
-              const expLine: any = {
-                expenseDate: line.expenseDate,
-                account: { id: line.account },
-                amount: line.amount,
-              };
-              if (line.taxCode) expLine.taxCode = { id: line.taxCode };
-              if (line.department) expLine.department = { id: line.department };
-              if (line.location) expLine.location = { id: line.location };
-              if (line.class) expLine.class = { id: line.class };
-              if (line.memo) expLine.memo = line.memo;
-              if (line.currency) expLine.currency = { id: line.currency };
-              if (line.exchangeRate) expLine.exchangeRate = line.exchangeRate;
-              if (line.foreignAmount) expLine.foreignAmount = line.foreignAmount;
-              return expLine;
-            }),
+            expense: expenseLines.map((e: any) => ({
+              expenseDate: e.expenseDate ?? tranDate,
+              account: { id: String(e.account?.id ?? e.account) },
+              amount: e.amount,
+              memo: e.memo ?? "",
+              currency: e.currency ? { id: e.currency } : undefined,
+              exchangeRate: e.exchangeRate ?? undefined,
+              foreignAmount: e.foreignAmount ?? undefined,
+              department: e.department ? { id: String(e.department) } : undefined,
+              location: e.location ? { id: String(e.location) } : undefined,
+              class: e.class ? { id: String(e.class) } : undefined,
+              taxCode: e.taxCode ? { id: String(e.taxCode) } : undefined,
+            })),
           };
         }
 
-        const result = await client.post<unknown>("/expenseReport", body);
-        return successResponse(result);
+        const result: any = await withRetry(
+          () => client.post<unknown>("/expenseReport", body),
+          "create_expense_report"
+        );
+        const location = result?.location ?? "";
+        const id = (typeof location === "string" ? location.split("/").pop() : null) ?? result?.id;
+        return successResponse({ id, externalId: externalId ?? undefined, success: true });
       } catch (error: any) {
-        return errorResponse(`Error creating expense report: ${error.message}`);
+        return errorResponse(`Error creating expense report: ${parseNetSuiteError(error)}`);
       }
     }
   );

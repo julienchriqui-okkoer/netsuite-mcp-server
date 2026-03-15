@@ -42,6 +42,7 @@ export const TOOLS_CONFIG = {
     netsuite_get_journal_entries: true,
     netsuite_get_journal_entry_by_external_id: true,
     netsuite_create_journal_entry: true,
+    netsuite_create_accrual_journal_entry: true,
     netsuite_get_journal_entry: true,
   },
   
@@ -52,6 +53,7 @@ export const TOOLS_CONFIG = {
   
   expenseReports: {
     netsuite_get_expense_reports: true,
+    netsuite_get_expense_report_by_external_id: true,
     netsuite_create_expense_report: true,
   },
   

@@ -105,22 +105,19 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         // Bypass workflow on NS instances that require approvalStatus
         body.approvalStatus = { id: "2" };
 
-        if (line?.length > 0) {
+        // NS REST: lineList.line (not body.line); account as { id }
+        if (line != null) {
           body.lineList = {
-            line: line.map((l: any) => {
-              const accountId = l.account?.id ?? l.account;
-              const jeLine: any = {
-                account: { id: String(accountId) },
-                memo: l.memo ?? "",
-              };
-              if (l.debit !== undefined) jeLine.debit = l.debit;
-              if (l.credit !== undefined) jeLine.credit = l.credit;
-              if (l.department) jeLine.department = { id: String(l.department) };
-              if (l.location) jeLine.location = { id: String(l.location) };
-              if (l.class) jeLine.class = { id: String(l.class) };
-              if (l.entity) jeLine.entity = { id: String(l.entity) };
-              return jeLine;
-            }),
+            line: (line ?? []).map((l: any) => ({
+              account: { id: String(l.account?.id ?? l.account) },
+              debit: l.debit !== undefined ? l.debit : undefined,
+              credit: l.credit !== undefined ? l.credit : undefined,
+              memo: l.memo ?? "",
+              department: l.department ? { id: String(l.department) } : undefined,
+              location: l.location ? { id: String(l.location) } : undefined,
+              class: l.class ? { id: String(l.class) } : undefined,
+              entity: l.entity ? { id: String(l.entity) } : undefined,
+            })),
           };
         }
 
@@ -128,8 +125,10 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
           () => client.post<unknown>("/journalEntry", body),
           "create_journal_entry"
         );
-        const id = result?.id ?? (typeof result?.location === "string" ? result.location.split("/").pop() : undefined);
-        return successResponse({ id, success: true });
+        // NS returns 204 + Location: .../journalEntry/XXXXX
+        const location = result?.location ?? "";
+        const id = (typeof location === "string" ? location.split("/").pop() : null) ?? result?.id;
+        return successResponse({ id, externalId: externalId ?? undefined, success: true });
       } catch (error: any) {
         return errorResponse(`Error creating journal entry: ${parseNetSuiteError(error)}`);
       }

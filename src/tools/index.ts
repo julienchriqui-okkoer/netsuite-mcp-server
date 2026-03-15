@@ -5,6 +5,7 @@ import { registerVendorTools } from "./vendors.js";
 import { registerReferenceTools } from "./reference.js";
 import { registerVendorBillTools } from "./vendor-bills.js";
 import { registerJournalEntryTools } from "./journal-entries.js";
+import { registerAccrualJournalEntryTools } from "./accrual-journal-entry.js";
 import { registerSuiteQLTools } from "./suiteql.js";
 import { registerEmployeeTools } from "./employees.js";
 import { registerExpenseReportTools } from "./expense-reports.js";
@@ -67,6 +68,7 @@ export function registerAllTools(server: McpServer): void {
     registerPaymentTools(server, client);
     registerVendorCreditTools(server, client);
     registerJournalEntryTools(server, client);
+    registerAccrualJournalEntryTools(server, client);
     registerReferenceTools(server, client);
     registerSuiteQLTools(server, client);
     registerAnalyticsTools(server, client);
