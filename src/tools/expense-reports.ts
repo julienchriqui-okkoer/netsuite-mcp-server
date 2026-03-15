@@ -2,7 +2,6 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
-import { parseParam } from "../utils/parseParam.js";
 import { withRetry } from "../lib/retry.js";
 import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
@@ -143,11 +142,21 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         if (params.externalId) body.externalId = params.externalId;
 
         // NS REST: expenseList.expense uses items[] (same pattern as journal entry line.items)
-        const expenseLines = parseParam(params.expenseList)?.expense ?? [];
-        if (expenseLines.length > 0) {
+        // Fix: MCP may send expenseList as JSON string — parse explicitly
+        let rawExpenseList: any = params.expenseList;
+        if (typeof params.expenseList === "string") {
+          try {
+            rawExpenseList = JSON.parse(params.expenseList);
+          } catch (e) {
+            console.error("[NS-MCP] Failed to parse expenseList:", params.expenseList);
+            rawExpenseList = undefined;
+          }
+        }
+        const lines = rawExpenseList?.expense ?? [];
+        if (lines.length > 0) {
           body.expenseList = {
             expense: {
-              items: expenseLines.map((e: any) => ({
+              items: lines.map((e: any) => ({
                 expenseDate: e.expenseDate ?? params.tranDate,
                 account: { id: String(e.account?.id ?? e.account) },
                 amount: e.amount,
