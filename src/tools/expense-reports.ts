@@ -84,6 +84,10 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           employee: z.string().describe("Employee internal ID"),
           subsidiary: z.string().describe("Subsidiary internal ID"),
           tranDate: z.string().describe("Date YYYY-MM-DD"),
+          currency: z
+            .string()
+            .optional()
+            .describe("NS currency ID (1=EUR, 2=USD, 3=GBP). Default: '1' (EUR)"),
           memo: z.string().optional(),
           externalId: z.string().optional().describe("Idempotency key"),
           expenseList: z.any().optional().describe(
@@ -92,7 +96,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         })
         .strict() as any,
     },
-    async ({ employee, subsidiary, tranDate, memo, externalId, expenseList }: any) => {
+    async ({ employee, subsidiary, tranDate, currency, memo, externalId, expenseList }: any) => {
       try {
         if (!employee || typeof employee !== "string") {
           return errorResponse("Missing required parameter: employee (string, employee ID)");
@@ -109,6 +113,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           subsidiary: { id: String(subsidiary) },
           tranDate,
           memo: memo ?? "",
+          currency: { id: String(currency ?? "1") },
         };
         if (externalId) body.externalId = externalId;
 
@@ -120,7 +125,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
               account: { id: String(e.account?.id ?? e.account) },
               amount: e.amount,
               memo: e.memo ?? "",
-              currency: e.currency ? { id: e.currency } : undefined,
+              currency: e.currency ? { id: String(e.currency) } : undefined,
               exchangeRate: e.exchangeRate ?? undefined,
               foreignAmount: e.foreignAmount ?? undefined,
               department: e.department ? { id: String(e.department) } : undefined,
