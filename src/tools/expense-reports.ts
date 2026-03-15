@@ -109,9 +109,11 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
         }
 
-        // NS REST: employee, subsidiary, currency must be { id: string } (not raw strings)
+        // NS REST: employee/entity (employee ID), subsidiary, currency as { id: string }
+        // Some NS REST variants use "entity" for the employee (like vendorBill uses entity for vendor)
         const body: any = {};
         body.employee = { id: String(params.employee) };
+        body.entity = { id: String(params.employee) };
         body.subsidiary = { id: String(params.subsidiary) };
         body.currency = { id: String(params.currency ?? "1") };
         body.tranDate = params.tranDate;
