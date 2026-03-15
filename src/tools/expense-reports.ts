@@ -90,9 +90,26 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             .describe("NS currency ID (1=EUR, 2=USD, 3=GBP). Default: '1' (EUR)"),
           memo: z.string().optional(),
           externalId: z.string().optional().describe("Idempotency key"),
-          expenseList: z.any().optional().describe(
-            "{ expense: [{ expenseDate, account, amount, memo, currency, exchangeRate, foreignAmount }] }"
-          ),
+          expenseList: z
+            .object({
+              expense: z.array(
+                z.object({
+                  expenseDate: z.string().optional(),
+                  account: z.union([z.string(), z.object({ id: z.string() })]).optional(),
+                  amount: z.number(),
+                  memo: z.string().optional(),
+                  currency: z.string().optional(),
+                  foreignAmount: z.number().optional(),
+                  exchangeRate: z.number().optional(),
+                  department: z.string().optional(),
+                  location: z.string().optional(),
+                  class: z.string().optional(),
+                  taxCode: z.string().optional(),
+                })
+              ),
+            })
+            .optional()
+            .describe("Expense lines: { expense: [{ expenseDate, account, amount, memo, currency, foreignAmount, exchangeRate, department }] }"),
         })
         .strict() as any,
     },
