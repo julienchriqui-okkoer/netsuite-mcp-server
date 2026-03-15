@@ -103,12 +103,13 @@
 
 ---
 
-### 📖 8. JOURNAL ENTRIES (Écritures) - 2 tools
+### 📖 8. JOURNAL ENTRIES (Écritures) - 3 tools
 
 | Tool | Action | Status | Use Case |
 |------|--------|--------|----------|
 | `netsuite_get_journal_entries` | List | ✅ | Lister écritures |
-| `netsuite_create_journal_entry` | Create | ✅ | Créer écriture manuelle |
+| `netsuite_get_journal_entry_by_external_id` | Get | ✅ | Idempotence (ex. bank fees flow) |
+| `netsuite_create_journal_entry` | Create | ✅ | Créer écriture (dont frais bancaires) |
 
 ---
 
@@ -155,6 +156,50 @@
 - `netsuite_get_vendors` (recherche)
 - `netsuite_create_vendor` ⭐
 - `netsuite_update_vendor` ⭐
+
+---
+
+### Step 1b — Bank fees (after settlements)
+
+**Objectif :** Exporter les frais bancaires Spendesk en écritures journalières NetSuite (otherFee → 627800, fxFee → 656000). Pas de facture fournisseur.
+
+**Step 1b — Bank fees for the day (for Dust system prompt):**
+1. Call `spendesk_get_bank_fees` with date filters so only the day’s fees are returned (avoid fetching all 13k+ fees). Pass **chargedFrom** and **chargedTo** (ISO 8601, e.g. yesterday’s date). Example: `spendesk_get_bank_fees({ chargedFrom: "2024-04-15T00:00:00Z", chargedTo: "2024-04-15T23:59:59Z" })` or `chargedFrom`/`chargedTo` as date strings if the API accepts them.
+2. Group by kind: `fxFee` | `otherFee`.
+3. **Idempotency:** For each (day + kind), check NS journal by externalId (e.g. `spk_bankfee_other_<tranDate>`, `spk_bankfee_fx_<tranDate>`). Use `netsuite_get_journal_entry_by_external_id(externalId)`. If found → skip.
+4. **Batch by day:** Create **one** journal entry per day per kind (not one JE per fee). Sum amounts; memo can list settlement IDs (e.g. first 8 chars).
+
+**Step 1b — Journal entries (batched by day):**
+
+- **otherFee (platform fee):**
+  - `netsuite_create_journal_entry(subsidiary: DEFAULT_SUBSIDIARY, tranDate: fee.chargedAt (date), memo: "Spendesk bank fee | settlement <settlementId[:8]>…", externalId: "spk_bankfee_other_<tranDate>", line: [{ account: CLIENT_CONFIG.ACCOUNTS.bankFees.id, debit: sumFees }, { account: CLIENT_CONFIG.ACCOUNTS.spendeskWallet.id, credit: sumFees }])`
+
+- **fxFee (FX fee):**
+  - `netsuite_create_journal_entry(subsidiary: DEFAULT_SUBSIDIARY, tranDate: fee.chargedAt, memo: "Spendesk FX fee | settlement <settlementId[:8]>…", externalId: "spk_bankfee_fx_<tranDate>", line: [{ account: CLIENT_CONFIG.ACCOUNTS.fxLoss.id, debit: sumFees }, { account: CLIENT_CONFIG.ACCOUNTS.spendeskWallet.id, credit: sumFees }])`
+
+**Spendesk tool — `spendesk_get_bank_fees` (implement in Spendesk MCP or API client):**  
+To avoid returning all 13k+ fees, the tool MUST support date filters. Add to inputSchema and pass to the Spendesk API:
+- **chargedFrom** (string, ISO 8601): filter fees charged from this date.
+- **chargedTo** (string, ISO 8601): filter fees charged until this date.  
+Example: `const params = new URLSearchParams(); if (chargedFrom) params.append("chargedFrom", chargedFrom); if (chargedTo) params.append("chargedTo", chargedTo);` then call API with these query params. Confirm param names via `spendesk_get_api_reference({ path: "bank-fees" })` if available.
+
+**Tools utilisés :** `spendesk_get_bank_fees`, `netsuite_get_journal_entry_by_external_id`, `netsuite_create_journal_entry`.
+
+---
+
+### Step 1c — Wallet loads (after settlements)
+
+**Objectif :** Exporter les recharges de wallet Spendesk (virements internes banque → wallet) en écritures journalières NetSuite. Pas de fournisseur → journal entries uniquement.
+
+**Step 1c — Wallet loads for the day (for Dust system prompt):**
+1. Call `spendesk_get_wallet_loads(filters: { createdFrom: yesterday, createdTo: yesterday })` (e.g. type wireTransfer from "sfs").
+2. For each load:
+   - **Idempotency:** Check NS journal by externalId `spk_walletload_<loadId>` via `netsuite_get_journal_entry_by_external_id(externalId)`. If found → skip.
+   - **Amount:** `amount = load.amount` — ⚠️ confirm unit with client: set `CLIENT_CONFIG.WALLET_LOAD_AMOUNT_UNIT` to `"cents"` (then use `amount / 100`) or `"eur"` (use amount as-is). Check a known load vs NS bank statement.
+   - Create journal entry:
+     - `netsuite_create_journal_entry(subsidiary: DEFAULT_SUBSIDIARY, tranDate: load.createdAt (date part), memo: "Spendesk wallet load | <load.type> | <load.bankName>", externalId: "spk_walletload_<loadId>", line: [{ account: CLIENT_CONFIG.ACCOUNTS.spendeskWallet.id, debit: amount }, { account: CLIENT_CONFIG.ACCOUNTS.bankAccount.id, credit: amount }])`
+
+**Tools utilisés :** `spendesk_get_wallet_loads`, `netsuite_get_journal_entry_by_external_id`, `netsuite_create_journal_entry`.
 
 ---
 
@@ -206,6 +251,17 @@ Spendesk uses different type names by workspace (demo: `creditNote`, prod: `reve
   - `expense[0].amount` = `payable.grossAmount / 100` (no VAT)
   - Do not pass `vatLines`
 
+**Step 4c — FX difference handling (when payable.currency != "EUR"):**  
+When functionalAmount (EUR) differs from grossAmount (original currency), book the difference as a separate expense line (fxLoss or fxGain).
+
+- If `payable.currency != "EUR"`:
+  - `fxDiff = abs(payable.functionalAmount - payable.grossAmount)` (if amounts are in cents, use `fxDiff / 100` for expense amount in EUR).
+  - If `fxDiff > 0.01` (ignore rounding &lt; 1 cent):
+    - If `payable.functionalAmount > payable.grossAmount` → FX loss → `fxAccount = CLIENT_CONFIG.ACCOUNTS.fxLoss` (656000).
+    - Else → FX gain → `fxAccount = CLIENT_CONFIG.ACCOUNTS.fxGain` (766000).
+    - Add a **second** expense line on the bill: `{ account: fxAccount.id, amount: fxDiff (in EUR), memo: "FX diff <currency> → EUR" }`. First line remains main account + netAmount.
+    - Log in report: `"FX diff: <currency> <grossAmount> → EUR <functionalAmount> | diff: <fxDiff>"`.
+
 **Step 5 — Attach invoice PDF to bill (after bill created successfully):**
 - If payable has attachment:
   1. `spendesk_get_payable_attachments(payableId)` → if no attachment → skip silently.
@@ -229,10 +285,23 @@ Spendesk uses different type names by workspace (demo: `creditNote`, prod: `reve
   - `"0.10":  { id: "<ID>", name: "TVA 10%" }`
   - `"0.055": { id: "<ID>", name: "TVA 5.5%" }`
   - `"0.00":  { id: "<ID>", name: "Exonéré" }`
+- **ACCOUNTS** (for bank fees journal entries; resolve IDs via `netsuite_get_accounts`):
+```json
+{
+  "bankFees":       { "id": "371", "code": "627800", "name": "Services bancaires" },
+  "fxLoss":         { "id": "TO_CONFIRM", "code": "656000", "name": "Pertes de change" },
+  "fxGain":         { "id": "TO_CONFIRM", "code": "766000", "name": "Gains de change" },
+  "spendeskWallet": { "id": "TO_CONFIRM", "code": "58xxxx", "name": "Compte Spendesk (virement interne)" },
+  "bankAccount":    { "id": "1812", "code": "512451", "name": "SPENDESK SAS PROD FS" },
+  "ap":             { "id": "TO_CONFIRM", "code": "401000", "name": "Fournisseurs" }
+}
+```
+  See `src/config/accounts-config.ts`.
+- **WALLET_LOAD_AMOUNT_UNIT**: `"cents"` | `"eur"` — Unit for `spendesk_get_wallet_loads` amounts. Use `"cents"` if API returns cents (divide by 100 for JE); use `"eur"` if already in EUR. Confirm with client via a known load vs NetSuite bank statement.
 - **NS_FILE_CABINET_FOLDER_ID**: `"TO_CONFIRM"` — NetSuite: Documents → Files → Accounting → folder Internal ID. Used when attaching invoice PDF to bill.
 - **COST_CENTER_MAP**: `{ [costCenterId]: { netsuiteDeptId: "41" } }` — Map Spendesk costCenter → NetSuite department ID for expense line. See `src/config/cost-center-map.ts`.
 
-See `src/config/tax-codes.ts`, `src/config/file-cabinet-config.ts`, `src/config/cost-center-map.ts` in the repo.
+See `src/config/tax-codes.ts`, `src/config/accounts-config.ts`, `src/config/file-cabinet-config.ts`, `src/config/cost-center-map.ts` in the repo.
 
 **Tools utilisés :**
 - `netsuite_get_vendors` (find vendor)

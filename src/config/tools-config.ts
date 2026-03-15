@@ -39,6 +39,8 @@ export const TOOLS_CONFIG = {
   },
   
   journalEntries: {
+    netsuite_get_journal_entries: true,
+    netsuite_get_journal_entry_by_external_id: true,
     netsuite_create_journal_entry: true,
     netsuite_get_journal_entry: true,
   },

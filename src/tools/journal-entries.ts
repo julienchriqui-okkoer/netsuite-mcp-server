@@ -2,9 +2,43 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { withRetry } from "../lib/retry.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerJournalEntryTools(server: McpServer, client: NetSuiteClient): void {
+  // Get journal entry by externalId (idempotency helper for bank fees etc.)
+  server.registerTool(
+    "netsuite_get_journal_entry_by_external_id",
+    {
+      description:
+        "Get a journal entry by its externalId (idempotency helper). Required: externalId (string). Returns { found: boolean, entry: { id, externalId, tranDate, ... } | null }",
+      inputSchema: z.object({ externalId: z.string() }).strict() as any,
+    },
+    async ({ externalId }: any) => {
+      try {
+        if (!externalId || typeof externalId !== "string") {
+          return errorResponse("Missing required parameter: externalId (string)");
+        }
+        const res: any = await withRetry(
+          () =>
+            client.get<any>("/journalEntry", {
+              q: `externalId IS "${externalId}"`,
+              limit: "1",
+            }),
+          "get_journal_entry_by_external_id"
+        );
+        const items = res?.items ?? [];
+        const entry = items.length > 0 ? items[0] : null;
+        return successResponse({ found: items.length > 0, entry });
+      } catch (e: any) {
+        return errorResponse(
+          `get_journal_entry_by_external_id failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
   server.registerTool(
     "netsuite_get_journal_entries",
     {
@@ -72,8 +106,9 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
 
         if (line && Array.isArray(line)) {
           body.line = line.map((l: any) => {
+            const accountId = l.account?.id ?? l.account;
             const jeLine: any = {
-              account: { id: l.account },
+              account: { id: String(accountId) },
             };
             if (l.debit !== undefined) jeLine.debit = l.debit;
             if (l.credit !== undefined) jeLine.credit = l.credit;
