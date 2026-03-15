@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { parseParam } from "../utils/parseParam.js";
 import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
 import { parseNetSuiteError } from "../lib/errors.js";
@@ -244,25 +245,31 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
           )
           .optional()
           .describe("VAT breakdown per line; sets taxDetailsOverride so tax authority ledger is updated"),
+        dryRun: z
+          .boolean()
+          .optional()
+          .describe("If true, return the NS request body without calling NS (debug mode)"),
       } as any,
     },
-    async ({
-      entity,
-      subsidiary,
-      tranDate,
-      dueDate,
-      tranId,
-      memo,
-      currency,
-      exchangeRate,
-      foreignAmount,
-      vatAmount,
-      taxCodeId,
-      externalId,
-      expense,
-      vatLines,
-    }: any) => {
+    async (params: any) => {
       try {
+        const {
+          entity,
+          subsidiary,
+          tranDate,
+          dueDate,
+          tranId,
+          memo,
+          currency,
+          exchangeRate,
+          foreignAmount,
+          vatAmount,
+          taxCodeId,
+          externalId,
+          dryRun,
+        } = params;
+        const expense = parseParam(params.expense) ?? [];
+        const vatLines = parseParam(params.vatLines) ?? [];
         // Validate required parameters
         if (!entity || typeof entity !== "string") {
           return errorResponse("Missing required parameter: entity (string, vendor ID)");
@@ -294,7 +301,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         if (externalId) body.externalId = externalId;
 
         // Expense lines: amount = NET only; taxCode per line when provided
-        if (expense && Array.isArray(expense) && expense.length > 0) {
+        if (expense.length > 0) {
           body.expense = {
             items: expense.map((line: any, index: number) => {
               const expenseLine: any = {
@@ -308,7 +315,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
               if (line.taxCode) expenseLine.taxCode = { id: line.taxCode };
 
               // Legacy: single VAT on first line when vatLines not provided
-              if (!vatLines?.length && vatAmount != null && vatAmount > 0 && taxCodeId) {
+              if (vatLines.length === 0 && vatAmount != null && vatAmount > 0 && taxCodeId) {
                 expenseLine.taxCode = { id: taxCodeId };
                 expenseLine.taxAmount = vatAmount;
               }
@@ -323,7 +330,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
         }
 
         // VAT breakdown: override tax details so tax authority ledger is updated
-        if (vatLines && vatLines.length > 0) {
+        if (vatLines.length > 0) {
           body.taxDetailsOverride = true;
           body.taxDetails = {
             items: vatLines.map((v: any) => ({
@@ -333,6 +340,15 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
               netAmount: v.netAmount,
             })),
           };
+        }
+
+        console.error("[NS-MCP] POST /vendorBill body:", JSON.stringify(body, null, 2));
+        if (dryRun === true) {
+          return successResponse({
+            dryRun: true,
+            url: "/services/rest/record/v1/vendorBill",
+            body,
+          });
         }
 
         const result = await withRetry(

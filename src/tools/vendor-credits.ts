@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { parseParam } from "../utils/parseParam.js";
 import { withRetry } from "../lib/retry.js";
 import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
@@ -126,11 +127,18 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
             })
             .optional()
             .describe("Apply credit to existing bill(s): doc, apply, amount"),
+          dryRun: z
+            .boolean()
+            .optional()
+            .describe("If true, return the NS request body without calling NS (debug mode)"),
         })
         .strict() as any,
     },
-    async ({ entity, subsidiary, tranDate, memo, externalId, expenseList, applyList }: any) => {
+    async (params: any) => {
       try {
+        const { entity, subsidiary, tranDate, memo, externalId, dryRun } = params;
+        const expenseList = parseParam(params.expenseList);
+        const applyList = parseParam(params.applyList);
         if (!entity || typeof entity !== "string") {
           return errorResponse("Missing required parameter: entity (string, vendor ID)");
         }
@@ -189,6 +197,15 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
               })),
             };
           }
+        }
+
+        console.error("[NS-MCP] POST /vendorCredit body:", JSON.stringify(body, null, 2));
+        if (dryRun === true) {
+          return successResponse({
+            dryRun: true,
+            url: "/services/rest/record/v1/vendorCredit",
+            body,
+          });
         }
 
         const result = await withRetry(

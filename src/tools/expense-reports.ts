@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { parseParam } from "../utils/parseParam.js";
 import { withRetry } from "../lib/retry.js";
 import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
@@ -110,6 +111,10 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             })
             .optional()
             .describe("Expense lines: { expense: [{ expenseDate, account, amount, memo, currency, foreignAmount, exchangeRate, department }] }"),
+          dryRun: z
+            .boolean()
+            .optional()
+            .describe("If true, return the NS request body without calling NS (debug mode)"),
         })
         .strict() as any,
     },
@@ -138,7 +143,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         if (params.externalId) body.externalId = params.externalId;
 
         // NS REST: expenseList.expense uses items[] (same pattern as journal entry line.items)
-        const expenseLines = params.expenseList?.expense ?? [];
+        const expenseLines = parseParam(params.expenseList)?.expense ?? [];
         if (expenseLines.length > 0) {
           body.expenseList = {
             expense: {
@@ -157,6 +162,15 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
               })),
             },
           };
+        }
+
+        console.error("[NS-MCP] POST /expenseReport body:", JSON.stringify(body, null, 2));
+        if (params.dryRun === true) {
+          return successResponse({
+            dryRun: true,
+            url: "/services/rest/record/v1/expenseReport",
+            body,
+          });
         }
 
         const result: any = await withRetry(

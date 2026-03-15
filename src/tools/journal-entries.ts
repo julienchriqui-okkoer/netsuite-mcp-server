@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { parseParam } from "../utils/parseParam.js";
 import { withRetry } from "../lib/retry.js";
 import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
@@ -83,11 +84,17 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
             .describe(
               "Journal lines: [{ account, debit?, credit?, memo?, department?, location?, class?, entity? }]"
             ),
+          dryRun: z
+            .boolean()
+            .optional()
+            .describe("If true, return the NS request body without calling NS (debug mode)"),
         })
         .strict() as any,
     },
-    async ({ subsidiary, tranDate, memo, externalId, line }: any) => {
+    async (params: any) => {
       try {
+        const { subsidiary, tranDate, memo, externalId, dryRun } = params;
+        const line = parseParam(params.line) ?? [];
         if (!subsidiary || typeof subsidiary !== "string") {
           return errorResponse("Missing required parameter: subsidiary (string)");
         }
@@ -106,9 +113,9 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         body.approvalStatus = { id: "2" };
 
         // NS REST API expects body.line = { items: [...] }, not flat array or lineList (SOAP)
-        if (line != null) {
+        if (line.length > 0) {
           body.line = {
-            items: (line ?? []).map((l: any) => ({
+            items: line.map((l: any) => ({
               account: { id: String(l.account?.id ?? l.account) },
               debit: l.debit !== undefined ? l.debit : undefined,
               credit: l.credit !== undefined ? l.credit : undefined,
@@ -121,6 +128,15 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
           };
         }
 
+        console.error("[NS-MCP] POST /journalEntry body:", JSON.stringify(body, null, 2));
+        if (dryRun === true) {
+          return successResponse({
+            dryRun: true,
+            url: "/services/rest/record/v1/journalEntry",
+            body,
+          });
+        }
+
         const result: any = await withRetry(
           () => client.post<unknown>("/journalEntry", body),
           "create_journal_entry"
@@ -128,7 +144,7 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         // NS returns 204 + Location: .../journalEntry/XXXXX
         const location = result?.location ?? "";
         const id = (typeof location === "string" ? location.split("/").pop() : null) ?? result?.id;
-        return successResponse({ id, externalId: externalId ?? undefined, success: true });
+        return successResponse({ id, externalId: params.externalId ?? undefined, success: true });
       } catch (error: any) {
         return errorResponse(`Error creating journal entry: ${parseNetSuiteError(error)}`);
       }

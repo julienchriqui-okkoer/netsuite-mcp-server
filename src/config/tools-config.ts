@@ -28,6 +28,7 @@ export const TOOLS_CONFIG = {
   },
   
   reference: {
+    netsuite_get_record_schema: true,
     netsuite_get_accounts: true,
     netsuite_get_departments: true,
     netsuite_get_subsidiaries: true,

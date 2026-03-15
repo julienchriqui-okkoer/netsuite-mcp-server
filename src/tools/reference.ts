@@ -11,6 +11,48 @@ import { withRetry } from "../lib/retry.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerReferenceTools(server: McpServer, client: NetSuiteClient): void {
+  // Get exact NS REST API schema for a record type (required fields, properties, sub-resources with items[])
+  server.registerTool(
+    "netsuite_get_record_schema",
+    {
+      description:
+        "Get the exact NetSuite REST API schema for a record type. Returns required fields, property names, and sub-resources (those using items[] format). Use before implementing or debugging a create handler.",
+      inputSchema: z
+        .object({
+          recordType: z
+            .string()
+            .describe("Record type, e.g. expenseReport, journalEntry, vendorBill, vendorCredit"),
+        })
+        .strict() as any,
+    },
+    async ({ recordType }: any) => {
+      try {
+        if (!recordType || typeof recordType !== "string") {
+          return errorResponse("Missing required parameter: recordType (string)");
+        }
+        const res: any = await withRetry(
+          () => client.get<any>(`/${encodeURIComponent(recordType)}/schema`),
+          "get_record_schema"
+        );
+        const properties = res?.properties ?? {};
+        const requiredFields = res?.required ?? [];
+        const subResources = Object.entries(properties)
+          .filter(([, v]: [string, any]) => v?.type === "object" && v?.properties?.items)
+          .map(([k]) => k);
+        return successResponse({
+          requiredFields,
+          properties: Object.keys(properties),
+          subResources,
+          raw: res,
+        });
+      } catch (error: any) {
+        return errorResponse(
+          `get_record_schema failed: ${parseNetSuiteError(error)}`
+        );
+      }
+    }
+  );
+
   function registerSimpleListTool(
     name: string,
     description: string,
