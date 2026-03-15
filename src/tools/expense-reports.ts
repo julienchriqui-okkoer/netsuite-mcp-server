@@ -141,7 +141,6 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         body.memo = params.memo ?? "";
         if (params.externalId) body.externalId = params.externalId;
 
-        // NS REST: expenseList.expense uses items[] (same pattern as journal entry line.items)
         // Fix: MCP may send expenseList as JSON string — parse explicitly
         let rawExpenseList: any = params.expenseList;
         if (typeof params.expenseList === "string") {
@@ -152,24 +151,23 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             rawExpenseList = undefined;
           }
         }
+        // NS REST: expenseList = { items: [...] } (same pattern as vendor bill expense, journal entry line)
         const lines = rawExpenseList?.expense ?? [];
         if (lines.length > 0) {
           body.expenseList = {
-            expense: {
-              items: lines.map((e: any) => ({
-                expenseDate: e.expenseDate ?? params.tranDate,
-                account: { id: String(e.account?.id ?? e.account) },
-                amount: e.amount,
-                memo: e.memo ?? "",
-                currency: e.currency != null ? { id: String(e.currency) } : undefined,
-                exchangeRate: e.exchangeRate ?? undefined,
-                foreignAmount: e.foreignAmount ?? undefined,
-                department: e.department != null ? { id: String(e.department) } : undefined,
-                location: e.location != null ? { id: String(e.location) } : undefined,
-                class: e.class != null ? { id: String(e.class) } : undefined,
-                taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
-              })),
-            },
+            items: lines.map((e: any) => ({
+              expenseDate: e.expenseDate ?? params.tranDate,
+              account: { id: String(e.account?.id ?? e.account) },
+              amount: e.amount,
+              memo: e.memo ?? "",
+              currency: e.currency != null ? { id: String(e.currency) } : undefined,
+              foreignAmount: e.foreignAmount ?? undefined,
+              exchangeRate: e.exchangeRate ?? undefined,
+              department: e.department != null ? { id: String(e.department) } : undefined,
+              location: e.location != null ? { id: String(e.location) } : undefined,
+              class: e.class != null ? { id: String(e.class) } : undefined,
+              taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
+            })),
           };
         }
 
