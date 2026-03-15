@@ -106,19 +106,19 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
         if (memo) body.memo = memo;
         if (externalId) body.externalId = externalId;
 
-        const expenseLines = expenseList?.items ?? expenseList?.expense ?? [];
-        if (Array.isArray(expenseLines) && expenseLines.length > 0) {
+        const lines = expenseList?.items ?? expenseList?.expense ?? [];
+        if (Array.isArray(lines) && lines.length > 0) {
           body.expenseList = {
-            expense: expenseLines.map((line: any) => {
+            items: lines.map((line: any) => {
               const accountId = line.account?.id ?? line.account;
-              const expLine: any = {
+              const item: any = {
                 account: { id: String(accountId) },
                 amount: line.amount,
                 memo: line.memo ?? "",
               };
-              if (line.department) expLine.department = { id: String(line.department) };
-              if (line.location) expLine.location = { id: String(line.location) };
-              return expLine;
+              if (line.department) item.department = { id: String(line.department) };
+              if (line.location) item.location = { id: String(line.location) };
+              return item;
             }),
           };
         }
