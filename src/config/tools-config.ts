@@ -63,6 +63,7 @@ export const TOOLS_CONFIG = {
   
   vendorCredits: {
     netsuite_get_vendor_credits: true,
+    netsuite_get_vendor_credit_by_external_id: true,
     netsuite_create_vendor_credit: true,
   },
   

@@ -174,24 +174,23 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
               () => client.get<any>(`/salestaxitem/${id}`),
               `get_tax_codes detail ${id}`
             )
-              .then((item: any) => {
-                const rawRate = typeof item.rate === "number" ? item.rate : parseFloat(item.rate) || 0;
+              .then((detail: any) => {
+                const rawRate = typeof detail.rate === "number" ? detail.rate : parseFloat(detail.rate) || 0;
                 const rate = rawRate > 0 && rawRate <= 1 ? rawRate * 100 : rawRate;
                 return {
-                  id: item.id,
-                  name: item.name ?? item.refName ?? `Tax ${id}`,
+                  id: detail.id,
+                  name: detail.itemId ?? detail.name ?? detail.refName ?? `Tax ${id}`,
                   rate,
-                  country: item.country?.refName ?? item.country?.id ?? item.country ?? null,
-                  isInactive: item.isInactive ?? false,
+                  country: detail.country?.refName ?? detail.country?.id ?? detail.country ?? null,
+                  isInactive: detail.isInactive ?? false,
                 };
               })
-              .catch(() => null),
+              .catch(() => ({ id, name: `Tax ${id}`, rate: 0, country: null, isInactive: false })),
           3,
-          500
+          300
         );
 
-        const all = enriched.filter((t: any) => t != null);
-        const taxCodes = all.filter((t: any) => !t.isInactive);
+        const taxCodes = enriched.filter((t: any) => !t.isInactive);
 
         return successResponse({
           count: taxCodes.length,

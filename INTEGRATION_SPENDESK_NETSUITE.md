@@ -262,13 +262,22 @@ When functionalAmount (EUR) differs from grossAmount (original currency), book t
     - Add a **second** expense line on the bill: `{ account: fxAccount.id, amount: fxDiff (in EUR), memo: "FX diff <currency> → EUR" }`. First line remains main account + netAmount.
     - Log in report: `"FX diff: <currency> <grossAmount> → EUR <functionalAmount> | diff: <fxDiff>"`.
 
-**Step 5 — Attach invoice PDF to bill (after bill created successfully):**
-- If payable has attachment:
-  1. `spendesk_get_payable_attachments(payableId)` → if no attachment → skip silently.
-  2. Download PDF: `fetch(attachment.url, { headers: { Authorization: "Bearer " + SPENDESK_API_KEY } })` → base64 encode.
-  3. `netsuite_upload_file(name: "INV-<invoiceNumber>-<supplierName>.pdf", fileType: "PDF", content: base64Content, folder: CLIENT_CONFIG.NS_FILE_CABINET_FOLDER_ID)` → fileId.
-  4. `netsuite_attach_file_to_record(recordType: "vendorBill", recordId: billId, fileId)`.
-  5. Log "PDF attached ✅" or "No attachment ⚠️".
+**Step 5 — Invoice PDF (after bill created successfully):**  
+**Problème :** `GET/POST /record/v1/file` → 404 "Record type 'file' does not exist" si le File Cabinet REST n’est pas activé (permissions NS spécifiques). Deux stratégies possibles.
+
+- **Si `CLIENT_CONFIG.PDF_STRATEGY === "url_in_memo"` (recommandé, sans permission spéciale) :** Ne pas appeler `netsuite_upload_file` ni `netsuite_attach_file_to_record`. Lors de la création du bill, mettre l’URL du PDF dans le memo :  
+  `memo: \`${description} | PDF: ${attachmentUrl} | Spendesk ${payableId.slice(0,8)}\``  
+  → L’URL Spendesk (ex. S3) reste dans le memo de la facture NS.
+
+- **Si `CLIENT_CONFIG.PDF_STRATEGY === "file_cabinet"`** (File Cabinet REST activé) :  
+  1. `spendesk_get_payable_attachments(payableId)` → si pas de pièce → skip.  
+  2. Télécharger le PDF (Authorization Bearer), encoder en base64.  
+  3. `netsuite_upload_file(name: "INV-<...>.pdf", fileType: "PDF", content: base64Content, folder: CLIENT_CONFIG.NS_FILE_CABINET_FOLDER_ID)` → fileId.  
+  4. `netsuite_attach_file_to_record(recordType: "vendorBill", recordId: billId, fileId)`.  
+  5. Log "PDF attached ✅" ou "No attachment ⚠️".
+
+**Option A (si File Cabinet activé) :** POST `/record/v1/file` en multipart/form-data (pas application/json).  
+**Option B (recommandée) :** `PDF_STRATEGY: "url_in_memo"` → pas d’upload NS, URL dans le memo.
 
 **CLIENT_CONFIG** (for Dust / agent):
 - **TAX_CODES** (resolve IDs via `netsuite_get_tax_codes` then map by rate; see Context File Generator below):
@@ -280,6 +289,7 @@ When functionalAmount (EUR) differs from grossAmount (original currency), book t
   "0.00":  { "id": "<ID>", "name": "Exonéré" }
 }
 ```
+- **Context File Generator — get_departments pagination:** To fetch all departments, page with `limit` and `offset` until `hasMore` is false. Example: `get_departments(limit=50, offset=0)` → depts 1–50; `get_departments(limit=50, offset=50)` → 51–100; `get_departments(limit=50, offset=100)` → 101–150; continue with `offset += 50` until `hasMore=false`.
 - **Context File Generator — auto-populate TAX_CODES:** After `netsuite_get_tax_codes` works, build CLIENT_CONFIG.TAX_CODES from results by matching rate: rate 20 → `"0.20"`, rate 10 → `"0.10"`, rate 5.5 → `"0.055"`, rate 0 → `"0.00"`. Example mapping:
   - `"0.20":  { id: "<ID>", name: "TVA 20%" }` ← find item with `rate === 20` in results
   - `"0.10":  { id: "<ID>", name: "TVA 10%" }`
@@ -298,7 +308,8 @@ When functionalAmount (EUR) differs from grossAmount (original currency), book t
 ```
   See `src/config/accounts-config.ts`.
 - **WALLET_LOAD_AMOUNT_UNIT**: `"cents"` | `"eur"` — Unit for `spendesk_get_wallet_loads` amounts. Use `"cents"` if API returns cents (divide by 100 for JE); use `"eur"` if already in EUR. Confirm with client via a known load vs NetSuite bank statement.
-- **NS_FILE_CABINET_FOLDER_ID**: `"TO_CONFIRM"` — NetSuite: Documents → Files → Accounting → folder Internal ID. Used when attaching invoice PDF to bill.
+- **PDF_STRATEGY**: `"file_cabinet"` | `"url_in_memo"` — How to handle invoice PDF. Use `"url_in_memo"` (recommended) when `/record/v1/file` returns 404: put Spendesk attachment URL in bill memo (`memo: \`${description} | PDF: ${attachmentUrl} | Spendesk ${payableId.slice(0,8)}\``). Use `"file_cabinet"` only when NetSuite File Cabinet REST is enabled (upload + attach).
+- **NS_FILE_CABINET_FOLDER_ID**: `"TO_CONFIRM"` — NetSuite: Documents → Files → Accounting → folder Internal ID. Used only when PDF_STRATEGY is `"file_cabinet"`.
 - **COST_CENTER_MAP**: `{ [costCenterId]: { netsuiteDeptId: "41" } }` — Map Spendesk costCenter → NetSuite department ID for expense line. See `src/config/cost-center-map.ts`.
 
 See `src/config/tax-codes.ts`, `src/config/accounts-config.ts`, `src/config/file-cabinet-config.ts`, `src/config/cost-center-map.ts` in the repo.
@@ -321,16 +332,24 @@ See `src/config/tax-codes.ts`, `src/config/accounts-config.ts`, `src/config/file
 
 **Objectif :** Enregistrer les paiements dans NetSuite
 
+**Montant du paiement (éviter balance ouverte) :**  
+Utiliser **`settlement.billingAmount`** (montant réellement débité, inclut la TVA), pas `payable.netAmount / 100`. Sinon la facture reste avec un solde ouvert (ex. 4999.98€ payé au lieu de 5999.98€ → 1000€ de TVA non réconciliée).
+
+- **Amount à appliquer :** `payment.amount = settlement.billingAmount` (en unité de la devise de facturation, ex. EUR).
+- **Même devise :** `settlement.billingAmount` = montant débité (équivalent grossAmount, HT + TVA).
+- **Multi-devises (ex. USD → EUR) :** `settlement.billingAmount` = montant débité en EUR ; `payable.functionalAmount` = valeur comptable à la date facture. Payer **settlement.billingAmount** sur la bill ; journaliser l’éventuel écart (billingAmount vs functionalAmount) en gain/perte de change (FX) si besoin.
+
 ```
 1. GET Spendesk API /payments (status: paid)
 2. Pour chaque payment:
    a. Trouver vendor bill: netsuite_get_vendor_bills(q: externalId)
    b. Récupérer bank account: netsuite_get_accounts(type: Bank)
-   c. Créer payment: netsuite_create_bill_payment(
+   c. Montant: amount = settlement.billingAmount (pas payable.netAmount)
+   d. Créer payment: netsuite_create_bill_payment(
         entity: vendor.id,
         account: bankAccount.id,
         externalId: `spk_pay_${payment.id}`,
-        applyList: { apply: [{ doc: bill.id, amount }] }
+        applyList: { apply: [{ doc: bill.id, amount: settlement.billingAmount }] }
       )
 ```
 
