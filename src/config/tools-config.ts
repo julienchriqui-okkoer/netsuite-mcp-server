@@ -66,8 +66,8 @@ export const TOOLS_CONFIG = {
   
   fileCabinet: {
     netsuite_list_files: false, // ❌ DISABLED - API not available in instance
-    netsuite_upload_file: false, // ❌ DISABLED - API not available in instance
-    netsuite_attach_file: false, // ❌ DISABLED - API not available in instance
+    netsuite_upload_file: false, // Enable when File Cabinet API is available (attach invoice PDF to bill)
+    netsuite_attach_file_to_record: false, // Enable with netsuite_upload_file
   },
   
   suiteql: {

@@ -1,6 +1,9 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
+import { z } from "zod";
 import { buildPaginationQuery } from "../utils/pagination.js";
+import { withRetry } from "../lib/retry.js";
+import { parseNetSuiteError } from "../lib/errors.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
 export function registerFileCabinetTools(server: McpServer, client: NetSuiteClient): void {
@@ -23,11 +26,21 @@ export function registerFileCabinetTools(server: McpServer, client: NetSuiteClie
   server.registerTool(
     "netsuite_upload_file",
     {
-      description: "Upload a file to NetSuite File Cabinet. Returns the file internal ID. Required parameters: name (string), fileType (string), content (base64 string), folder (string, folder ID). Optional: description, isOnline (boolean)",
+      description:
+        "Upload a file to NetSuite File Cabinet (e.g. invoice PDF). Returns the file internal ID for use with netsuite_attach_file_to_record. Required: name, fileType (e.g. 'PDF'), content (base64), folder (folder internal ID from NS File Cabinet). Optional: description, isOnline.",
+      inputSchema: z
+        .object({
+          name: z.string().describe("File name e.g. INV-12345-SupplierName.pdf"),
+          fileType: z.string().describe("e.g. PDF"),
+          content: z.string().describe("Base64-encoded file content"),
+          folder: z.string().describe("NetSuite File Cabinet folder internal ID"),
+          description: z.string().optional(),
+          isOnline: z.boolean().optional(),
+        })
+        .strict() as any,
     },
     async ({ name, fileType, content, folder, description, isOnline }: any) => {
       try {
-        // Validate required parameters
         if (!name || typeof name !== "string") {
           return errorResponse("Missing required parameter: name (string)");
         }
@@ -47,14 +60,18 @@ export function registerFileCabinetTools(server: McpServer, client: NetSuiteClie
           content,
           folder: { id: folder },
         };
-
         if (description) body.description = description;
         if (typeof isOnline === "boolean") body.isOnline = isOnline;
 
-        const result = await client.post<unknown>("/file", body);
+        const result = await withRetry(
+          () => client.post<unknown>("/file", body),
+          "upload_file"
+        );
         return successResponse(result);
       } catch (error: any) {
-        return errorResponse(`Error uploading file to File Cabinet: ${error.message}`);
+        return errorResponse(
+          `Error uploading file to File Cabinet: ${parseNetSuiteError(error)}`
+        );
       }
     }
   );
@@ -62,11 +79,18 @@ export function registerFileCabinetTools(server: McpServer, client: NetSuiteClie
   server.registerTool(
     "netsuite_attach_file_to_record",
     {
-      description: "Attach a file (from File Cabinet) to a NetSuite record (vendor bill, expense report, vendor credit). Required parameters: recordType (string, e.g. 'vendorBill'), recordId (string), fileId (string)",
+      description:
+        "Attach a File Cabinet file to a NetSuite record (e.g. vendor bill). Use after netsuite_upload_file. Required: recordType ('vendorBill', 'vendorCredit', etc.), recordId (internal ID), fileId (from upload).",
+      inputSchema: z
+        .object({
+          recordType: z.string().describe("e.g. vendorBill, vendorCredit"),
+          recordId: z.string().describe("Record internal ID"),
+          fileId: z.string().describe("File internal ID from netsuite_upload_file"),
+        })
+        .strict() as any,
     },
     async ({ recordType, recordId, fileId }: any) => {
       try {
-        // Validate required parameters
         if (!recordType || typeof recordType !== "string") {
           return errorResponse("Missing required parameter: recordType (string, e.g. 'vendorBill')");
         }
@@ -78,14 +102,17 @@ export function registerFileCabinetTools(server: McpServer, client: NetSuiteClie
         }
 
         const path = `/${recordType}/${recordId}/files`;
-        const body = {
-          file: { id: fileId },
-        };
+        const body = { file: { id: fileId } };
 
-        const result = await client.post<unknown>(path, body);
+        const result = await withRetry(
+          () => client.post<unknown>(path, body),
+          "attach_file_to_record"
+        );
         return successResponse(result);
       } catch (error: any) {
-        return errorResponse(`Error attaching file to record: ${error.message}`);
+        return errorResponse(
+          `Error attaching file to record: ${parseNetSuiteError(error)}`
+        );
       }
     }
   );

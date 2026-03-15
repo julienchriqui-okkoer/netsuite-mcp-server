@@ -203,7 +203,7 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
     "netsuite_create_vendor_bill",
     {
       description:
-        "Create a new NetSuite vendor bill with expense lines. Required: entity (vendor ID), subsidiary, tranDate (YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, foreignAmount, externalId, expense (array of lines with account, amount as NET, department, location, class, memo, taxCode). Use vatLines for VAT: array of { taxCodeId, taxRate, vatAmount, netAmount } so the tax authority ledger is updated.",
+        "Create a new NetSuite vendor bill with expense lines. Required: entity (vendor ID), subsidiary, tranDate (YYYY-MM-DD). Optional: dueDate, tranId, memo, currency, exchangeRate, foreignAmount, externalId, expense (array of lines with account, amount as NET, memo, department, location, class, taxCode). Set department from cost center map for analytics. Use vatLines for VAT: array of { taxCodeId, taxRate, vatAmount, netAmount } so the tax authority ledger is updated.",
       inputSchema: {
         entity: z.string(),
         subsidiary: z.string(),

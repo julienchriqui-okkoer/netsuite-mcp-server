@@ -189,7 +189,8 @@
         )
 ```
 
-**Step 4 — Bill creation — VAT handling (for Dust system prompt):**
+**Step 4 — Bill creation — expense line + VAT (for Dust system prompt):**
+- Expense line: `expense: [{ account: account.id, amount: payable.netAmount / 100, memo: "<category> — <costCenter>", department: CLIENT_CONFIG.COST_CENTER_MAP[payable.costCenter]?.netsuiteDeptId ?? undefined, location, class }]`. If department is TO_CONFIRM or costCenter not in COST_CENTER_MAP → omit department (NS accepts null). Log ⚠️ if costCenter not in COST_CENTER_MAP.
 - If `payable.vatAmount > 0`:
   - `expense[0].amount` = `payable.netAmount / 100` (NET only)
   - Resolve `taxCodeId` from `CLIENT_CONFIG.TAX_CODES[payable.vatRate]` (or `netsuite_get_tax_codes`)
@@ -198,7 +199,16 @@
   - `expense[0].amount` = `payable.grossAmount / 100` (no VAT)
   - Do not pass `vatLines`
 
-**CLIENT_CONFIG.TAX_CODES** (resolve IDs in NetSuite: Setup → Accounting → Tax Codes):
+**Step 5 — Attach invoice PDF to bill (after bill created successfully):**
+- If payable has attachment:
+  1. `spendesk_get_payable_attachments(payableId)` → if no attachment → skip silently.
+  2. Download PDF: `fetch(attachment.url, { headers: { Authorization: "Bearer " + SPENDESK_API_KEY } })` → base64 encode.
+  3. `netsuite_upload_file(name: "INV-<invoiceNumber>-<supplierName>.pdf", fileType: "PDF", content: base64Content, folder: CLIENT_CONFIG.NS_FILE_CABINET_FOLDER_ID)` → fileId.
+  4. `netsuite_attach_file_to_record(recordType: "vendorBill", recordId: billId, fileId)`.
+  5. Log "PDF attached ✅" or "No attachment ⚠️".
+
+**CLIENT_CONFIG** (for Dust / agent):
+- **TAX_CODES** (resolve IDs in NetSuite: Setup → Accounting → Tax Codes):
 ```json
 {
   "0.20":  { "id": "TO_CONFIRM", "name": "TVA 20%" },
@@ -207,7 +217,10 @@
   "0.00":  { "id": "TO_CONFIRM", "name": "Exonéré / Hors champ" }
 }
 ```
-See `src/config/tax-codes.ts` in the repo.
+- **NS_FILE_CABINET_FOLDER_ID**: `"TO_CONFIRM"` — NetSuite: Documents → Files → Accounting → folder Internal ID. Used when attaching invoice PDF to bill.
+- **COST_CENTER_MAP**: `{ [costCenterId]: { netsuiteDeptId: "41" } }` — Map Spendesk costCenter → NetSuite department ID for expense line. See `src/config/cost-center-map.ts`.
+
+See `src/config/tax-codes.ts`, `src/config/file-cabinet-config.ts`, `src/config/cost-center-map.ts` in the repo.
 
 **Tools utilisés :**
 - `netsuite_get_vendors` (find vendor)
@@ -218,6 +231,8 @@ See `src/config/tax-codes.ts` in the repo.
 - `netsuite_create_vendor_bill` ⭐ (invoices)
 - `netsuite_create_vendor_credit` ⭐ (credit notes / refunds)
 - `netsuite_get_vendor_bill_by_external_id` (find original bill for applyList)
+- `netsuite_upload_file` (invoice PDF → File Cabinet; enable in tools-config when API available)
+- `netsuite_attach_file_to_record` (attach file to vendorBill after upload)
 
 ---
 
