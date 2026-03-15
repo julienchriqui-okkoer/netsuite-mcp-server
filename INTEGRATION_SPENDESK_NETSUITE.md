@@ -162,20 +162,27 @@
 
 **Objectif :** Créer les factures fournisseurs ou avoirs selon le type de payable
 
-**Step 2b — Route by payable type (for Dust system prompt):**
-- If `payable.type == "creditNote"`:
-  - Create vendor **credit** (not bill) → `netsuite_create_vendor_credit`
+**Step 2b — Type routing (for Dust system prompt):**  
+Spendesk uses different type names by workspace (demo: `creditNote`, prod: `reverseBill`). Both → vendor credit.
+
+- `CREDIT_NOTE_TYPES = ["creditNote", "reverseBill"]`  
+  If `CREDIT_NOTE_TYPES.includes(payable.type)`:
+  - → Vendor **credit** flow → `netsuite_create_vendor_credit`
   - `externalId`: `"spk_payable_<payableId>"`
-  - Expense amount: `abs(payable.netAmount / 100)` (credit notes are negative in Spendesk)
-  - If you can find the original bill via `payable.originalPayableId` (e.g. `netsuite_get_vendor_bill_by_external_id("spk_payable_<originalPayableId>")`), add it to `applyList` to offset the original bill
+  - Amount: `Math.abs(payable.functionalAmount)` (or `abs(payable.netAmount / 100)` if functionalAmount not available)
+  - If original bill exists via `payable.originalPayableId` → `netsuite_get_vendor_bill_by_external_id("spk_payable_<originalPayableId>")` and add to `applyList`
   - Log as "credit note" in report
-- If `payable.type` in `["invoicePurchase", "subscriptionCard", ...]`:
-  - Normal bill flow (Steps 3–5 below)
+
+- If `["expenseClaim", "mileageAllowance", "perDiem"].includes(payable.type)`:
+  - → Expense report flow (Step 4bis)
+
+- Else (e.g. `invoicePurchase`, `subscriptionCard`, …):
+  - → Vendor **bill** flow (Steps 3–5 below)
 
 ```
 1. GET Spendesk API /invoices or payables (status: approved)
 2. Pour chaque payable:
-   a. Step 2b: si creditNote → netsuite_create_vendor_credit; sinon continuer
+   a. Step 2b: si type in creditNote/reverseBill → netsuite_create_vendor_credit; si expenseClaim/mileageAllowance/perDiem → expense report; sinon → bill
    b. Vérifier si existe: netsuite_get_vendor_bills(q: externalId) ou get_vendor_credits
    c. Si n'existe pas (bills):
       - Mapper vendor: netsuite_get_vendors(q: externalId)
@@ -208,15 +215,20 @@
   5. Log "PDF attached ✅" or "No attachment ⚠️".
 
 **CLIENT_CONFIG** (for Dust / agent):
-- **TAX_CODES** (resolve IDs in NetSuite: Setup → Accounting → Tax Codes):
+- **TAX_CODES** (resolve IDs via `netsuite_get_tax_codes` then map by rate; see Context File Generator below):
 ```json
 {
-  "0.20":  { "id": "TO_CONFIRM", "name": "TVA 20%" },
-  "0.10":  { "id": "TO_CONFIRM", "name": "TVA 10%" },
-  "0.055": { "id": "TO_CONFIRM", "name": "TVA 5.5%" },
-  "0.00":  { "id": "TO_CONFIRM", "name": "Exonéré / Hors champ" }
+  "0.20":  { "id": "<ID>", "name": "TVA 20%" },
+  "0.10":  { "id": "<ID>", "name": "TVA 10%" },
+  "0.055": { "id": "<ID>", "name": "TVA 5.5%" },
+  "0.00":  { "id": "<ID>", "name": "Exonéré" }
 }
 ```
+- **Context File Generator — auto-populate TAX_CODES:** After `netsuite_get_tax_codes` works, build CLIENT_CONFIG.TAX_CODES from results by matching rate: rate 20 → `"0.20"`, rate 10 → `"0.10"`, rate 5.5 → `"0.055"`, rate 0 → `"0.00"`. Example mapping:
+  - `"0.20":  { id: "<ID>", name: "TVA 20%" }` ← find item with `rate === 20` in results
+  - `"0.10":  { id: "<ID>", name: "TVA 10%" }`
+  - `"0.055": { id: "<ID>", name: "TVA 5.5%" }`
+  - `"0.00":  { id: "<ID>", name: "Exonéré" }`
 - **NS_FILE_CABINET_FOLDER_ID**: `"TO_CONFIRM"` — NetSuite: Documents → Files → Accounting → folder Internal ID. Used when attaching invoice PDF to bill.
 - **COST_CENTER_MAP**: `{ [costCenterId]: { netsuiteDeptId: "41" } }` — Map Spendesk costCenter → NetSuite department ID for expense line. See `src/config/cost-center-map.ts`.
 

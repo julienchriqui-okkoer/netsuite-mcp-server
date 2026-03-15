@@ -127,12 +127,12 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
     "/account"
   );
 
-  // Enriched tax codes with names and rate (filter at source, enrich with low concurrency)
+  // Enriched tax codes with names and rate (no itemType filter — field not in this NS version; filter inactive in code)
   server.registerTool(
     "netsuite_get_tax_codes",
     {
       description:
-        "List NetSuite sales tax items with id, name, rate, country, isInactive. Filter: itemType = SalesAndPurchases and country (default FR). Optional: limit, offset, country.",
+        "List NetSuite sales tax items with id, name, rate, country, isInactive. Returns active codes only; use results to populate CLIENT_CONFIG.TAX_CODES by rate. Optional: limit, offset.",
       inputSchema: z
         .object({
           limit: z
@@ -143,19 +143,14 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
             .number()
             .optional()
             .describe("Pagination offset (default 0)"),
-          country: z
-            .string()
-            .optional()
-            .describe("Country filter, e.g. FR (default FR)"),
         })
         .strict() as any,
     },
-    async ({ limit = 50, offset = 0, country = "FR" }: any) => {
+    async ({ limit = 50, offset = 0 }: any) => {
       try {
         const listParams: Record<string, string> = {
           limit: String(Math.min(limit, 100)),
           offset: String(offset),
-          q: `itemType IS "SalesAndPurchases" AND country IS "${country}"`,
         };
         const listRes: any = await withRetry(
           () => client.get<any>("/salestaxitem", listParams),
@@ -186,7 +181,7 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
                   id: item.id,
                   name: item.name ?? item.refName ?? `Tax ${id}`,
                   rate,
-                  country: item.country?.refName ?? item.country?.id ?? item.country ?? country,
+                  country: item.country?.refName ?? item.country?.id ?? item.country ?? null,
                   isInactive: item.isInactive ?? false,
                 };
               })
@@ -195,7 +190,8 @@ export function registerReferenceTools(server: McpServer, client: NetSuiteClient
           500
         );
 
-        const taxCodes = enriched.filter((t: any) => t != null);
+        const all = enriched.filter((t: any) => t != null);
+        const taxCodes = all.filter((t: any) => !t.isInactive);
 
         return successResponse({
           count: taxCodes.length,
