@@ -95,8 +95,9 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
           return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
         }
 
+        // NetSuite expects subsidiary as { id: string }, not a plain string
         const body: any = {
-          subsidiary: { id: subsidiary },
+          subsidiary: { id: String(subsidiary) },
           tranDate,
           memo: memo ?? "",
         };
