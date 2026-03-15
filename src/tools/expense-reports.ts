@@ -76,9 +76,63 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
   );
 
   server.registerTool(
+    "netsuite_get_ns_expense_categories",
+    {
+      description: "List NS expense categories for expense report lines (category.id required per line).",
+      inputSchema: z
+        .object({
+          limit: z.number().optional().default(50),
+          offset: z.number().optional().default(0),
+        })
+        .strict() as any,
+    },
+    async ({ limit = 50, offset = 0 }: any) => {
+      try {
+        const pagination = buildPaginationQuery({ limit, offset });
+        const res: any = await withRetry(
+          () => client.get<any>("/expenseCategory", pagination),
+          "get_ns_expense_categories"
+        );
+        return successResponse({
+          total: res?.totalResults ?? 0,
+          items: res?.items ?? [],
+        });
+      } catch (e: any) {
+        return errorResponse(
+          `netsuite_get_ns_expense_categories failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
+  server.registerTool(
+    "netsuite_get_expense_report_by_id",
+    {
+      description: "GET a NS expense report by internal ID with expanded sub-resources (e.g. expense.items[].category).",
+      inputSchema: z.object({ id: z.string().describe("Expense report internal ID") }).strict() as any,
+    },
+    async ({ id }: any) => {
+      try {
+        if (!id || typeof id !== "string") {
+          return errorResponse("Missing required parameter: id (string)");
+        }
+        const res = await withRetry(
+          () => client.get<any>(`/expenseReport/${id}`, { expandSubResources: "true" }),
+          "get_expense_report_by_id"
+        );
+        return successResponse(res);
+      } catch (e: any) {
+        return errorResponse(
+          `netsuite_get_expense_report_by_id failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
+  server.registerTool(
     "netsuite_create_expense_report",
     {
-      description: "Create a new NetSuite expense report for an employee with expense lines. Required parameters: employee (string, employee ID), subsidiary (string), tranDate (string, YYYY-MM-DD). Optional: memo, externalId (for idempotence), expenseList (object with expense array containing expenseDate, account, amount, taxCode, department, location, class, memo, currency, exchangeRate, foreignAmount)",
+      description: "Create a new NetSuite expense report for an employee with expense lines. Required: employee, subsidiary, tranDate; per line: category (NS expense category ID), amount; multi-currency: currency. Optional: memo, externalId, expenseList.expense[].expenseDate, department, etc.",
       inputSchema: z
         .object({
           employee: z.string().describe("Employee internal ID"),
@@ -95,7 +149,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
               expense: z.array(
                 z.object({
                   expenseDate: z.string().optional(),
-                  account: z.union([z.string(), z.object({ id: z.string() })]).optional(),
+                  category: z.union([z.string(), z.object({ id: z.string() })]).describe("NS expense category ID (required per line)"),
                   amount: z.number(),
                   memo: z.string().optional(),
                   currency: z.string().optional(),
@@ -109,7 +163,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
               ),
             })
             .optional()
-            .describe("Expense lines: { expense: [{ expenseDate, account, amount, memo, currency, foreignAmount, exchangeRate, department }] }"),
+            .describe("Expense lines: { expense: [{ expenseDate, category, amount, memo, currency, department }] }"),
           dryRun: z
             .boolean()
             .optional()
@@ -144,6 +198,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         body.tranDate = params.tranDate;
         body.memo = params.memo ?? "";
         if (params.externalId) body.externalId = params.externalId;
+        body.accountingApproval = true;
 
         // Fix: MCP may send expenseList as JSON string — parse explicitly
         let rawExpenseList: any = params.expenseList;
@@ -171,9 +226,20 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           class: e.class != null ? { id: String(e.class) } : undefined,
           taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
         });
+        // Format D: category required per line (Oracle — Amount + Category). Multi-currency: currency also required.
+        const mapLineForD = (e: any) => ({
+          expenseDate: e.expenseDate ?? params.tranDate,
+          category: { id: String(e.category?.id ?? e.category) },
+          amount: e.amount,
+          memo: e.memo ?? "",
+          currency: e.currency != null ? { id: String(e.currency?.id ?? e.currency) } : undefined,
+          foreignAmount: e.foreignAmount ?? undefined,
+          exchangeRate: e.exchangeRate ?? undefined,
+          department: e.department != null ? { id: String(e.department) } : undefined,
+        });
         if (lines.length > 0) {
           if (format === "D") {
-            body.expense = { items: lines.map(mapLine) };
+            body.expense = { items: lines.map(mapLineForD) };
             delete body.expenseList;
           } else if (format === "A") {
             body.expenseList = lines.map(mapLine);
