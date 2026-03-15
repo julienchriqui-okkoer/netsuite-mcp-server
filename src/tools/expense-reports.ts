@@ -137,22 +137,25 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         body.memo = params.memo ?? "";
         if (params.externalId) body.externalId = params.externalId;
 
+        // NS REST: expenseList.expense uses items[] (same pattern as journal entry line.items)
         const expenseLines = params.expenseList?.expense ?? [];
         if (expenseLines.length > 0) {
           body.expenseList = {
-            expense: expenseLines.map((e: any) => ({
-              expenseDate: e.expenseDate ?? params.tranDate,
-              account: { id: String(e.account?.id ?? e.account) },
-              amount: e.amount,
-              memo: e.memo ?? "",
-              currency: e.currency != null ? { id: String(e.currency) } : undefined,
-              exchangeRate: e.exchangeRate ?? undefined,
-              foreignAmount: e.foreignAmount ?? undefined,
-              department: e.department != null ? { id: String(e.department) } : undefined,
-              location: e.location != null ? { id: String(e.location) } : undefined,
-              class: e.class != null ? { id: String(e.class) } : undefined,
-              taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
-            })),
+            expense: {
+              items: expenseLines.map((e: any) => ({
+                expenseDate: e.expenseDate ?? params.tranDate,
+                account: { id: String(e.account?.id ?? e.account) },
+                amount: e.amount,
+                memo: e.memo ?? "",
+                currency: e.currency != null ? { id: String(e.currency) } : undefined,
+                exchangeRate: e.exchangeRate ?? undefined,
+                foreignAmount: e.foreignAmount ?? undefined,
+                department: e.department != null ? { id: String(e.department) } : undefined,
+                location: e.location != null ? { id: String(e.location) } : undefined,
+                class: e.class != null ? { id: String(e.class) } : undefined,
+                taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
+              })),
+            },
           };
         }
 
