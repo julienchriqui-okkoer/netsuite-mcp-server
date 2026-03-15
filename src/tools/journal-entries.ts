@@ -105,20 +105,22 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         if (externalId) body.externalId = externalId;
 
         if (line && Array.isArray(line)) {
-          body.line = line.map((l: any) => {
-            const accountId = l.account?.id ?? l.account;
-            const jeLine: any = {
-              account: { id: String(accountId) },
-            };
-            if (l.debit !== undefined) jeLine.debit = l.debit;
-            if (l.credit !== undefined) jeLine.credit = l.credit;
-            if (l.department) jeLine.department = { id: l.department };
-            if (l.location) jeLine.location = { id: l.location };
-            if (l.class) jeLine.class = { id: l.class };
-            if (l.memo) jeLine.memo = l.memo;
-            if (l.entity) jeLine.entity = { id: l.entity };
-            return jeLine;
-          });
+          body.lineList = {
+            line: line.map((l: any) => {
+              const accountId = l.account?.id ?? l.account;
+              const jeLine: any = {
+                account: { id: String(accountId) },
+                debit: l.debit ?? undefined,
+                credit: l.credit ?? undefined,
+                memo: l.memo ?? "",
+              };
+              if (l.department) jeLine.department = { id: String(l.department) };
+              if (l.location) jeLine.location = { id: String(l.location) };
+              if (l.class) jeLine.class = { id: String(l.class) };
+              if (l.entity) jeLine.entity = { id: String(l.entity) };
+              return jeLine;
+            }),
+          };
         }
 
         const result = await client.post<unknown>("/journalEntry", body);
