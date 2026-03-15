@@ -35,6 +35,50 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
     }
   );
 
+  // Get vendor credit by externalId (idempotency helper — same pattern as get_vendor_bill_by_external_id)
+  server.registerTool(
+    "netsuite_get_vendor_credit_by_external_id",
+    {
+      description:
+        "Get a vendor credit by its externalId (idempotency check before creating a credit). Required: externalId (string). Returns { found: boolean, credit: { id, externalId, tranDate, total } | null }",
+      inputSchema: z.object({ externalId: z.string() }).strict() as any,
+    },
+    async ({ externalId }: any) => {
+      try {
+        if (!externalId || typeof externalId !== "string") {
+          return errorResponse("Missing required parameter: externalId (string)");
+        }
+        const listRes: any = await withRetry(
+          () =>
+            client.get<any>("/vendorCredit", {
+              q: `externalId IS "${externalId}"`,
+              limit: "1",
+            }),
+          "get_vendor_credit_by_external_id list"
+        );
+        const items = listRes?.items ?? [];
+        if (items.length === 0) {
+          return successResponse({ found: false, credit: null });
+        }
+        const detail: any = await withRetry(
+          () => client.get<any>(`/vendorCredit/${items[0].id}`),
+          "get_vendor_credit_by_external_id detail"
+        );
+        const credit = {
+          id: detail.id,
+          externalId: detail.externalId ?? externalId,
+          tranDate: detail.tranDate,
+          total: detail.total,
+        };
+        return successResponse({ found: true, credit });
+      } catch (e: any) {
+        return errorResponse(
+          `get_vendor_credit_by_external_id failed: ${parseNetSuiteError(e)}`
+        );
+      }
+    }
+  );
+
   server.registerTool(
     "netsuite_create_vendor_credit",
     {
@@ -126,15 +170,25 @@ export function registerVendorCreditTools(server: McpServer, client: NetSuiteCli
           };
         }
 
-        const applyItems = (applyList?.items ?? applyList?.apply ?? []) as any[];
-        if (applyItems.length > 0) {
+        if (applyList?.items?.length > 0) {
           body.applyList = {
-            apply: applyItems.map((a: any) => ({
-              doc: typeof a.doc === "object" && a.doc?.id != null ? a.doc : { id: String(a.doc) },
-              apply: a.apply ?? true,
+            items: applyList.items.map((a: any) => ({
+              doc: { id: String(a.doc) },
+              apply: true,
               amount: a.amount,
             })),
           };
+        } else {
+          const applyItems = (applyList?.apply ?? []) as any[];
+          if (applyItems.length > 0) {
+            body.applyList = {
+              items: applyItems.map((a: any) => ({
+                doc: { id: String(a.doc) },
+                apply: true,
+                amount: a.amount,
+              })),
+            };
+          }
         }
 
         const result = await withRetry(
