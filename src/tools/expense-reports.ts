@@ -114,6 +114,10 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             .boolean()
             .optional()
             .describe("If true, return the NS request body without calling NS (debug mode)"),
+          expenseListFormat: z
+            .enum(["A", "B", "C"])
+            .optional()
+            .describe("Debug: A=array direct, B=expense.items, C=items (default). Use with dryRun to test which NS accepts."),
         })
         .strict() as any,
     },
@@ -151,30 +155,37 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
             rawExpenseList = undefined;
           }
         }
-        // NS REST: expenseList = { items: [...] } (same pattern as vendor bill expense, journal entry line)
+        // Map lines once; then set body.expenseList by format (debug: A/B/C)
         const lines = rawExpenseList?.expense ?? [];
+        const format = (params.expenseListFormat ?? "C") as "A" | "B" | "C";
+        const mapLine = (e: any) => ({
+          expenseDate: e.expenseDate ?? params.tranDate,
+          account: { id: String(e.account?.id ?? e.account) },
+          amount: e.amount,
+          memo: e.memo ?? "",
+          currency: e.currency != null ? { id: String(e.currency) } : undefined,
+          foreignAmount: e.foreignAmount ?? undefined,
+          exchangeRate: e.exchangeRate ?? undefined,
+          department: e.department != null ? { id: String(e.department) } : undefined,
+          location: e.location != null ? { id: String(e.location) } : undefined,
+          class: e.class != null ? { id: String(e.class) } : undefined,
+          taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
+        });
         if (lines.length > 0) {
-          body.expenseList = {
-            items: lines.map((e: any) => ({
-              expenseDate: e.expenseDate ?? params.tranDate,
-              account: { id: String(e.account?.id ?? e.account) },
-              amount: e.amount,
-              memo: e.memo ?? "",
-              currency: e.currency != null ? { id: String(e.currency) } : undefined,
-              foreignAmount: e.foreignAmount ?? undefined,
-              exchangeRate: e.exchangeRate ?? undefined,
-              department: e.department != null ? { id: String(e.department) } : undefined,
-              location: e.location != null ? { id: String(e.location) } : undefined,
-              class: e.class != null ? { id: String(e.class) } : undefined,
-              taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
-            })),
-          };
+          if (format === "A") {
+            body.expenseList = lines.map(mapLine);
+          } else if (format === "B") {
+            body.expenseList = { expense: { items: lines.map(mapLine) } };
+          } else {
+            body.expenseList = { items: lines.map(mapLine) };
+          }
         }
 
-        console.error("[NS-MCP] POST /expenseReport body:", JSON.stringify(body, null, 2));
+        console.error("[NS-MCP] POST /expenseReport body (format=" + format + "):", JSON.stringify(body, null, 2));
         if (params.dryRun === true) {
           return successResponse({
             dryRun: true,
+            expenseListFormat: format,
             url: "/services/rest/record/v1/expenseReport",
             body,
           });
