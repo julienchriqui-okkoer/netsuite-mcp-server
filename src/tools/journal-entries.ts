@@ -105,18 +105,20 @@ export function registerJournalEntryTools(server: McpServer, client: NetSuiteCli
         // Bypass workflow on NS instances that require approvalStatus
         body.approvalStatus = { id: "2" };
 
-        // NS REST API expects body.line (flat array), not body.lineList (SOAP)
+        // NS REST API expects body.line = { items: [...] }, not flat array or lineList (SOAP)
         if (line != null) {
-          body.line = (line ?? []).map((l: any) => ({
-            account: { id: String(l.account?.id ?? l.account) },
-            debit: l.debit !== undefined ? l.debit : undefined,
-            credit: l.credit !== undefined ? l.credit : undefined,
-            memo: l.memo ?? "",
-            department: l.department ? { id: String(l.department) } : undefined,
-            location: l.location ? { id: String(l.location) } : undefined,
-            class: l.class ? { id: String(l.class) } : undefined,
-            entity: l.entity ? { id: String(l.entity) } : undefined,
-          }));
+          body.line = {
+            items: (line ?? []).map((l: any) => ({
+              account: { id: String(l.account?.id ?? l.account) },
+              debit: l.debit !== undefined ? l.debit : undefined,
+              credit: l.credit !== undefined ? l.credit : undefined,
+              memo: l.memo ?? "",
+              department: l.department ? { id: String(l.department) } : undefined,
+              location: l.location ? { id: String(l.location) } : undefined,
+              class: l.class ? { id: String(l.class) } : undefined,
+              entity: l.entity ? { id: String(l.entity) } : undefined,
+            })),
+          };
         }
 
         const result: any = await withRetry(
