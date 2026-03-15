@@ -96,8 +96,9 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         })
         .strict() as any,
     },
-    async ({ employee, subsidiary, tranDate, currency, memo, externalId, expenseList }: any) => {
+    async (params: any) => {
       try {
+        const { employee, subsidiary, tranDate, currency, memo, externalId, expenseList } = params;
         if (!employee || typeof employee !== "string") {
           return errorResponse("Missing required parameter: employee (string, employee ID)");
         }
@@ -108,31 +109,31 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
           return errorResponse("Missing required parameter: tranDate (string, YYYY-MM-DD)");
         }
 
-        // NS REST expects employee, subsidiary, currency as { id: string }
+        // NS REST requires employee, subsidiary, currency as { id: string } (not raw strings)
         const body: any = {
-          employee: { id: String(employee) },
-          subsidiary: { id: String(subsidiary) },
-          tranDate,
-          memo: memo ?? "",
-          currency: { id: String(currency ?? "1") },
+          employee: { id: String(params.employee) },
+          subsidiary: { id: String(params.subsidiary) },
+          tranDate: params.tranDate,
+          memo: params.memo ?? "",
+          currency: { id: String(params.currency ?? "1") },
         };
-        if (externalId) body.externalId = externalId;
+        if (params.externalId) body.externalId = params.externalId;
 
-        const expenseLines = expenseList?.expense ?? [];
+        const expenseLines = params.expenseList?.expense ?? [];
         if (expenseLines.length > 0) {
           body.expenseList = {
             expense: expenseLines.map((e: any) => ({
-              expenseDate: e.expenseDate ?? tranDate,
+              expenseDate: e.expenseDate ?? params.tranDate,
               account: { id: String(e.account?.id ?? e.account) },
               amount: e.amount,
               memo: e.memo ?? "",
-              currency: e.currency ? { id: String(e.currency) } : undefined,
+              currency: e.currency != null ? { id: String(e.currency) } : undefined,
               exchangeRate: e.exchangeRate ?? undefined,
               foreignAmount: e.foreignAmount ?? undefined,
-              department: e.department ? { id: String(e.department) } : undefined,
-              location: e.location ? { id: String(e.location) } : undefined,
-              class: e.class ? { id: String(e.class) } : undefined,
-              taxCode: e.taxCode ? { id: String(e.taxCode) } : undefined,
+              department: e.department != null ? { id: String(e.department) } : undefined,
+              location: e.location != null ? { id: String(e.location) } : undefined,
+              class: e.class != null ? { id: String(e.class) } : undefined,
+              taxCode: e.taxCode != null ? { id: String(e.taxCode) } : undefined,
             })),
           };
         }
@@ -143,7 +144,7 @@ export function registerExpenseReportTools(server: McpServer, client: NetSuiteCl
         );
         const location = result?.location ?? "";
         const id = (typeof location === "string" ? location.split("/").pop() : null) ?? result?.id;
-        return successResponse({ id, externalId: externalId ?? undefined, success: true });
+        return successResponse({ id, externalId: params.externalId ?? undefined, success: true });
       } catch (error: any) {
         return errorResponse(`Error creating expense report: ${parseNetSuiteError(error)}`);
       }
