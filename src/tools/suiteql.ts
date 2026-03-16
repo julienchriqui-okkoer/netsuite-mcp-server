@@ -1,7 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NetSuiteClient } from "../netsuite-client.js";
 import { z } from "zod";
-import { canUseSuiteQL } from "../utils/suiteql-capability.js";
 import { executeSuiteQL } from "../lib/suiteql.js";
 import { successResponse, errorResponse } from "./_helpers.js";
 
@@ -64,12 +63,6 @@ Examples:
         const trimmedUpper = rawQuery.trim().toUpperCase();
         if (!trimmedUpper.startsWith("SELECT") && !trimmedUpper.startsWith("WITH")) {
           return errorResponse("Only SELECT and WITH (CTE) queries are allowed");
-        }
-
-        if (!(await canUseSuiteQL(client))) {
-          return errorResponse(
-            "SuiteQL is not available for this NetSuite role. Use REST-based tools instead (get_vendors, get_vendor_bills, get_accounts, get_bank_accounts_by_subsidiary, etc.)."
-          );
         }
 
         if (!isSafeQuery(rawQuery)) {
