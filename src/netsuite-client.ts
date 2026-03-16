@@ -121,8 +121,11 @@ export class NetSuiteClient {
   ): Promise<T> {
     const baseUrl = options.base === "suiteql" ? this.suiteqlBaseUrl : this.recordBaseUrl;
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
-
-    const url = new URL(baseUrl + cleanPath);
+    // Oracle spec: SuiteQL URL has no trailing slash (baseUrl only when path empty)
+    const url =
+      options.base === "suiteql" && (!path || path === "/")
+        ? new URL(baseUrl)
+        : new URL(baseUrl + cleanPath);
     if (options.queryParams) {
       Object.entries(options.queryParams).forEach(([key, value]) => {
         if (value === undefined) return;
@@ -211,16 +214,12 @@ export class NetSuiteClient {
   }
 
   async suiteql<T>(query: string, limit?: number, offset?: number): Promise<T> {
-    const body: any = { q: query };
-    if (typeof limit === "number") {
-      body.limit = limit;
-    }
-    if (typeof offset === "number") {
-      body.offset = offset;
-    }
-
+    const queryParams: QueryParams = {};
+    if (typeof limit === "number") queryParams.limit = limit;
+    if (typeof offset === "number") queryParams.offset = offset;
     return this.request<T>("POST", "", {
-      body,
+      body: { q: query },
+      queryParams: Object.keys(queryParams).length > 0 ? queryParams : undefined,
       base: "suiteql",
       preferTransient: true,
     });

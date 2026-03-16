@@ -75,11 +75,12 @@ Examples:
         const columns = result.items.length > 0 ? Object.keys(result.items[0]) : [];
 
         return successResponse({
+          items: result.items,
+          totalResults: result.totalResults ?? 0,
+          hasMore: result.hasMore ?? false,
+          count: result.items.length,
           columns,
           rows: result.items,
-          count: result.items.length,
-          hasMore: result.hasMore,
-          totalResults: result.totalResults,
         });
       } catch (error: any) {
         return errorResponse(`Error executing SuiteQL: ${error.message}`);
