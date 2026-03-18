@@ -365,23 +365,176 @@ export function registerVendorBillTools(server: McpServer, client: NetSuiteClien
   server.registerTool(
     "netsuite_update_vendor_bill",
     {
-      description: "Update an existing NetSuite vendor bill (e.g. status, memo). Required parameter: id (string). Optional: status (string), memo (string)",
+      description: `Update any field of an existing NetSuite vendor bill via PATCH.
+Supports: header fields (entity, tranDate, dueDate, tranId, memo, currency, exchangeRate, subsidiary), expense sublist (account, amount, taxCode, memo, department, location, class, amortization), item sublist, custom body fields, billing address.
+When expense[] is provided, uses ?replace=expense to REPLACE all lines (not merge). Same for item[] with ?replace=item.`,
+      inputSchema: z
+        .object({
+          id: z.string().describe("NetSuite vendor bill internal ID"),
+          entity: z.string().optional().describe("Vendor internal ID"),
+          tranDate: z.string().optional().describe("Bill date YYYY-MM-DD"),
+          dueDate: z.string().optional().describe("Due date YYYY-MM-DD"),
+          tranId: z.string().optional().describe("Invoice/reference number"),
+          memo: z.string().optional().describe("Bill memo / description"),
+          currency: z.string().optional().describe("NS currency ID (1=EUR, 2=USD)"),
+          exchangeRate: z.number().optional().describe("FX rate to base currency"),
+          subsidiary: z.string().optional().describe("NS subsidiary ID"),
+          expense: z
+            .array(
+              z.object({
+                account: z.string().optional().describe("NS account ID"),
+                amount: z.number().optional().describe("Net amount"),
+                taxCode: z.string().optional().describe("NS tax code ID (e.g. 2334 = 20-FR)"),
+                memo: z.string().optional().describe("Line memo"),
+                department: z.string().optional().describe("NS department ID"),
+                location: z.string().optional().describe("NS location ID"),
+                class: z.string().optional().describe("NS class ID"),
+                amortizationSched: z.string().optional().describe("Amortization template ID"),
+                amortStartDate: z.string().optional().describe("Amortization start YYYY-MM-DD"),
+                amortEndDate: z.string().optional().describe("Amortization end YYYY-MM-DD"),
+                customFields: z.record(z.unknown()).optional().describe("custcol_xxx key-value pairs"),
+              }).passthrough()
+            )
+            .optional()
+            .describe("Expense lines; when provided REPLACES all existing lines"),
+          item: z
+            .array(
+              z.object({
+                item: z.string().optional().describe("NS item ID"),
+                quantity: z.number().optional(),
+                rate: z.number().optional(),
+                amount: z.number().optional(),
+                taxCode: z.string().optional(),
+                department: z.string().optional(),
+                memo: z.string().optional(),
+              })
+            )
+            .optional()
+            .describe("Item lines; when provided REPLACES all existing item lines"),
+          billingAddress: z
+            .object({
+              addr1: z.string().optional(),
+              city: z.string().optional(),
+              zip: z.string().optional(),
+              country: z.string().optional(),
+              addressee: z.string().optional(),
+            })
+            .optional(),
+          customFields: z.record(z.unknown()).optional().describe("custbody_xxx key-value pairs for custom body fields"),
+          dryRun: z.boolean().optional().describe("If true, return body without calling NetSuite"),
+        })
+        .strict() as any,
     },
-    async ({ id, status, memo }: any) => {
+    async (params: any) => {
       try {
-        // Validate required parameter
+        const {
+          id,
+          dryRun,
+          entity,
+          tranDate,
+          dueDate,
+          tranId,
+          memo,
+          currency,
+          exchangeRate,
+          subsidiary,
+          expense,
+          item,
+          billingAddress,
+          customFields,
+        } = params;
+
         if (!id || typeof id !== "string") {
           return errorResponse("Missing required parameter: id (string)");
         }
-        
-        const body: any = {};
-        if (status) body.status = status;
-        if (memo) body.memo = memo;
 
-        const result = await client.patch<unknown>(`/vendorBill/${id}`, body);
-        return successResponse(result);
+        const body: Record<string, unknown> = {};
+
+        if (entity != null) body.entity = { id: entity };
+        if (tranDate != null) body.tranDate = tranDate;
+        if (dueDate != null) body.dueDate = dueDate;
+        if (tranId != null) body.tranId = tranId;
+        if (memo != null) body.memo = memo;
+        if (currency != null) body.currency = { id: currency };
+        if (exchangeRate != null) body.exchangeRate = exchangeRate;
+        if (subsidiary != null) body.subsidiary = { id: subsidiary };
+
+        if (expense && expense.length > 0) {
+          (body as any).expense = {
+            items: expense.map((line: any, i: number) => {
+              const l: Record<string, unknown> = { line: i + 1 };
+              if (line.account != null) l.account = { id: String(line.account) };
+              if (line.amount !== undefined) l.amount = line.amount;
+              if (line.taxCode != null) l.taxCode = { id: String(line.taxCode) };
+              if (line.memo != null) l.memo = line.memo;
+              if (line.department != null) l.department = { id: String(line.department) };
+              if (line.location != null) l.location = { id: String(line.location) };
+              if (line.class != null) l.class = { id: String(line.class) };
+              if (line.amortizationSched != null) l.amortizationSched = { id: String(line.amortizationSched) };
+              if (line.amortStartDate != null) l.amortStartDate = line.amortStartDate;
+              if (line.amortEndDate != null) l.amortEndDate = line.amortEndDate;
+              if (line.customFields && typeof line.customFields === "object") {
+                Object.entries(line.customFields).forEach(([k, v]) => {
+                  (l as any)[k] = v;
+                });
+              }
+              return l;
+            }),
+          };
+        }
+
+        if (item && item.length > 0) {
+          (body as any).item = {
+            items: item.map((line: any, i: number) => {
+              const l: Record<string, unknown> = { line: i + 1 };
+              if (line.item != null) l.item = { id: String(line.item) };
+              if (line.quantity != null) l.quantity = line.quantity;
+              if (line.rate != null) l.rate = line.rate;
+              if (line.amount != null) l.amount = line.amount;
+              if (line.taxCode != null) l.taxCode = { id: String(line.taxCode) };
+              if (line.department != null) l.department = { id: String(line.department) };
+              if (line.memo != null) l.memo = line.memo;
+              return l;
+            }),
+          };
+        }
+
+        if (billingAddress && typeof billingAddress === "object") {
+          (body as any).billingAddress = billingAddress;
+        }
+
+        if (customFields && typeof customFields === "object") {
+          Object.entries(customFields).forEach(([k, v]) => {
+            (body as any)[k] = v;
+          });
+        }
+
+        if (dryRun === true) {
+          return successResponse({
+            dryRun: true,
+            id,
+            body,
+          });
+        }
+
+        const replaceParams: string[] = [];
+        if (expense && expense.length > 0) replaceParams.push("expense");
+        if (item && item.length > 0) replaceParams.push("item");
+        const query = replaceParams.length > 0 ? `?replace=${replaceParams.join(",")}` : "";
+        const path = `/vendorBill/${id}${query}`;
+
+        await withRetry(
+          () => client.patch<unknown>(path, body),
+          "update_vendor_bill"
+        );
+
+        return successResponse({
+          success: true,
+          id,
+          updatedFields: Object.keys(body),
+        });
       } catch (error: any) {
-        return errorResponse(`Error updating vendor bill: ${error.message}`);
+        return errorResponse(`Error updating vendor bill: ${parseNetSuiteError(error)}`);
       }
     }
   );

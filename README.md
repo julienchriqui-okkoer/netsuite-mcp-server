@@ -226,23 +226,15 @@ npm run test:http
 npm run test:all
 ```
 
-## Déploiement
+## Documentation détaillée
 
-### Quick Start (20 min)
+Pour les guides complets et les rapports métier, voir le dossier `docs/` :
 
-Voir **[QUICKSTART.md](./QUICKSTART.md)** pour déployer rapidement sur Railway + configurer Dust.
-
-### Guide complet
-
-Voir **[DEPLOY.md](./DEPLOY.md)** pour le guide détaillé étape par étape (GitHub → Railway → Dust).
-
-### Pre-deployment check
-
-```bash
-./scripts/pre-deploy-check.sh
-```
-
-Ce script vérifie que tous les fichiers requis sont présents et que le build fonctionne.
+- Guides de déploiement : `docs/deploy/` (Quickstart, checklist, guide complet Railway/Dust)
+- Permissions & setup NetSuite : `docs/setup/`
+- Scénarios de test & rapports : `docs/testing/`
+- SuiteQL & fallbacks REST : `docs/suiteql/`
+- Mapping métier (vendors, bills, payments, expense reports) : `docs/overview/`, `docs/vendors/`, `docs/bill-payments/`
 
 ## Déploiement
 
