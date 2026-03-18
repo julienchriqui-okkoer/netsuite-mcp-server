@@ -48,6 +48,9 @@ function getHintFor(status: number, context: string): string {
   if (status === 400 && (ctx.includes("vendorbill") || ctx.includes("vendor bill"))) {
     return "Check entity (vendor), subsidiary, expense.items structure, and required fields. Compare with a working vendor bill example.";
   }
+  if (status === 401 && (ctx.includes("patch") || ctx.includes("update"))) {
+    return "OAuth signature must use the actual HTTP method (PATCH). Ensure query params (e.g. ?replace=expense) are included in the signature.";
+  }
   if (status === 403) {
     return "Missing permission. Verify the NetSuite role has the required permissions on this record type and SuiteQL if used.";
   }
@@ -135,12 +138,18 @@ export class NetSuiteClient {
 
     const finalUrl = url.toString();
     const urlForSignature = finalUrl.split("?")[0];
-    
+
+    // OAuth 1.0a: signature must include ALL query params (from options or from path)
+    const queryParamsForSignature: QueryParams = { ...options.queryParams };
+    url.searchParams.forEach((value, key) => {
+      queryParamsForSignature[key] = value;
+    });
+
     console.error(`[NetSuiteClient] ${method} ${finalUrl}`);
     console.error(`[NetSuiteClient] URL for signature: ${urlForSignature}`);
-    console.error(`[NetSuiteClient] Query params:`, options.queryParams);
+    console.error(`[NetSuiteClient] Query params for signature:`, queryParamsForSignature);
 
-    const authHeader = this.buildAuthHeader(method, urlForSignature, options.queryParams);
+    const authHeader = this.buildAuthHeader(method, urlForSignature, queryParamsForSignature);
 
     const headers: Record<string, string> = {
       Authorization: authHeader,
