@@ -1,7 +1,7 @@
 # NetSuite REST API - Test Report
 
 **Date**: 3/12/2026, 9:57:43 AM
-**Account**: 5762887_SB1
+**Account**: (sandbox — utiliser ton propre Account ID, ne pas le committer)
 **Success Rate**: 81.82% (18/22)
 
 ## 📊 Summary by Category

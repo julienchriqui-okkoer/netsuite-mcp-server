@@ -78,7 +78,7 @@ type QueryParams = Record<string, string | number | undefined>;
 
 function toHostFromAccountId(accountId: string): string {
   // Example: TSTDRV1234567 -> tstdrv1234567.suitetalk.api.netsuite.com
-  //          5762887_SB1   -> 5762887-sb1.suitetalk.api.netsuite.com
+  //          1234567_SB1   -> 1234567-sb1.suitetalk.api.netsuite.com
   const normalized = accountId.toLowerCase().replace("_", "-");
   return `${normalized}.suitetalk.api.netsuite.com`;
 }

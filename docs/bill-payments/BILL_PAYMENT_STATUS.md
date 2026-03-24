@@ -106,7 +106,7 @@ Bien que le GET fonctionne, il est possible que le POST nécessite une casse dif
 
 ### Option 2 : Test via Postman (avec OAuth Valide)
 ```bash
-POST https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment
+POST https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment
 Authorization: OAuth ... (avec signature valide)
 Content-Type: application/json
 Prefer: transient

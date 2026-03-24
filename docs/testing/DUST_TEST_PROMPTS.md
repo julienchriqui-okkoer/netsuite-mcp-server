@@ -29,7 +29,7 @@ Affiche le résultat complet avec l'ID du vendor créé.
 {
   "success": true,
   "id": "XXXXX",
-  "location": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/XXXXX"
+  "location": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/XXXXX"
 }
 ```
 

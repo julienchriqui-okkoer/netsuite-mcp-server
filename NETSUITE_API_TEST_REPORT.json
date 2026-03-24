@@ -1,6 +1,6 @@
 {
   "timestamp": "2026-03-12T08:57:43.811Z",
-  "account": "5762887_SB1",
+  "account": "YOUR_ACCOUNT_ID_SB1",
   "summary": {
     "total": 22,
     "success": 18,
@@ -101,7 +101,7 @@
       "elapsed": 704,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305828\", oauth_nonce=\"578cb2feb617b56b6b823de66e028aae\", oauth_version=\"1.0\", oauth_signature=\"BxCixIJUr0gUG494BMqR50r%2Fd5vXb8kjb37H0ClDgGE%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305828\", oauth_nonce=\"578cb2feb617b56b6b823de66e028aae\", oauth_version=\"1.0\", oauth_signature=\"BxCixIJUr0gUG494BMqR50r%2Fd5vXb8kjb37H0ClDgGE%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -126,15 +126,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5",
             "method": "GET"
           }
         ],
@@ -145,7 +145,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/-3",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/-3",
                 "method": "GET"
               }
             ],
@@ -155,7 +155,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/37060",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/37060",
                 "method": "GET"
               }
             ],
@@ -165,7 +165,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/69564",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/69564",
                 "method": "GET"
               }
             ],
@@ -175,7 +175,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/27595",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/27595",
                 "method": "GET"
               }
             ],
@@ -185,7 +185,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/66890",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/66890",
                 "method": "GET"
               }
             ],
@@ -207,7 +207,7 @@
       "elapsed": 204,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305829\", oauth_nonce=\"8e5ea002b6a6ab18c3a16ff0d1ee87f5\", oauth_version=\"1.0\", oauth_signature=\"u7NSIPhTutavzPC0y2lmS%2F5zVbRlk%2Bd4n5vc3fmRhCY%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305829\", oauth_nonce=\"8e5ea002b6a6ab18c3a16ff0d1ee87f5\", oauth_version=\"1.0\", oauth_signature=\"u7NSIPhTutavzPC0y2lmS%2F5zVbRlk%2Bd4n5vc3fmRhCY%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -232,23 +232,23 @@
         "links": [
           {
             "rel": "previous",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=5"
           },
           {
             "rel": "first",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=0"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=0"
           },
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=15"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=15"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=695"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor?limit=5&offset=10",
             "method": "GET"
           }
         ],
@@ -259,7 +259,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33985",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33985",
                 "method": "GET"
               }
             ],
@@ -269,7 +269,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/120369",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/120369",
                 "method": "GET"
               }
             ],
@@ -279,7 +279,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33895",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/33895",
                 "method": "GET"
               }
             ],
@@ -289,7 +289,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/1877",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/1877",
                 "method": "GET"
               }
             ],
@@ -299,7 +299,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/54832",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/54832",
                 "method": "GET"
               }
             ],
@@ -321,7 +321,7 @@
       "elapsed": 689,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305830\", oauth_nonce=\"5ee548e9ce10035dfc43f3f26eaf3615\", oauth_version=\"1.0\", oauth_signature=\"DqXWb0EqOaf7RZ6TVyTZgwC403odGILnvHjIPIwZJ1U%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305830\", oauth_nonce=\"5ee548e9ce10035dfc43f3f26eaf3615\", oauth_version=\"1.0\", oauth_signature=\"DqXWb0EqOaf7RZ6TVyTZgwC403odGILnvHjIPIwZJ1U%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -346,7 +346,7 @@
         "links": [
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775",
             "method": "GET"
           }
         ],
@@ -354,7 +354,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
               "method": "GET"
             }
           ]
@@ -367,7 +367,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
               "method": "GET"
             }
           ]
@@ -376,7 +376,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
               "method": "GET"
             }
           ],
@@ -387,7 +387,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
               "method": "GET"
             }
           ]
@@ -429,7 +429,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
               "method": "GET"
             }
           ],
@@ -453,7 +453,7 @@
       "elapsed": 404,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305831\", oauth_nonce=\"2026a2f4ab7a982218ceb3e58c94dbc2\", oauth_version=\"1.0\", oauth_signature=\"otXcPKOiuqZ1rH7PaBLExefYT2SwBbY75RQPHvqW51M%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305831\", oauth_nonce=\"2026a2f4ab7a982218ceb3e58c94dbc2\", oauth_version=\"1.0\", oauth_signature=\"otXcPKOiuqZ1rH7PaBLExefYT2SwBbY75RQPHvqW51M%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -478,7 +478,7 @@
         "links": [
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775?expandSubResources=true",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775?expandSubResources=true",
             "method": "GET"
           }
         ],
@@ -486,7 +486,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook",
               "method": "GET"
             }
           ],
@@ -495,7 +495,7 @@
               "links": [
                 {
                   "rel": "self",
-                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940",
+                  "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940",
                   "method": "GET"
                 }
               ],
@@ -503,7 +503,7 @@
                 "links": [
                   {
                     "rel": "self",
-                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940/addressBookAddress",
+                    "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/addressBook/682940/addressBookAddress",
                     "method": "GET"
                   }
                 ],
@@ -534,7 +534,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/contactList",
               "method": "GET"
             }
           ],
@@ -548,7 +548,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
               "method": "GET"
             }
           ],
@@ -559,7 +559,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList",
               "method": "GET"
             }
           ],
@@ -568,7 +568,7 @@
               "links": [
                 {
                   "rel": "self",
-                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/1",
+                  "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/1",
                   "method": "GET"
                 }
               ],
@@ -577,7 +577,7 @@
                 "links": [
                   {
                     "rel": "self",
-                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+                    "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
                     "method": "GET"
                   }
                 ],
@@ -591,7 +591,7 @@
               "links": [
                 {
                   "rel": "self",
-                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/4",
+                  "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/4",
                   "method": "GET"
                 }
               ],
@@ -600,7 +600,7 @@
                 "links": [
                   {
                     "rel": "self",
-                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
+                    "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
                     "method": "GET"
                   }
                 ],
@@ -614,7 +614,7 @@
               "links": [
                 {
                   "rel": "self",
-                  "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/2",
+                  "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/134775/currencyList/2",
                   "method": "GET"
                 }
               ],
@@ -623,7 +623,7 @@
                 "links": [
                   {
                     "rel": "self",
-                    "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
+                    "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
                     "method": "GET"
                   }
                 ],
@@ -673,7 +673,7 @@
           "links": [
             {
               "rel": "self",
-              "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+              "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
               "method": "GET"
             }
           ],
@@ -697,7 +697,7 @@
       "elapsed": 1009,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305832\", oauth_nonce=\"11231a0b42865cddb5ff264d82319248\", oauth_version=\"1.0\", oauth_signature=\"1DrHvusVpg%2BFAfRzTd%2FAF2QkZ02Wvwg7ouRB%2F3B8%2FrU%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305832\", oauth_nonce=\"11231a0b42865cddb5ff264d82319248\", oauth_version=\"1.0\", oauth_signature=\"1DrHvusVpg%2BFAfRzTd%2FAF2QkZ02Wvwg7ouRB%2F3B8%2FrU%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -722,15 +722,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=995"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill?limit=5&offset=995"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorBill?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorBill?limit=5",
             "method": "GET"
           }
         ],
@@ -741,7 +741,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/887470",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/887470",
                 "method": "GET"
               }
             ],
@@ -751,7 +751,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/829778",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/829778",
                 "method": "GET"
               }
             ],
@@ -761,7 +761,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/883577",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/883577",
                 "method": "GET"
               }
             ],
@@ -771,7 +771,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/994939",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/994939",
                 "method": "GET"
               }
             ],
@@ -781,7 +781,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/884255",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorbill/884255",
                 "method": "GET"
               }
             ],
@@ -803,7 +803,7 @@
       "elapsed": 156,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305833\", oauth_nonce=\"de4b957a575fca30f19c9d76cd6b9012\", oauth_version=\"1.0\", oauth_signature=\"1vvm60dhoeqlwEBb76zilwhzXfbIat4%2Fnkw3rTxKFPQ%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305833\", oauth_nonce=\"de4b957a575fca30f19c9d76cd6b9012\", oauth_version=\"1.0\", oauth_signature=\"1vvm60dhoeqlwEBb76zilwhzXfbIat4%2Fnkw3rTxKFPQ%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -846,7 +846,7 @@
       "elapsed": 433,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305834\", oauth_nonce=\"816f57e91ac7cc9fff6b8244c2e688bc\", oauth_version=\"1.0\", oauth_signature=\"hN1E2z48HSu64%2F9smRHiWtu%2F%2FqMPde1E33tNA7fWjGw%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305834\", oauth_nonce=\"816f57e91ac7cc9fff6b8244c2e688bc\", oauth_version=\"1.0\", oauth_signature=\"hN1E2z48HSu64%2F9smRHiWtu%2F%2FqMPde1E33tNA7fWjGw%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -871,15 +871,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=70"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5&offset=70"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee?limit=5",
             "method": "GET"
           }
         ],
@@ -890,7 +890,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2225",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2225",
                 "method": "GET"
               }
             ],
@@ -900,7 +900,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2226",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2226",
                 "method": "GET"
               }
             ],
@@ -910,7 +910,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2227",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2227",
                 "method": "GET"
               }
             ],
@@ -920,7 +920,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2228",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2228",
                 "method": "GET"
               }
             ],
@@ -930,7 +930,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2229",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/employee/2229",
                 "method": "GET"
               }
             ],
@@ -952,7 +952,7 @@
       "elapsed": 139,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305835\", oauth_nonce=\"58f01d97550d41023ad17725d5f1247b\", oauth_version=\"1.0\", oauth_signature=\"YgnudXod2C2yt6O9bC3K1AvKW5xEIxAJr6b07MfB66I%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305835\", oauth_nonce=\"58f01d97550d41023ad17725d5f1247b\", oauth_version=\"1.0\", oauth_signature=\"YgnudXod2C2yt6O9bC3K1AvKW5xEIxAJr6b07MfB66I%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -996,7 +996,7 @@
       "elapsed": 683,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305836\", oauth_nonce=\"ac177da14fa198570ac2707d49ecd5ae\", oauth_version=\"1.0\", oauth_signature=\"QhskfI7oEgoflBZiwi2SThHpylvy%2FzvLkscPe8vc79c%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305836\", oauth_nonce=\"ac177da14fa198570ac2707d49ecd5ae\", oauth_version=\"1.0\", oauth_signature=\"QhskfI7oEgoflBZiwi2SThHpylvy%2FzvLkscPe8vc79c%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1021,15 +1021,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport?limit=5&offset=10"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expenseReport?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expenseReport?limit=5",
             "method": "GET"
           }
         ],
@@ -1040,7 +1040,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/930935",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/930935",
                 "method": "GET"
               }
             ],
@@ -1050,7 +1050,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934234",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934234",
                 "method": "GET"
               }
             ],
@@ -1060,7 +1060,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934235",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/934235",
                 "method": "GET"
               }
             ],
@@ -1070,7 +1070,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759627",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759627",
                 "method": "GET"
               }
             ],
@@ -1080,7 +1080,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759827",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/expensereport/759827",
                 "method": "GET"
               }
             ],
@@ -1102,7 +1102,7 @@
       "elapsed": 162,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305837\", oauth_nonce=\"30d64336f0d8e66ce9f2484b315e43a0\", oauth_version=\"1.0\", oauth_signature=\"SgKJ2Wuz5Lq2RxM4y0Gu%2FDX1AYaC1WoVOlR8YXQn6NE%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305837\", oauth_nonce=\"30d64336f0d8e66ce9f2484b315e43a0\", oauth_version=\"1.0\", oauth_signature=\"SgKJ2Wuz5Lq2RxM4y0Gu%2FDX1AYaC1WoVOlR8YXQn6NE%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1145,7 +1145,7 @@
       "elapsed": 591,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305838\", oauth_nonce=\"0784e9124ecacdebaf740044112e5a49\", oauth_version=\"1.0\", oauth_signature=\"hgH5MWfY%2BrjYvbnHqgZmSM85h2vfww6XKzGRGU8gPm0%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305838\", oauth_nonce=\"0784e9124ecacdebaf740044112e5a49\", oauth_version=\"1.0\", oauth_signature=\"hgH5MWfY%2BrjYvbnHqgZmSM85h2vfww6XKzGRGU8gPm0%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1170,15 +1170,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=995"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment?limit=5&offset=995"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorPayment?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorPayment?limit=5",
             "method": "GET"
           }
         ],
@@ -1189,7 +1189,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/567931",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/567931",
                 "method": "GET"
               }
             ],
@@ -1199,7 +1199,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/733081",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/733081",
                 "method": "GET"
               }
             ],
@@ -1209,7 +1209,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/708793",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/708793",
                 "method": "GET"
               }
             ],
@@ -1219,7 +1219,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/743848",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/743848",
                 "method": "GET"
               }
             ],
@@ -1229,7 +1229,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/1339734",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorpayment/1339734",
                 "method": "GET"
               }
             ],
@@ -1251,7 +1251,7 @@
       "elapsed": 435,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305839\", oauth_nonce=\"bf3b30d95903091cf6ffc77c9261a056\", oauth_version=\"1.0\", oauth_signature=\"dEP8XQK8Duj8MMnzahoBwncFzVdCBpeHM4mNWr3vuv8%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305839\", oauth_nonce=\"bf3b30d95903091cf6ffc77c9261a056\", oauth_version=\"1.0\", oauth_signature=\"dEP8XQK8Duj8MMnzahoBwncFzVdCBpeHM4mNWr3vuv8%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1276,15 +1276,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=45"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit?limit=5&offset=45"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorCredit?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorCredit?limit=5",
             "method": "GET"
           }
         ],
@@ -1295,7 +1295,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/963237",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/963237",
                 "method": "GET"
               }
             ],
@@ -1305,7 +1305,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/869145",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/869145",
                 "method": "GET"
               }
             ],
@@ -1315,7 +1315,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738090",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738090",
                 "method": "GET"
               }
             ],
@@ -1325,7 +1325,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738091",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738091",
                 "method": "GET"
               }
             ],
@@ -1335,7 +1335,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738092",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendorcredit/738092",
                 "method": "GET"
               }
             ],
@@ -1357,7 +1357,7 @@
       "elapsed": 15951,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305840\", oauth_nonce=\"426e70b224e7c7cf3d7849ac04a05ded\", oauth_version=\"1.0\", oauth_signature=\"DELt%2B6m%2BW3Xc6uWo9DzN9JmL67tBuJtlqfItaYerJ3w%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305840\", oauth_nonce=\"426e70b224e7c7cf3d7849ac04a05ded\", oauth_version=\"1.0\", oauth_signature=\"DELt%2B6m%2BW3Xc6uWo9DzN9JmL67tBuJtlqfItaYerJ3w%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1382,15 +1382,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=5"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=5"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=995"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry?limit=5&offset=995"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalEntry?limit=5",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalEntry?limit=5",
             "method": "GET"
           }
         ],
@@ -1401,7 +1401,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/1",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/1",
                 "method": "GET"
               }
             ],
@@ -1411,7 +1411,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/102",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/102",
                 "method": "GET"
               }
             ],
@@ -1421,7 +1421,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/103",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/103",
                 "method": "GET"
               }
             ],
@@ -1431,7 +1431,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/104",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/104",
                 "method": "GET"
               }
             ],
@@ -1441,7 +1441,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/105",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/journalentry/105",
                 "method": "GET"
               }
             ],
@@ -1463,7 +1463,7 @@
       "elapsed": 157,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305856\", oauth_nonce=\"9af063575404b5785c7c29ddd38595aa\", oauth_version=\"1.0\", oauth_signature=\"hgBkQIK4jgrCJ3pak6nJbvqhQkKRi1%2B2QSuoiYL8MVs%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305856\", oauth_nonce=\"9af063575404b5785c7c29ddd38595aa\", oauth_version=\"1.0\", oauth_signature=\"hgBkQIK4jgrCJ3pak6nJbvqhQkKRi1%2B2QSuoiYL8MVs%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1488,15 +1488,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=10"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=70"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10&offset=70"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account?limit=10",
             "method": "GET"
           }
         ],
@@ -1507,7 +1507,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1210",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1210",
                 "method": "GET"
               }
             ],
@@ -1517,7 +1517,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1710",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1710",
                 "method": "GET"
               }
             ],
@@ -1527,7 +1527,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/225",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/225",
                 "method": "GET"
               }
             ],
@@ -1537,7 +1537,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/226",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/226",
                 "method": "GET"
               }
             ],
@@ -1547,7 +1547,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/227",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/227",
                 "method": "GET"
               }
             ],
@@ -1557,7 +1557,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/228",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/228",
                 "method": "GET"
               }
             ],
@@ -1567,7 +1567,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/229",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/229",
                 "method": "GET"
               }
             ],
@@ -1577,7 +1577,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/230",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/230",
                 "method": "GET"
               }
             ],
@@ -1587,7 +1587,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1044",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1044",
                 "method": "GET"
               }
             ],
@@ -1597,7 +1597,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1163",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/account/1163",
                 "method": "GET"
               }
             ],
@@ -1619,7 +1619,7 @@
       "elapsed": 169,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"5d433c3470f8fec88ca0f66dd5d4a9e2\", oauth_version=\"1.0\", oauth_signature=\"p%2FDq2%2F3n%2BAlJdzn0ycHutJ7znh6Jy5L75lW1VLTEzLM%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"5d433c3470f8fec88ca0f66dd5d4a9e2\", oauth_version=\"1.0\", oauth_signature=\"p%2FDq2%2F3n%2BAlJdzn0ycHutJ7znh6Jy5L75lW1VLTEzLM%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1644,15 +1644,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=10"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=20"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10&offset=20"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department?limit=10",
             "method": "GET"
           }
         ],
@@ -1663,7 +1663,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/2",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/2",
                 "method": "GET"
               }
             ],
@@ -1673,7 +1673,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/235",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/235",
                 "method": "GET"
               }
             ],
@@ -1683,7 +1683,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/451",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/451",
                 "method": "GET"
               }
             ],
@@ -1693,7 +1693,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/47",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/47",
                 "method": "GET"
               }
             ],
@@ -1703,7 +1703,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/562",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/562",
                 "method": "GET"
               }
             ],
@@ -1713,7 +1713,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/563",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/563",
                 "method": "GET"
               }
             ],
@@ -1723,7 +1723,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/436",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/436",
                 "method": "GET"
               }
             ],
@@ -1733,7 +1733,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/41",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/41",
                 "method": "GET"
               }
             ],
@@ -1743,7 +1743,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/54",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/54",
                 "method": "GET"
               }
             ],
@@ -1753,7 +1753,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/32",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/department/32",
                 "method": "GET"
               }
             ],
@@ -1775,7 +1775,7 @@
       "elapsed": 140,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"b653a077249e9a96624ead8a40cd7ef9\", oauth_version=\"1.0\", oauth_signature=\"mUSRACHSSOXFy8tYS0RSWdi5VyEA8MM1%2B%2F33DoMX2fM%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305857\", oauth_nonce=\"b653a077249e9a96624ead8a40cd7ef9\", oauth_version=\"1.0\", oauth_signature=\"mUSRACHSSOXFy8tYS0RSWdi5VyEA8MM1%2B%2F33DoMX2fM%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1800,7 +1800,7 @@
         "links": [
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary?limit=10",
             "method": "GET"
           }
         ],
@@ -1811,7 +1811,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/6",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/6",
                 "method": "GET"
               }
             ],
@@ -1821,7 +1821,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/5",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/5",
                 "method": "GET"
               }
             ],
@@ -1831,7 +1831,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/2",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/2",
                 "method": "GET"
               }
             ],
@@ -1841,7 +1841,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/3",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/3",
                 "method": "GET"
               }
             ],
@@ -1851,7 +1851,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/4",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/4",
                 "method": "GET"
               }
             ],
@@ -1861,7 +1861,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/1",
                 "method": "GET"
               }
             ],
@@ -1871,7 +1871,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/8",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/8",
                 "method": "GET"
               }
             ],
@@ -1881,7 +1881,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/7",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/7",
                 "method": "GET"
               }
             ],
@@ -1891,7 +1891,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/9",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/subsidiary/9",
                 "method": "GET"
               }
             ],
@@ -1913,7 +1913,7 @@
       "elapsed": 717,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305858\", oauth_nonce=\"12fb883699cd24e283ad936d975afcd7\", oauth_version=\"1.0\", oauth_signature=\"8Le%2B4l6o7TJL1kZUCMWjcTkXOA2j%2FIJ4uDKj%2BgHh400%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305858\", oauth_nonce=\"12fb883699cd24e283ad936d975afcd7\", oauth_version=\"1.0\", oauth_signature=\"8Le%2B4l6o7TJL1kZUCMWjcTkXOA2j%2FIJ4uDKj%2BgHh400%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -1938,15 +1938,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=10"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=50"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10&offset=50"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem?limit=10",
             "method": "GET"
           }
         ],
@@ -1957,7 +1957,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/-7",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/-7",
                 "method": "GET"
               }
             ],
@@ -1967,7 +1967,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/752",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/752",
                 "method": "GET"
               }
             ],
@@ -1977,7 +1977,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/754",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/754",
                 "method": "GET"
               }
             ],
@@ -1987,7 +1987,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/755",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/755",
                 "method": "GET"
               }
             ],
@@ -1997,7 +1997,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/756",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/756",
                 "method": "GET"
               }
             ],
@@ -2007,7 +2007,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/757",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/757",
                 "method": "GET"
               }
             ],
@@ -2017,7 +2017,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/758",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/758",
                 "method": "GET"
               }
             ],
@@ -2027,7 +2027,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2327",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2327",
                 "method": "GET"
               }
             ],
@@ -2037,7 +2037,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2336",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2336",
                 "method": "GET"
               }
             ],
@@ -2047,7 +2047,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2335",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/salestaxitem/2335",
                 "method": "GET"
               }
             ],
@@ -2069,7 +2069,7 @@
       "elapsed": 480,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305859\", oauth_nonce=\"226b8698158af12787247104bab9d571\", oauth_version=\"1.0\", oauth_signature=\"1Pp9HvMo9ehaPqbLHMe36pR2OrNrOcjT5%2BWsv3Fx6ik%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305859\", oauth_nonce=\"226b8698158af12787247104bab9d571\", oauth_version=\"1.0\", oauth_signature=\"1Pp9HvMo9ehaPqbLHMe36pR2OrNrOcjT5%2BWsv3Fx6ik%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -2094,7 +2094,7 @@
         "links": [
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency?limit=10",
             "method": "GET"
           }
         ],
@@ -2105,7 +2105,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/3",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/3",
                 "method": "GET"
               }
             ],
@@ -2115,7 +2115,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/5",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/5",
                 "method": "GET"
               }
             ],
@@ -2125,7 +2125,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/6",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/6",
                 "method": "GET"
               }
             ],
@@ -2135,7 +2135,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/1",
                 "method": "GET"
               }
             ],
@@ -2145,7 +2145,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/4",
                 "method": "GET"
               }
             ],
@@ -2155,7 +2155,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/8",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/8",
                 "method": "GET"
               }
             ],
@@ -2165,7 +2165,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/7",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/7",
                 "method": "GET"
               }
             ],
@@ -2175,7 +2175,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/currency/2",
                 "method": "GET"
               }
             ],
@@ -2197,7 +2197,7 @@
       "elapsed": 409,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305860\", oauth_nonce=\"27873ccd8914e19dc43ee7bf23eebf96\", oauth_version=\"1.0\", oauth_signature=\"q9jF5296A8AwCGb4%2FeqVdFhlKDYwDjLlz3RKcrZuLQo%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305860\", oauth_nonce=\"27873ccd8914e19dc43ee7bf23eebf96\", oauth_version=\"1.0\", oauth_signature=\"q9jF5296A8AwCGb4%2FeqVdFhlKDYwDjLlz3RKcrZuLQo%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -2222,15 +2222,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=10"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=0"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10&offset=0"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location?limit=10",
             "method": "GET"
           }
         ],
@@ -2241,7 +2241,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/9",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/9",
                 "method": "GET"
               }
             ],
@@ -2251,7 +2251,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/17",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/17",
                 "method": "GET"
               }
             ],
@@ -2261,7 +2261,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/18",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/18",
                 "method": "GET"
               }
             ],
@@ -2271,7 +2271,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/19",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/19",
                 "method": "GET"
               }
             ],
@@ -2281,7 +2281,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/20",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/20",
                 "method": "GET"
               }
             ],
@@ -2291,7 +2291,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/2",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/2",
                 "method": "GET"
               }
             ],
@@ -2301,7 +2301,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/21",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/21",
                 "method": "GET"
               }
             ],
@@ -2311,7 +2311,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/22",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/22",
                 "method": "GET"
               }
             ],
@@ -2321,7 +2321,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/23",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/23",
                 "method": "GET"
               }
             ],
@@ -2331,7 +2331,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/15",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/location/15",
                 "method": "GET"
               }
             ],
@@ -2353,7 +2353,7 @@
       "elapsed": 146,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305861\", oauth_nonce=\"825f33b211bb864e22485ff5bf397c3a\", oauth_version=\"1.0\", oauth_signature=\"yMQduM%2BJMQryzmlqMRJ0l5Si3KDPa%2FGP5FncjYcuhpI%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305861\", oauth_nonce=\"825f33b211bb864e22485ff5bf397c3a\", oauth_version=\"1.0\", oauth_signature=\"yMQduM%2BJMQryzmlqMRJ0l5Si3KDPa%2FGP5FncjYcuhpI%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
@@ -2378,15 +2378,15 @@
         "links": [
           {
             "rel": "next",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
           },
           {
             "rel": "last",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10&offset=10"
           },
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification?limit=10",
             "method": "GET"
           }
         ],
@@ -2397,7 +2397,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/30",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/30",
                 "method": "GET"
               }
             ],
@@ -2407,7 +2407,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/32",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/32",
                 "method": "GET"
               }
             ],
@@ -2417,7 +2417,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/399",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/399",
                 "method": "GET"
               }
             ],
@@ -2427,7 +2427,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/46",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/46",
                 "method": "GET"
               }
             ],
@@ -2437,7 +2437,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/47",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/47",
                 "method": "GET"
               }
             ],
@@ -2447,7 +2447,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/48",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/48",
                 "method": "GET"
               }
             ],
@@ -2457,7 +2457,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/49",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/49",
                 "method": "GET"
               }
             ],
@@ -2467,7 +2467,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/398",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/398",
                 "method": "GET"
               }
             ],
@@ -2477,7 +2477,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/151",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/151",
                 "method": "GET"
               }
             ],
@@ -2487,7 +2487,7 @@
             "links": [
               {
                 "rel": "self",
-                "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/152",
+                "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/classification/152",
                 "method": "GET"
               }
             ],
@@ -2509,7 +2509,7 @@
       "elapsed": 244,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"f57915f8f75e5a5074a0dd4937ddbf45\", oauth_version=\"1.0\", oauth_signature=\"YyLoMAN%2FdCCyaoMlEGn3LPJnP60VoNr%2FA9qAR0xVJI0%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"f57915f8f75e5a5074a0dd4937ddbf45\", oauth_version=\"1.0\", oauth_signature=\"YyLoMAN%2FdCCyaoMlEGn3LPJnP60VoNr%2FA9qAR0xVJI0%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Prefer": "transient"
@@ -2536,7 +2536,7 @@
         "links": [
           {
             "rel": "self",
-            "href": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql",
+            "href": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql",
             "method": "POST"
           }
         ],
@@ -2580,7 +2580,7 @@
       "elapsed": 348,
       "headers": {
         "request": {
-          "Authorization": "OAuth realm=\"5762887_SB1\", oauth_consumer_key=\"c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98\", oauth_token=\"1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"afe77dd6b0750462cc515e072630c1ef\", oauth_version=\"1.0\", oauth_signature=\"aOrDCj1Nu%2FzxBiOxglwqp78Kgc5kmOWaMNTVFKgxwg8%3D\"",
+          "Authorization": "OAuth realm=\"YOUR_ACCOUNT_ID_SB1\", oauth_consumer_key=\"REDACTED_CONSUMER_KEY\", oauth_token=\"REDACTED_TOKEN_ID\", oauth_signature_method=\"HMAC-SHA256\", oauth_timestamp=\"1773305862\", oauth_nonce=\"afe77dd6b0750462cc515e072630c1ef\", oauth_version=\"1.0\", oauth_signature=\"aOrDCj1Nu%2FzxBiOxglwqp78Kgc5kmOWaMNTVFKgxwg8%3D\"",
           "Content-Type": "application/json",
           "Accept": "application/json"
         },

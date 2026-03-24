@@ -59,7 +59,7 @@ export function successResponse(data: unknown) {
 {
   "success": true,
   "id": "136288",
-  "location": "https://5762887-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/136288"
+  "location": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com/services/rest/record/v1/vendor/136288"
 }
 ```
 

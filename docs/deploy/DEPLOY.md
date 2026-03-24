@@ -50,20 +50,20 @@ git push -u origin main
 
 ### 2.3 Configurer les variables d'environnement
 
-Dans Railway → Project → Settings → Variables, ajoute :
+Dans Railway → Project → Settings → Variables, ajoute tes valeurs réelles (jamais dans Git ; l’exemple ci-dessous est volontairement fictif) :
 
 ```bash
-NETSUITE_ACCOUNT_ID=5762887_SB1
-NETSUITE_CONSUMER_KEY=c3db4ccb1d01b9570129729ecdb726bf57c4d8d9e6f331ea86ed62bc31609a98
-NETSUITE_CONSUMER_SECRET=8d8880f211d6aa134b9479a509da46279b9d92ccf496f2c80cdc9e21e5749f80
-NETSUITE_TOKEN_ID=1365b23cf90ff9a7919ab76c328de6e16a6c1922ecf09b2ae5d56da9550133ea
-NETSUITE_TOKEN_SECRET=e94cfc9a8ac81265838accb8d383806efe3e89822a85487a6fe1787cfd259233
+NETSUITE_ACCOUNT_ID=TON_ACCOUNT_ID_SB1
+NETSUITE_CONSUMER_KEY=TON_CONSUMER_KEY
+NETSUITE_CONSUMER_SECRET=TON_CONSUMER_SECRET
+NETSUITE_TOKEN_ID=TON_TOKEN_ID
+NETSUITE_TOKEN_SECRET=TON_TOKEN_SECRET
 PORT=3001
 HOST=0.0.0.0
 ALLOWED_HOSTS=*
 ```
 
-**⚠️ Important** : Railway gère automatiquement HTTPS, donc tu n'as pas besoin de certificat SSL.
+**⚠️ Important** : Railway gère automatiquement HTTPS, donc tu n'as pas besoin de certificat SSL. Si des secrets ont fuité sur GitHub, révoque l’intégration / les access tokens dans NetSuite et recrée-en de nouveaux avant de redéployer.
 
 ### 2.4 Configurer le déploiement
 

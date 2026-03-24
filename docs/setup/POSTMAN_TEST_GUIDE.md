@@ -5,8 +5,8 @@
 1. **Importer la collection** : `NetSuite-API.postman_collection.json`
 
 2. **Configurer les variables** (clic droit sur la collection > Edit > Variables) :
-   - `base_url`: `https://5762887-sb1.suitetalk.api.netsuite.com` ✅ (déjà renseigné)
-   - `account_realm`: `5762887_SB1` ✅ (déjà renseigné)
+   - `base_url`: `https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com` (à adapter)
+   - `account_realm`: `YOUR_ACCOUNT_ID_SB1` (à adapter)
    - `consumer_key`: _(copier depuis `.env`)_
    - `consumer_secret`: _(copier depuis `.env`)_
    - `token_id`: _(copier depuis `.env`)_

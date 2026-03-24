@@ -18,8 +18,8 @@ Le tool `netsuite_create_vendor` ne reçoit pas les paramètres correctement via
 
 2. **Configure les variables** (Edit Collection > Variables) :
    ```
-   base_url: https://5762887-sb1.suitetalk.api.netsuite.com
-   account_realm: 5762887_SB1
+   base_url: https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com
+   account_realm: YOUR_ACCOUNT_ID_SB1
    consumer_key: <from .env NETSUITE_CONSUMER_KEY>
    consumer_secret: <from .env NETSUITE_CONSUMER_SECRET>
    token_id: <from .env NETSUITE_TOKEN_ID>

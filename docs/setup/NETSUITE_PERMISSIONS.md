@@ -98,7 +98,7 @@ Vérifie les permissions pour les records que tu veux accéder :
 
 ```bash
 # Remplace par tes credentials
-ACCOUNT_ID="5762887_SB1"
+ACCOUNT_ID="YOUR_ACCOUNT_ID_SB1"
 CONSUMER_KEY="..."
 CONSUMER_SECRET="..."
 TOKEN_ID="..."

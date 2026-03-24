@@ -17,8 +17,8 @@
     ]
   },
   "variable": [
-    {"key": "base_url", "value": "https://5762887-sb1.suitetalk.api.netsuite.com"},
-    {"key": "account_realm", "value": "5762887_SB1"},
+    {"key": "base_url", "value": "https://YOUR_ACCOUNT_ID-sb1.suitetalk.api.netsuite.com"},
+    {"key": "account_realm", "value": "YOUR_ACCOUNT_ID_SB1"},
     {"key": "consumer_key", "value": ""},
     {"key": "consumer_secret", "value": ""},
     {"key": "token_id", "value": ""},

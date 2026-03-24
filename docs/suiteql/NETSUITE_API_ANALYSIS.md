@@ -3,7 +3,7 @@
 ## 🎯 Résumé Exécutif
 
 **Date**: 2026-03-12  
-**Compte**: 5762887_SB1 (Sandbox)  
+**Compte**: sandbox (remplacer par ton propre Account ID ; ne pas le committer)  
 **Taux de Réussite Global**: **68.18%** (15/22 tests)  
 
 ### ✅ Points Forts
